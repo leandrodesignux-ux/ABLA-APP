@@ -3,6 +3,7 @@ import { Paperclip, Send } from 'lucide-react'
 import { useParams } from 'react-router-dom'
 import BottomNav from '../components/BottomNav.jsx'
 import Header from '../components/Header.jsx'
+import PageTransition from '../components/PageTransition.jsx'
 
 function formatTime(date) {
   try {
@@ -87,6 +88,7 @@ export default function ChatView() {
   }
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-abla-bg pb-24">
       <div className="relative">
         <Header title={chatMeta.title} showBack showIcons={false} />
@@ -145,5 +147,6 @@ export default function ChatView() {
 
       <BottomNav />
     </div>
+    </PageTransition>
   )
 }

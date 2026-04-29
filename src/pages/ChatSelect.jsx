@@ -3,6 +3,7 @@ import { ChevronRight, GraduationCap, UserX, Users } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import BottomNav from '../components/BottomNav.jsx'
 import Header from '../components/Header.jsx'
+import PageTransition from '../components/PageTransition.jsx'
 
 function OptionCard({ title, description, to, icon, avatarSrc }) {
   const navigate = useNavigate()
@@ -35,6 +36,7 @@ function OptionCard({ title, description, to, icon, avatarSrc }) {
 
 export default function ChatSelect() {
   return (
+    <PageTransition>
     <div className="min-h-screen bg-abla-bg pb-24">
       <Header title="Chat" showBack showIcons={false} />
 
@@ -74,5 +76,6 @@ export default function ChatSelect() {
 
       <BottomNav />
     </div>
+    </PageTransition>
   )
 }

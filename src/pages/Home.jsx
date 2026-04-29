@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion'
 import { Bell, GalleryHorizontalEnd, MessageCircle, MoreVertical } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BottomNav from '../components/BottomNav.jsx'
+import PageTransition from '../components/PageTransition.jsx'
+import { useAppContext } from '../context/AppContext.jsx'
 
 function MoodButton({ emoji, label, active, onClick }) {
   return (
@@ -44,7 +46,7 @@ function NavTile({ label, imageSrc, to }) {
 
 export default function Home() {
   const navigate = useNavigate()
-  const [mood, setMood] = useState(null)
+  const { user, moodHoy, setMood } = useAppContext()
 
   const navTiles = useMemo(
     () => [
@@ -56,6 +58,7 @@ export default function Home() {
   )
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-abla-bg pb-24 text-slate-800">
       <header className="flex h-14 items-center bg-abla-green px-4 text-white">
         <div className="flex flex-1 items-center" />
@@ -85,7 +88,7 @@ export default function Home() {
             <MoreVertical className="h-5 w-5" />
           </button>
           <div className="ml-1 h-8 w-8 overflow-hidden rounded-full border-2 border-white/60 bg-white/10">
-            <img src="/avatars/avatar-matias.svg" alt="" className="h-full w-full object-cover" draggable="false" />
+            <img src={user.avatar} alt="" className="h-full w-full object-cover" draggable="false" />
           </div>
         </div>
       </header>
@@ -93,22 +96,22 @@ export default function Home() {
       <div className="mx-auto w-full max-w-[390px] px-4">
         <section className="mt-5 text-center">
           <div className="mx-auto flex h-[90px] w-[90px] items-center justify-center overflow-hidden rounded-full border-[3px] border-abla-green bg-white">
-            <img src="/avatars/avatar-matias.svg" alt="" className="h-full w-full object-cover" draggable="false" />
+            <img src={user.avatar} alt="" className="h-full w-full object-cover" draggable="false" />
           </div>
-          <div className="mt-4 text-[20px] font-bold text-abla-blue">¡Hola Matías!</div>
+          <div className="mt-4 text-[20px] font-bold text-abla-blue">¡Hola {user.name}!</div>
           <div className="mt-1 text-[14px] text-[#64748B]">¿Cómo te sientes?</div>
         </section>
 
         <section className="mt-5">
           <div className="grid grid-cols-3 gap-3">
-            <MoodButton emoji="😄" label="BIEN" active={mood === 'BIEN'} onClick={() => setMood('BIEN')} />
+            <MoodButton emoji="😄" label="BIEN" active={moodHoy === 'BIEN'} onClick={() => setMood('BIEN')} />
             <MoodButton
               emoji="😐"
               label="MAS O MENOS"
-              active={mood === 'MAS O MENOS'}
+              active={moodHoy === 'MAS O MENOS'}
               onClick={() => setMood('MAS O MENOS')}
             />
-            <MoodButton emoji="😟" label="MAL" active={mood === 'MAL'} onClick={() => setMood('MAL')} />
+            <MoodButton emoji="😟" label="MAL" active={moodHoy === 'MAL'} onClick={() => setMood('MAL')} />
           </div>
         </section>
 
@@ -135,5 +138,6 @@ export default function Home() {
 
       <BottomNav />
     </div>
+    </PageTransition>
   )
 }

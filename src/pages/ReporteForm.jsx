@@ -3,6 +3,7 @@ import { CheckCircle, MapPin, Upload, User } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import Header from '../components/Header.jsx'
+import PageTransition from '../components/PageTransition.jsx'
 
 function Chip({ active, label, onClick }) {
   return (
@@ -66,6 +67,7 @@ export default function ReporteForm() {
   }, [submitted, navigate])
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-abla-bg">
       <Header title={title} showBack showIcons={false} />
 
@@ -185,5 +187,6 @@ export default function ReporteForm() {
         )}
       </AnimatePresence>
     </div>
+    </PageTransition>
   )
 }

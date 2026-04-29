@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Header from '../components/Header.jsx'
+import PageTransition from '../components/PageTransition.jsx'
 
 function startOfDay(date) {
   const d = new Date(date)
@@ -91,6 +92,7 @@ export default function AyudaCalendario() {
   }, [selectedDate])
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-abla-bg">
       <Header title="Agendar cita" showBack showIcons={false} />
 
@@ -181,5 +183,6 @@ export default function AyudaCalendario() {
         </button>
       </div>
     </div>
+    </PageTransition>
   )
 }

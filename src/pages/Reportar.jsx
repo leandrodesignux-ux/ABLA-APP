@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { ChevronRight } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header.jsx'
+import PageTransition from '../components/PageTransition.jsx'
 
 function ReportCard({ title, description, imageSrc, accentColor, onClick }) {
   return (
@@ -33,6 +34,7 @@ export default function Reportar() {
   const navigate = useNavigate()
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-abla-bg">
       <Header title="Reportar" showBack showIcons={false} />
 
@@ -66,5 +68,6 @@ export default function Reportar() {
         </div>
       </div>
     </div>
+    </PageTransition>
   )
 }

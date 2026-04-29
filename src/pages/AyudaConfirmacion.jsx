@@ -3,6 +3,7 @@ import { CheckCircle } from 'lucide-react'
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header.jsx'
+import PageTransition from '../components/PageTransition.jsx'
 
 function getQueryParam(search, key) {
   try {
@@ -24,6 +25,7 @@ export default function AyudaConfirmacion() {
   }, [])
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-abla-bg">
       <Header title="Cita confirmada" showBack={false} showIcons={false} />
 
@@ -74,5 +76,6 @@ export default function AyudaConfirmacion() {
         </button>
       </div>
     </div>
+    </PageTransition>
   )
 }

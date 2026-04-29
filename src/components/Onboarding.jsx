@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import PageTransition from './PageTransition.jsx'
 
 const slideVariants = {
   enter: (direction) => ({
@@ -65,6 +66,7 @@ export default function Onboarding({ onDone }) {
   const rightThumb = slides[(index + 1) % slides.length]
 
   return (
+    <PageTransition>
     <div className="min-h-screen w-full bg-white px-4 pt-8 pb-24">
       <div className="mx-auto w-full max-w-[390px]">
         <div className="flex justify-center">
@@ -155,5 +157,6 @@ export default function Onboarding({ onDone }) {
         </div>
       </div>
     </div>
+    </PageTransition>
   )
 }

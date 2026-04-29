@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
 import Login from './components/Login.jsx'
 import Onboarding from './components/Onboarding.jsx'
 import ChatSelect from './pages/ChatSelect.jsx'
@@ -20,25 +21,34 @@ function RootFlow() {
   const [isAuthed, setIsAuthed] = useState(false)
 
   useEffect(() => {
-    const seen = window.localStorage.getItem('abla_onboarding_seen') === '1'
-    setRoute(seen ? 'login' : 'onboarding')
+    const timer = setTimeout(() => {
+      const seen = window.localStorage.getItem('abla_onboarding_seen') === '1'
+      setRoute(seen ? 'login' : 'onboarding')
+    }, 1500)
+    return () => clearTimeout(timer)
   }, [])
 
   if (route === 'splash') {
     return (
-      <button
-        type="button"
-        onClick={() => setRoute('onboarding')}
-        className="block h-screen w-screen bg-white"
-        aria-label="Comenzar"
-      >
-        <img
-          src="/ABLA4.PNG"
+      <div className="flex h-screen w-screen flex-col items-center justify-center bg-white">
+        <motion.img
+          src="/logo/abla-logo.svg"
           alt="ABLA"
-          className="h-full w-full object-contain"
+          initial={{ scale: 0.8 }}
+          animate={{ scale: 1 }}
+          transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+          className="h-32 w-32"
           draggable="false"
         />
-      </button>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          className="mt-4 text-lg font-medium text-abla-green"
+        >
+          Tu espacio seguro
+        </motion.div>
+      </div>
     )
   }
 
@@ -78,26 +88,36 @@ function PlaceholderPage({ title }) {
   )
 }
 
+function AnimatedRoutes() {
+  const location = useLocation()
+
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<RootFlow />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/chat" element={<ChatSelect />} />
+        <Route path="/chat/:type" element={<ChatView />} />
+        <Route path="/ayuda" element={<Ayuda />} />
+        <Route path="/ayuda/consejos" element={<Consejos />} />
+        <Route path="/ayuda/cita" element={<AyudaCita />} />
+        <Route path="/ayuda/cita/calendario" element={<AyudaCalendario />} />
+        <Route path="/ayuda/cita/confirmacion" element={<AyudaConfirmacion />} />
+        <Route path="/reportar" element={<Reportar />} />
+        <Route path="/reportar/:tipo" element={<ReporteForm />} />
+        <Route path="/perfil" element={<Perfil />} />
+        <Route path="/encuesta" element={<Encuesta />} />
+      </Routes>
+    </AnimatePresence>
+  )
+}
+
 function App() {
   return (
     <div className="min-h-screen bg-[#E5E7EB]">
       <div className="mx-auto w-full max-w-[390px] min-h-screen bg-white shadow-2xl relative">
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<RootFlow />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/chat" element={<ChatSelect />} />
-            <Route path="/chat/:type" element={<ChatView />} />
-            <Route path="/ayuda" element={<Ayuda />} />
-            <Route path="/ayuda/consejos" element={<Consejos />} />
-            <Route path="/ayuda/cita" element={<AyudaCita />} />
-            <Route path="/ayuda/cita/calendario" element={<AyudaCalendario />} />
-            <Route path="/ayuda/cita/confirmacion" element={<AyudaConfirmacion />} />
-            <Route path="/reportar" element={<Reportar />} />
-            <Route path="/reportar/:tipo" element={<ReporteForm />} />
-            <Route path="/perfil" element={<Perfil />} />
-            <Route path="/encuesta" element={<Encuesta />} />
-          </Routes>
+          <AnimatedRoutes />
         </BrowserRouter>
       </div>
     </div>

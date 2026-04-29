@@ -3,6 +3,8 @@ import { Building2, User } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import BottomNav from '../components/BottomNav.jsx'
 import Header from '../components/Header.jsx'
+import PageTransition from '../components/PageTransition.jsx'
+import { useAppContext } from '../context/AppContext.jsx'
 
 function InfoCard({ icon, title, lines, actionLabel, actionColorClass, onAction }) {
   return (
@@ -47,8 +49,10 @@ function ReportItem({ title, statusLabel }) {
 
 export default function Perfil() {
   const navigate = useNavigate()
+  const { user, reportesEnviados } = useAppContext()
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-abla-bg pb-24">
       <Header title="Perfil" showBack={false} showIcons={false} />
 
@@ -58,14 +62,14 @@ export default function Perfil() {
 
           <div className="absolute left-1/2 top-[160px] -translate-x-1/2 -translate-y-1/2">
             <div className="h-20 w-20 overflow-hidden rounded-full border-[4px] border-white bg-white shadow-md">
-              <img src="/Avatars/avatar-matias.svg" alt="" className="h-full w-full object-cover" draggable="false" />
+              <img src={user.avatar} alt="" className="h-full w-full object-cover" draggable="false" />
             </div>
           </div>
         </div>
 
         <div className="px-4">
           <div className="mt-12 text-center">
-            <div className="text-[20px] font-bold text-abla-blue">Matías</div>
+            <div className="text-[20px] font-bold text-abla-blue">{user.name}</div>
             <div className="mt-1 text-[13px] text-slate-500">Estudiante · 3ERA Entrega</div>
           </div>
 
@@ -92,12 +96,17 @@ export default function Perfil() {
           <div className="mt-6 rounded-2xl bg-white p-4 shadow-sm">
             <div className="flex items-center justify-between">
               <div className="text-[14px] font-bold text-abla-blue">Mis Reportes</div>
-              <div className="text-[13px] font-semibold text-slate-600">3 reportes enviados</div>
+              <div className="text-[13px] font-semibold text-slate-600">{reportesEnviados.length} reportes enviados</div>
             </div>
 
             <div className="mt-4 flex flex-col gap-2">
-              <ReportItem title="Cyberbullying" statusLabel="En revisión" />
-              <ReportItem title="Situación de Abuso" statusLabel="En revisión" />
+              {reportesEnviados.length === 0 ? (
+                <div className="text-[13px] text-slate-500">No has enviado reportes aún</div>
+              ) : (
+                reportesEnviados.map((reporte, index) => (
+                  <ReportItem key={index} title={reporte.titulo || reporte.tipo || 'Reporte'} statusLabel={reporte.estado || 'En revisión'} />
+                ))
+              )}
             </div>
           </div>
 
@@ -118,5 +127,6 @@ export default function Perfil() {
 
       <BottomNav />
     </div>
+    </PageTransition>
   )
 }

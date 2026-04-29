@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { CheckCircle } from 'lucide-react'
 import { useMemo, useRef, useState } from 'react'
 import Header from '../components/Header.jsx'
+import PageTransition from '../components/PageTransition.jsx'
 
 function Bullet({ text }) {
   return (
@@ -79,6 +80,7 @@ export default function Consejos() {
   }
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-abla-bg">
       <Header title="Consejos prácticos" showBack showIcons={false} />
 
@@ -114,5 +116,6 @@ export default function Consejos() {
         </div>
       </div>
     </div>
+    </PageTransition>
   )
 }

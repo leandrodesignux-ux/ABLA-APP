@@ -1,6 +1,7 @@
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import PageTransition from './PageTransition.jsx'
 
 export default function Login({ onLogin }) {
   const navigate = useNavigate()
@@ -14,6 +15,7 @@ export default function Login({ onLogin }) {
   }
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-white px-4 pb-24 text-slate-800">
       <div className="mx-auto w-full max-w-[390px]">
         <div className="mt-[60px] flex flex-col items-center">
@@ -85,5 +87,6 @@ export default function Login({ onLogin }) {
         </div>
       </div>
     </div>
+    </PageTransition>
   )
 }

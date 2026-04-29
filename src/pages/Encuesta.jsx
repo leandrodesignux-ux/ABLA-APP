@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import PageTransition from '../components/PageTransition.jsx'
 
 function MoodOption({ active, emoji, title, subtitle, imageSrc, onClick }) {
   return (
@@ -57,6 +58,7 @@ export default function Encuesta() {
   const canContinue = Boolean(mood)
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-abla-bg">
       <AnimatePresence mode="wait">
         {step === 1 ? (
@@ -196,5 +198,6 @@ export default function Encuesta() {
         )}
       </AnimatePresence>
     </div>
+    </PageTransition>
   )
 }

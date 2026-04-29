@@ -3,6 +3,7 @@ import { BookOpen, Calendar } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import BottomNav from '../components/BottomNav.jsx'
 import Header from '../components/Header.jsx'
+import PageTransition from '../components/PageTransition.jsx'
 
 function HelpCard({ icon, title, description, buttonLabel, buttonVariant, onClick }) {
   return (
@@ -40,6 +41,7 @@ export default function Ayuda() {
   const navigate = useNavigate()
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-abla-bg pb-24">
       <Header title="Ayuda" showBack showIcons={false} />
 
@@ -78,5 +80,6 @@ export default function Ayuda() {
 
       <BottomNav />
     </div>
+    </PageTransition>
   )
 }

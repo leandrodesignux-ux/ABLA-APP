@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header.jsx'
+import PageTransition from '../components/PageTransition.jsx'
 
 function ProCard({ name, role, avatarSrc, days, onSchedule }) {
   return (
@@ -59,6 +60,7 @@ export default function AyudaCita() {
   )
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-abla-bg">
       <Header title="Ayuda profesional" showBack showIcons={false} />
 
@@ -83,5 +85,6 @@ export default function AyudaCita() {
         </div>
       </div>
     </div>
+    </PageTransition>
   )
 }
