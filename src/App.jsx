@@ -1,6 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
-import { motion } from 'framer-motion'
-import { Boxes, History, LayoutGrid, Settings } from 'lucide-react'
+import { AnimatePresence, motion } from 'framer-motion'
+import {
+  Boxes,
+  Check,
+  History,
+  LayoutGrid,
+  LoaderCircle,
+  Search,
+  Settings,
+  X,
+} from 'lucide-react'
 
 function formatClock(now) {
   const pad2 = (n) => String(n).padStart(2, '0')
@@ -8,8 +17,32 @@ function formatClock(now) {
   return `${pad2(now.getHours())}:${pad2(now.getMinutes())}:${pad2(now.getSeconds())}.${pad3(now.getMilliseconds())}`
 }
 
+function parsePercent(value) {
+  const m = String(value).match(/([0-9]+(?:\.[0-9]+)?)/)
+  if (!m) return 0
+  return Number(m[1])
+}
+
+function useActionFeedback() {
+  const [state, setState] = useState('idle')
+
+  const run = async () => {
+    if (state === 'loading') return
+    setState('loading')
+    await new Promise((r) => window.setTimeout(r, 900))
+    setState('success')
+    window.setTimeout(() => setState('idle'), 1200)
+  }
+
+  return { state, run }
+}
+
 function App() {
   const [clock, setClock] = useState(() => formatClock(new Date()))
+  const [query, setQuery] = useState('')
+  const [selectedId, setSelectedId] = useState(null)
+  const exportLogs = useActionFeedback()
+  const runAudit = useActionFeedback()
 
   useEffect(() => {
     const id = window.setInterval(() => {
@@ -40,7 +73,7 @@ function App() {
         id: 'AST-03',
         name: 'Válvula Crítica / V-778',
         currentValue: '0.92 bar',
-        volatility: '±2.4%',
+        volatility: '±6.2%',
         opStatus: 'DEGRADED',
         points: [2, 14, 12, 11, 22, 15, 34, 10, 46, 16, 58, 9, 70, 13, 82, 8, 92, 12],
       },
@@ -72,6 +105,19 @@ function App() {
     []
   )
 
+  const filteredAssets = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    if (!q) return assets
+    return assets.filter((a) => {
+      return `${a.id} ${a.name}`.toLowerCase().includes(q)
+    })
+  }, [assets, query])
+
+  const selectedAsset = useMemo(() => {
+    if (!selectedId) return null
+    return assets.find((a) => a.id === selectedId) ?? null
+  }, [assets, selectedId])
+
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -91,6 +137,24 @@ function App() {
       scale: 1,
       transition: { duration: 0.35, ease: 'easeOut' },
     },
+  }
+
+  const drawer = {
+    hidden: { x: '100%' },
+    show: {
+      x: 0,
+      transition: { type: 'spring', stiffness: 380, damping: 32, mass: 0.9 },
+    },
+    exit: {
+      x: '100%',
+      transition: { type: 'spring', stiffness: 420, damping: 38, mass: 0.9 },
+    },
+  }
+
+  const drawerBackdrop = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { duration: 0.15 } },
+    exit: { opacity: 0, transition: { duration: 0.15 } },
   }
 
   return (
@@ -136,14 +200,26 @@ function App() {
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col px-4 py-4">
-          <header className="glass-panel flex items-center justify-between rounded-xl px-4 py-3">
+          <header className="glass-panel flex items-center justify-between gap-3 rounded-xl px-4 py-3">
             <div className="flex items-center gap-3">
               <div className="h-2 w-2 rounded-full bg-industrial-brand" />
               <div className="text-tech-med font-medium tracking-wide text-slate-100">SYSTEM_ONLINE</div>
               <div className="text-tech-data text-slate-400">/ Industrial Asset Dashboard</div>
             </div>
 
-            <div className="text-tech-data font-mono text-industrial-brand">{clock}</div>
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <Search className="pointer-events-none absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-300" />
+                <input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search assets"
+                  className="h-8 w-44 rounded-lg border border-white/10 bg-black/15 pl-8 pr-2 text-tech-reg text-slate-100 placeholder:text-slate-400 focus:border-cyan-300/40 focus:outline-none"
+                  aria-label="Buscar activos"
+                />
+              </div>
+              <div className="text-tech-data font-mono text-industrial-brand">{clock}</div>
+            </div>
           </header>
 
           <motion.main
@@ -152,62 +228,161 @@ function App() {
             animate="show"
             className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
           >
-            {assets.map((a) => (
-              <motion.section key={a.id} variants={item} className="glass-panel rounded-xl p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="text-tech-data font-mono text-slate-400">{a.id}</div>
-                    <div className="mt-1 truncate text-tech-med font-medium text-white">{a.name}</div>
+            {filteredAssets.map((a) => {
+              const volatilityPct = parsePercent(a.volatility)
+              const isAlert = volatilityPct > 5
+              return (
+                <motion.button
+                  key={a.id}
+                  variants={item}
+                  type="button"
+                  onClick={() => setSelectedId(a.id)}
+                  className={`glass-panel w-full rounded-xl p-4 text-left ${isAlert ? 'alert-glow' : ''}`}
+                  aria-label={`Abrir detalle de ${a.id}`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="text-tech-data font-mono text-slate-400">{a.id}</div>
+                      <div className="mt-1 truncate text-tech-med font-medium text-white">{a.name}</div>
+                    </div>
+                    <div
+                      className={`rounded-md border px-2 py-1 text-tech-data font-mono ${
+                        a.opStatus === 'DEGRADED'
+                          ? 'border-amber-400/30 bg-amber-400/10 text-amber-200'
+                          : 'border-cyan-400/20 bg-cyan-400/10 text-industrial-brand'
+                      }`}
+                    >
+                      {a.opStatus}
+                    </div>
                   </div>
-                  <div
-                    className={`rounded-md border px-2 py-1 text-tech-data font-mono ${
-                      a.opStatus === 'DEGRADED'
-                        ? 'border-amber-400/30 bg-amber-400/10 text-amber-200'
-                        : 'border-cyan-400/20 bg-cyan-400/10 text-industrial-brand'
-                    }`}
-                  >
-                    {a.opStatus}
-                  </div>
-                </div>
 
-                <div className="mt-3 rounded-lg border border-white/10 bg-black/20 p-3">
-                  <svg viewBox="0 0 96 20" className="h-10 w-full" role="img" aria-label="Asset trend">
-                    <defs>
-                      <linearGradient id={`g-${a.id}`} x1="0" y1="0" x2="1" y2="0">
-                        <stop offset="0" stopColor="#22D3EE" stopOpacity="0.15" />
-                        <stop offset="1" stopColor="#22D3EE" stopOpacity="0.65" />
-                      </linearGradient>
-                    </defs>
-                    <polyline
-                      fill="none"
-                      stroke={`url(#g-${a.id})`}
-                      strokeWidth="2"
-                      strokeLinejoin="round"
-                      strokeLinecap="round"
-                      points={a.points.join(' ')}
-                    />
-                  </svg>
-                </div>
+                  <div className="mt-3 rounded-lg border border-white/10 bg-black/20 p-3">
+                    <svg viewBox="0 0 96 20" className="h-10 w-full" role="img" aria-label="Asset trend">
+                      <defs>
+                        <linearGradient id={`g-${a.id}`} x1="0" y1="0" x2="1" y2="0">
+                          <stop offset="0" stopColor="#22D3EE" stopOpacity="0.15" />
+                          <stop offset="1" stopColor="#22D3EE" stopOpacity="0.65" />
+                        </linearGradient>
+                      </defs>
+                      <polyline
+                        fill="none"
+                        stroke={`url(#g-${a.id})`}
+                        strokeWidth="2"
+                        strokeLinejoin="round"
+                        strokeLinecap="round"
+                        points={a.points.join(' ')}
+                      />
+                    </svg>
+                  </div>
 
-                <div className="mt-3 grid gap-2">
-                  <div className="flex items-baseline justify-between gap-3">
-                    <div className="text-tech-data text-slate-400">Valor Actual</div>
-                    <div className="text-tech-reg font-medium text-slate-100">{a.currentValue}</div>
+                  <div className="mt-3 grid gap-2">
+                    <div className="flex items-baseline justify-between gap-3">
+                      <div className="text-tech-data text-slate-300">Valor Actual</div>
+                      <div className="text-tech-reg font-medium text-slate-100">{a.currentValue}</div>
+                    </div>
+                    <div className="flex items-baseline justify-between gap-3">
+                      <div className="text-tech-data text-slate-300">Volatilidad</div>
+                      <div className={`text-tech-reg font-medium ${isAlert ? 'text-red-200' : 'text-slate-100'}`}>{a.volatility}</div>
+                    </div>
+                    <div className="flex items-baseline justify-between gap-3">
+                      <div className="text-tech-data text-slate-300">Estado Operativo</div>
+                      <div className="text-tech-reg font-medium text-slate-100">{a.opStatus}</div>
+                    </div>
                   </div>
-                  <div className="flex items-baseline justify-between gap-3">
-                    <div className="text-tech-data text-slate-400">Volatilidad</div>
-                    <div className="text-tech-reg font-medium text-slate-100">{a.volatility}</div>
-                  </div>
-                  <div className="flex items-baseline justify-between gap-3">
-                    <div className="text-tech-data text-slate-400">Estado Operativo</div>
-                    <div className="text-tech-reg font-medium text-slate-100">{a.opStatus}</div>
-                  </div>
-                </div>
-              </motion.section>
-            ))}
+                </motion.button>
+              )
+            })}
           </motion.main>
         </div>
       </div>
+
+      <AnimatePresence>
+        {selectedAsset && (
+          <motion.div
+            key="drawer-backdrop"
+            variants={drawerBackdrop}
+            initial="hidden"
+            animate="show"
+            exit="exit"
+            className="fixed inset-0 z-40 bg-black/35"
+            onClick={() => setSelectedId(null)}
+            aria-hidden="true"
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {selectedAsset && (
+          <motion.aside
+            key="drawer"
+            variants={drawer}
+            initial="hidden"
+            animate="show"
+            exit="exit"
+            className="glass-panel fixed right-0 top-0 z-50 h-full w-[30vw] min-w-[340px] max-w-[520px] p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Detalle del activo ${selectedAsset.id}`}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <div className="text-tech-data font-mono text-slate-200">{selectedAsset.id}</div>
+                <div className="mt-1 truncate text-tech-med font-medium text-white">{selectedAsset.name}</div>
+              </div>
+
+              <button
+                type="button"
+                className="glass-panel flex h-9 w-9 items-center justify-center rounded-xl text-slate-100"
+                onClick={() => setSelectedId(null)}
+                aria-label="Cerrar panel"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="mt-4 grid gap-3">
+              <div className="rounded-lg border border-white/10 bg-black/20 p-3">
+                <div className="text-tech-data font-mono text-slate-300">Valor Actual</div>
+                <div className="mt-1 text-tech-med font-medium text-white">{selectedAsset.currentValue}</div>
+              </div>
+              <div className="rounded-lg border border-white/10 bg-black/20 p-3">
+                <div className="text-tech-data font-mono text-slate-300">Volatilidad</div>
+                <div className="mt-1 text-tech-med font-medium text-white">{selectedAsset.volatility}</div>
+              </div>
+              <div className="rounded-lg border border-white/10 bg-black/20 p-3">
+                <div className="text-tech-data font-mono text-slate-300">Estado Operativo</div>
+                <div className="mt-1 text-tech-med font-medium text-white">{selectedAsset.opStatus}</div>
+              </div>
+            </div>
+
+            <div className="mt-5 grid gap-2">
+              <button
+                type="button"
+                onClick={exportLogs.run}
+                className="glass-panel flex h-10 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 text-tech-reg font-medium text-white"
+                aria-label="Exportar logs"
+              >
+                {exportLogs.state === 'loading' && <LoaderCircle className="h-4 w-4 animate-spin text-industrial-brand" />}
+                {exportLogs.state === 'success' && <Check className="h-4 w-4 text-industrial-brand" />}
+                {exportLogs.state === 'idle' && <span className="h-4 w-4" />}
+                <span>Exportar Logs</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={runAudit.run}
+                className="glass-panel flex h-10 items-center justify-center gap-2 rounded-xl border border-cyan-400/20 bg-cyan-400/10 text-tech-reg font-medium text-white"
+                aria-label="Ejecutar auditoría"
+              >
+                {runAudit.state === 'loading' && <LoaderCircle className="h-4 w-4 animate-spin text-industrial-brand" />}
+                {runAudit.state === 'success' && <Check className="h-4 w-4 text-industrial-brand" />}
+                {runAudit.state === 'idle' && <span className="h-4 w-4" />}
+                <span>Ejecutar Auditoría</span>
+              </button>
+            </div>
+          </motion.aside>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
