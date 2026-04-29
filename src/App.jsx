@@ -202,6 +202,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<RootFlow />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/chat" element={<PlaceholderPage title="Chat" />} />
             <Route path="/ayuda" element={<PlaceholderPage title="Ayuda" />} />
             <Route path="/reportar" element={<PlaceholderPage title="Reportar" />} />
