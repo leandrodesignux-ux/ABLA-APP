@@ -12,6 +12,7 @@ import Consejos from './pages/Consejos.jsx'
 import Home from './pages/Home.jsx'
 import Reportar from './pages/Reportar.jsx'
 import ReporteForm from './pages/ReporteForm.jsx'
+import Encuesta from './pages/Encuesta.jsx'
 
 function RootFlow() {
   const [route, setRoute] = useState('splash')
@@ -94,7 +95,7 @@ function App() {
             <Route path="/reportar" element={<Reportar />} />
             <Route path="/reportar/:tipo" element={<ReporteForm />} />
             <Route path="/perfil" element={<PlaceholderPage title="Perfil" />} />
-            <Route path="/encuesta" element={<PlaceholderPage title="Encuesta" />} />
+            <Route path="/encuesta" element={<Encuesta />} />
           </Routes>
         </BrowserRouter>
       </div>
