@@ -10,6 +10,8 @@ import AyudaCalendario from './pages/AyudaCalendario.jsx'
 import AyudaConfirmacion from './pages/AyudaConfirmacion.jsx'
 import Consejos from './pages/Consejos.jsx'
 import Home from './pages/Home.jsx'
+import Reportar from './pages/Reportar.jsx'
+import ReporteForm from './pages/ReporteForm.jsx'
 
 function RootFlow() {
   const [route, setRoute] = useState('splash')
@@ -89,7 +91,8 @@ function App() {
             <Route path="/ayuda/cita" element={<AyudaCita />} />
             <Route path="/ayuda/cita/calendario" element={<AyudaCalendario />} />
             <Route path="/ayuda/cita/confirmacion" element={<AyudaConfirmacion />} />
-            <Route path="/reportar" element={<PlaceholderPage title="Reportar" />} />
+            <Route path="/reportar" element={<Reportar />} />
+            <Route path="/reportar/:tipo" element={<ReporteForm />} />
             <Route path="/perfil" element={<PlaceholderPage title="Perfil" />} />
             <Route path="/encuesta" element={<PlaceholderPage title="Encuesta" />} />
           </Routes>

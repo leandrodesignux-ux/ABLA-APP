@@ -48,9 +48,9 @@ export default function Home() {
 
   const navTiles = useMemo(
     () => [
-      { label: 'CONSEJOS', imageSrc: '/illustrations/home-consejos.svg', to: '/ayuda/consejos' },
-      { label: 'SOBRE TÍ', imageSrc: '/illustrations/home-sobrti.svg', to: '/encuesta' },
-      { label: 'ENCUESTAS', imageSrc: '/illustrations/home-encuestas.svg', to: '/encuesta' },
+      { label: 'CONSEJOS', imageSrc: '/Illustrations/home-consejos.svg', to: '/ayuda/consejos' },
+      { label: 'SOBRE TÍ', imageSrc: '/Illustrations/home-sobrti.svg', to: '/encuesta' },
+      { label: 'ENCUESTAS', imageSrc: '/Illustrations/home-encuestas.svg', to: '/encuesta' },
     ],
     [],
   )

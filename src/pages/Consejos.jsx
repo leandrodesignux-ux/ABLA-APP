@@ -40,7 +40,7 @@ export default function Consejos() {
   const cards = useMemo(
     () => [
       {
-        imageSrc: '/illustrations/consejos-acoso.svg',
+        imageSrc: '/Illustrations/consejos-acoso.svg',
         title: '¿Qué hacer ante situaciones de violencia?',
         bullets: [
           'Busca un adulto de confianza y cuenta lo que ocurre.',
@@ -49,7 +49,7 @@ export default function Consejos() {
         ],
       },
       {
-        imageSrc: '/illustrations/consejos-ansiedad.svg',
+        imageSrc: '/Illustrations/ansiedad.svg',
         title: '¿Cómo lidiar con ansiedad/depresión?',
         bullets: [
           'Respira lento: 4 segundos inhalar, 4 exhalar.',
@@ -58,7 +58,7 @@ export default function Consejos() {
         ],
       },
       {
-        imageSrc: '/illustrations/consejos-redes.svg',
+        imageSrc: '/Illustrations/consejos-redes.svg',
         title: '¿Te están acosando por redes sociales?',
         bullets: [
           'No respondas: bloquea y reporta las cuentas.',

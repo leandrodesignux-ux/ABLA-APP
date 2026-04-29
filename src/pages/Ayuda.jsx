@@ -48,7 +48,7 @@ export default function Ayuda() {
 
         <div className="mt-4 flex justify-center">
           <img
-            src="/illustrations/ayuda-hero.svg"
+            src="/Illustrations/ayuda-hero.svg"
             alt=""
             className="h-40 w-40 select-none"
             draggable="false"
