@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Login from './components/Login.jsx'
 import Onboarding from './components/Onboarding.jsx'
+import ChatSelect from './pages/ChatSelect.jsx'
+import ChatView from './pages/ChatView.jsx'
 import Home from './pages/Home.jsx'
 
 function RootFlow() {
@@ -75,7 +77,8 @@ function App() {
           <Routes>
             <Route path="/" element={<RootFlow />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/chat" element={<PlaceholderPage title="Chat" />} />
+            <Route path="/chat" element={<ChatSelect />} />
+            <Route path="/chat/:type" element={<ChatView />} />
             <Route path="/ayuda" element={<PlaceholderPage title="Ayuda" />} />
             <Route path="/ayuda/consejos" element={<PlaceholderPage title="Consejos" />} />
             <Route path="/reportar" element={<PlaceholderPage title="Reportar" />} />

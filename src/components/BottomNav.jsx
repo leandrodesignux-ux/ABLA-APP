@@ -1,4 +1,4 @@
-import { Home, HeartHandshake, AlertTriangle, User } from 'lucide-react'
+import { Home, HeartHandshake, AlertTriangle, MessageCircle, User } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 
 function TabLink({ to, icon: Icon, label, active }) {
@@ -27,6 +27,7 @@ export default function BottomNav() {
 
   const items = [
     { to: '/', label: 'Home', icon: Home, match: (p) => p === '/' },
+    { to: '/chat', label: 'Chat', icon: MessageCircle, match: (p) => p.startsWith('/chat') },
     { to: '/ayuda', label: 'Ayuda', icon: HeartHandshake, match: (p) => p.startsWith('/ayuda') },
     { to: '/reportar', label: 'Reportar', icon: AlertTriangle, match: (p) => p.startsWith('/reportar') },
     { to: '/perfil', label: 'Perfil', icon: User, match: (p) => p.startsWith('/perfil') },
