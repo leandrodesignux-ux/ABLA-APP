@@ -4,9 +4,9 @@ export default {
   theme: {
     extend: {
       colors: {
-        'industrial-brand': '#22D3EE',
-        'industrial-bg': '#0F172A',
-        'industrial-surface': '#1E293B',
+        'industrial-brand': '#5E9681',
+        'industrial-bg': '#F8FAFC',
+        'industrial-surface': '#FFFFFF',
       },
       fontSize: {
         'tech-data': '11px',
