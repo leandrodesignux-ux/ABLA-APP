@@ -31,8 +31,8 @@ function ActionButton({ label, onClick, feedback, variant }) {
       }`}
       aria-label={label}
     >
-      {feedback?.state === 'loading' && <LoaderCircle className="h-4 w-4 animate-spin text-industrial-brand" />}
-      {feedback?.state === 'success' && <Check className="h-4 w-4 text-industrial-brand" />}
+      {feedback?.state === 'loading' && <LoaderCircle className="h-4 w-4 animate-spin text-abla-green" />}
+      {feedback?.state === 'success' && <Check className="h-4 w-4 text-abla-green" />}
       {feedback?.state === 'idle' && <span className="h-4 w-4" />}
       <span>{label}</span>
     </button>

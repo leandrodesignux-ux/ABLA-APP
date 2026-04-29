@@ -27,7 +27,7 @@ export default function AssetCard({ asset, onSelect, variants }) {
           className={`rounded-md border px-2 py-1 text-tech-data font-mono ${
             asset.opStatus === 'DEGRADED'
               ? 'border-amber-400/30 bg-amber-400/10 text-amber-200'
-              : 'border-cyan-400/20 bg-cyan-400/10 text-industrial-brand'
+              : 'border-cyan-400/20 bg-cyan-400/10 text-abla-green'
           }`}
         >
           {asset.opStatus}

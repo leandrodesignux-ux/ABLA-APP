@@ -1,11 +1,11 @@
-import { CircleHelp, Home, ShieldAlert, User } from 'lucide-react'
+import { CircleHelp, Home, ShieldAlert, User, HeartHandshake, AlertTriangle } from 'lucide-react'
 
 function TabButton({ icon: Icon, label, active }) {
   return (
     <button
       type="button"
       className={`flex flex-col items-center justify-center gap-1 px-3 py-2 text-tech-data font-medium ${
-        active ? 'text-industrial-brand' : 'text-slate-500'
+        active ? 'text-abla-green' : 'text-slate-500'
       }`}
       aria-label={label}
     >
@@ -24,8 +24,8 @@ export default function BottomNav({ active = 'home' }) {
     >
       <div className="mx-auto flex max-w-6xl items-center justify-around px-4 py-2">
         <TabButton icon={Home} label="Home" active={active === 'home'} />
-        <TabButton icon={CircleHelp} label="Ayuda" active={active === 'help'} />
-        <TabButton icon={ShieldAlert} label="Reportar" active={active === 'report'} />
+        <TabButton icon={HeartHandshake} label="Ayuda" active={active === 'help'} />
+        <TabButton icon={AlertTriangle} label="Reportar" active={active === 'report'} />
         <TabButton icon={User} label="Perfil" active={active === 'profile'} />
       </div>
     </nav>

@@ -36,7 +36,7 @@ export default function Onboarding({ onDone }) {
   }
 
   return (
-    <div className="min-h-screen bg-industrial-bg px-4 py-10 text-slate-800">
+    <div className="min-h-screen bg-abla-bg px-4 py-10 text-slate-800">
       <div className="mx-auto w-full max-w-md">
         <div className="flex items-center justify-between">
           <button
@@ -49,7 +49,7 @@ export default function Onboarding({ onDone }) {
             <ChevronLeft className="h-5 w-5" />
           </button>
 
-          <div className="text-sm font-semibold text-[#415478]">ABLA</div>
+          <div className="text-sm font-semibold text-abla-blue">ABLA</div>
 
           <button
             type="button"
@@ -79,12 +79,12 @@ export default function Onboarding({ onDone }) {
                 />
               </div>
 
-              <p className="mt-5 text-center text-base font-semibold text-[#415478]">{steps[index].title}</p>
+              <p className="mt-5 text-center text-base font-semibold text-abla-blue">{steps[index].title}</p>
 
               <button
                 type="button"
                 onClick={next}
-                className="mt-6 h-11 w-full rounded-xl bg-[#415478] font-semibold text-white"
+                className="mt-6 h-11 w-full rounded-xl bg-abla-blue font-semibold text-white"
               >
                 {index === steps.length - 1 ? 'Comenzar' : 'Continuar'}
               </button>
@@ -97,7 +97,7 @@ export default function Onboarding({ onDone }) {
                 key={i}
                 type="button"
                 onClick={() => setIndex(i)}
-                className={`h-2.5 w-2.5 rounded-full ${i === index ? 'bg-industrial-brand' : 'bg-slate-200'}`}
+                className={`h-2.5 w-2.5 rounded-full ${i === index ? 'bg-abla-green' : 'bg-slate-200'}`}
                 aria-label={`Paso ${i + 1}`}
               />
             ))}

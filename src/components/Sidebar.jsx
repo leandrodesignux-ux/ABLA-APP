@@ -17,7 +17,7 @@ export default function Sidebar() {
     <aside className="w-16 border-r border-white/5 bg-black/10">
       <div className="flex h-full flex-col items-center gap-3 py-4">
         <div className="glass-panel flex h-10 w-10 items-center justify-center rounded-xl">
-          <LayoutGrid className="h-5 w-5 text-industrial-brand" />
+          <LayoutGrid className="h-5 w-5 text-abla-green" />
         </div>
 
         <nav className="mt-3 flex flex-col items-center gap-2">

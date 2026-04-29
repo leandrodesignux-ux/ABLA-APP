@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Login from './components/Login.jsx'
 import BottomNav from './components/BottomNav.jsx'
 import Onboarding from './components/Onboarding.jsx'
@@ -10,12 +11,12 @@ function MoodButton({ label, emoji, active, onClick, colorClass }) {
       type="button"
       onClick={onClick}
       className={`flex h-20 w-full flex-col items-center justify-center gap-1 rounded-2xl border bg-white text-slate-800 shadow-sm ${
-        active ? 'border-[#415478]' : 'border-slate-200'
+        active ? 'border-abla-blue' : 'border-slate-200'
       }`}
       aria-label={label}
     >
       <div className={`text-3xl ${colorClass}`}>{emoji}</div>
-      <div className="text-sm font-semibold tracking-wide text-[#415478]">{label}</div>
+      <div className="text-sm font-semibold tracking-wide text-abla-blue">{label}</div>
     </button>
   )
 }
@@ -27,11 +28,11 @@ function NavTile({ title }) {
       className="flex w-full items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-left text-slate-800 shadow-sm"
       aria-label={title}
     >
-      <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-2 border-industrial-brand bg-white">
+      <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-2 border-abla-green bg-white">
         <img src="/ABLA3.PNG" alt="" className="h-full w-full object-cover" draggable="false" />
       </div>
       <div>
-        <div className="text-sm font-semibold text-[#415478]">{title}</div>
+        <div className="text-sm font-semibold text-abla-blue">{title}</div>
         <div className="text-xs text-slate-600">Acceso rápido</div>
       </div>
     </button>
@@ -42,9 +43,9 @@ function Home() {
   const [mood, setMood] = useState(null)
 
   return (
-    <div className="min-h-screen bg-industrial-bg pb-24 text-slate-800">
+    <div className="min-h-screen bg-abla-bg pb-24 text-slate-800">
       <div className="mx-auto w-full max-w-2xl px-4 py-6">
-        <header className="rounded-2xl bg-industrial-brand px-4 py-3 text-white shadow-sm">
+        <header className="rounded-2xl bg-abla-green px-4 py-3 text-white shadow-sm">
           <div className="flex items-center justify-between">
             <div className="text-base font-semibold">Home</div>
             <div className="flex items-center gap-2">
@@ -82,7 +83,7 @@ function Home() {
         </header>
 
         <section className="mt-5">
-          <div className="text-sm font-semibold text-[#415478]">Mood Tracker</div>
+          <div className="text-sm font-semibold text-abla-blue">Mood Tracker</div>
           <div className="mt-3 grid grid-cols-3 gap-3">
             <MoodButton
               label="BIEN"
@@ -109,7 +110,7 @@ function Home() {
         </section>
 
         <section className="mt-6">
-          <div className="text-sm font-semibold text-[#415478]">Navegación</div>
+          <div className="text-sm font-semibold text-abla-blue">Navegación</div>
           <div className="mt-3 grid gap-3 sm:grid-cols-3">
             <NavTile title="CONSEJOS" />
             <NavTile title="SOBRE TÍ" />
@@ -120,7 +121,7 @@ function Home() {
 
       <button
         type="button"
-        className="fixed bottom-20 left-1/2 z-50 h-12 -translate-x-1/2 rounded-full bg-[#415478] px-6 font-semibold text-white shadow-lg"
+        className="fixed bottom-20 left-1/2 z-50 h-12 -translate-x-1/2 rounded-full bg-abla-blue px-6 font-semibold text-white shadow-lg"
         aria-label="Chatear"
       >
         + CHATEAR
@@ -131,7 +132,7 @@ function Home() {
   )
 }
 
-function App() {
+function RootFlow() {
   const [route, setRoute] = useState('splash')
   const [isAuthed, setIsAuthed] = useState(false)
 
@@ -181,6 +182,36 @@ function App() {
   }
 
   return <Home />
+}
+
+function PlaceholderPage({ title }) {
+  return (
+    <div className="min-h-screen bg-abla-bg px-4 py-10 text-slate-800">
+      <div className="mx-auto w-full max-w-md rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="text-lg font-semibold text-abla-blue">{title}</div>
+        <div className="mt-2 text-sm text-slate-600">Placeholder</div>
+      </div>
+    </div>
+  )
+}
+
+function App() {
+  return (
+    <div className="min-h-screen bg-[#E5E7EB]">
+      <div className="mx-auto w-full max-w-[390px] min-h-screen bg-white shadow-2xl relative">
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<RootFlow />} />
+            <Route path="/chat" element={<PlaceholderPage title="Chat" />} />
+            <Route path="/ayuda" element={<PlaceholderPage title="Ayuda" />} />
+            <Route path="/reportar" element={<PlaceholderPage title="Reportar" />} />
+            <Route path="/perfil" element={<PlaceholderPage title="Perfil" />} />
+            <Route path="/encuesta" element={<PlaceholderPage title="Encuesta" />} />
+          </Routes>
+        </BrowserRouter>
+      </div>
+    </div>
+  )
 }
 
 export default App

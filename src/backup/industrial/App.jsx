@@ -78,7 +78,7 @@ export default function IndustrialDashboardBackup() {
   }
 
   return (
-    <div className="min-h-screen bg-industrial-bg text-slate-100">
+    <div className="min-h-screen bg-abla-bg text-slate-100">
       <div className="mx-auto flex min-h-screen max-w-6xl">
         <Sidebar />
 
