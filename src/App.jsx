@@ -4,6 +4,11 @@ import Login from './components/Login.jsx'
 import Onboarding from './components/Onboarding.jsx'
 import ChatSelect from './pages/ChatSelect.jsx'
 import ChatView from './pages/ChatView.jsx'
+import Ayuda from './pages/Ayuda.jsx'
+import AyudaCita from './pages/AyudaCita.jsx'
+import AyudaCalendario from './pages/AyudaCalendario.jsx'
+import AyudaConfirmacion from './pages/AyudaConfirmacion.jsx'
+import Consejos from './pages/Consejos.jsx'
 import Home from './pages/Home.jsx'
 
 function RootFlow() {
@@ -79,8 +84,11 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/chat" element={<ChatSelect />} />
             <Route path="/chat/:type" element={<ChatView />} />
-            <Route path="/ayuda" element={<PlaceholderPage title="Ayuda" />} />
-            <Route path="/ayuda/consejos" element={<PlaceholderPage title="Consejos" />} />
+            <Route path="/ayuda" element={<Ayuda />} />
+            <Route path="/ayuda/consejos" element={<Consejos />} />
+            <Route path="/ayuda/cita" element={<AyudaCita />} />
+            <Route path="/ayuda/cita/calendario" element={<AyudaCalendario />} />
+            <Route path="/ayuda/cita/confirmacion" element={<AyudaConfirmacion />} />
             <Route path="/reportar" element={<PlaceholderPage title="Reportar" />} />
             <Route path="/perfil" element={<PlaceholderPage title="Perfil" />} />
             <Route path="/encuesta" element={<PlaceholderPage title="Encuesta" />} />
