@@ -2,10 +2,28 @@ import { motion } from 'framer-motion'
 import { Home, HeartHandshake, AlertTriangle, MessageCircle, User } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 
+// Preload functions for each route
+const preloadRoute = {
+  '/': () => import('../pages/Home.jsx'),
+  '/chat': () => import('../pages/ChatSelect.jsx'),
+  '/ayuda': () => import('../pages/Ayuda.jsx'),
+  '/reportar': () => import('../pages/Reportar.jsx'),
+  '/perfil': () => import('../pages/Perfil.jsx'),
+}
+
 function TabLink({ to, icon: Icon, label, active }) {
+  const handlePreload = () => {
+    const preload = preloadRoute[to]
+    if (preload && !active) {
+      preload()
+    }
+  }
+
   return (
     <Link
       to={to}
+      onMouseEnter={handlePreload}
+      onTouchStart={handlePreload}
       className="flex h-full flex-1 flex-col items-center justify-center relative"
       aria-label={label}
     >

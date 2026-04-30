@@ -1,21 +1,36 @@
-import { useEffect, useState } from 'react'
+import { Suspense, lazy, useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
-import Login from './components/Login.jsx'
-import Onboarding from './components/Onboarding.jsx'
-import ChatSelect from './pages/ChatSelect.jsx'
-import ChatView from './pages/ChatView.jsx'
-import Ayuda from './pages/Ayuda.jsx'
-import AyudaCita from './pages/AyudaCita.jsx'
-import AyudaCalendario from './pages/AyudaCalendario.jsx'
-import AyudaConfirmacion from './pages/AyudaConfirmacion.jsx'
-import Consejos from './pages/Consejos.jsx'
-import Home from './pages/Home.jsx'
-import Reportar from './pages/Reportar.jsx'
-import ReporteForm from './pages/ReporteForm.jsx'
-import Encuesta from './pages/Encuesta.jsx'
-import Perfil from './pages/Perfil.jsx'
-import SobreTi from './pages/SobreTi.jsx'
+
+// Lazy load pages for code splitting
+const Login = lazy(() => import('./components/Login.jsx'))
+const Onboarding = lazy(() => import('./components/Onboarding.jsx'))
+const ChatSelect = lazy(() => import('./pages/ChatSelect.jsx'))
+const ChatView = lazy(() => import('./pages/ChatView.jsx'))
+const Ayuda = lazy(() => import('./pages/Ayuda.jsx'))
+const AyudaCita = lazy(() => import('./pages/AyudaCita.jsx'))
+const AyudaCalendario = lazy(() => import('./pages/AyudaCalendario.jsx'))
+const AyudaConfirmacion = lazy(() => import('./pages/AyudaConfirmacion.jsx'))
+const Consejos = lazy(() => import('./pages/Consejos.jsx'))
+const Home = lazy(() => import('./pages/Home.jsx'))
+const Reportar = lazy(() => import('./pages/Reportar.jsx'))
+const ReporteForm = lazy(() => import('./pages/ReporteForm.jsx'))
+const Encuesta = lazy(() => import('./pages/Encuesta.jsx'))
+const Perfil = lazy(() => import('./pages/Perfil.jsx'))
+const SobreTi = lazy(() => import('./pages/SobreTi.jsx'))
+
+// Minimal fallback for Suspense
+function PageLoader() {
+  return (
+    <div className="flex h-screen w-full items-center justify-center bg-abla-bg">
+      <motion.div
+        animate={{ scale: [1, 1.2, 1] }}
+        transition={{ duration: 1, repeat: Infinity }}
+        className="h-8 w-8 rounded-full bg-abla-green"
+      />
+    </div>
+  )
+}
 
 function RootFlow() {
   const [route, setRoute] = useState('splash')
@@ -127,7 +142,9 @@ function AnimatedRoutes() {
 function AppContent() {
   return (
     <div className="min-h-screen w-full bg-white">
-      <AnimatedRoutes />
+      <Suspense fallback={<PageLoader />}>
+        <AnimatedRoutes />
+      </Suspense>
     </div>
   )
 }
