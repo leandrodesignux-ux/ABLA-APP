@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Paperclip, Send } from 'lucide-react'
 import { useParams } from 'react-router-dom'
@@ -13,28 +14,61 @@ function formatTime(date) {
   }
 }
 
+// Typing indicator with 3 animated dots
+function TypingIndicator() {
+  return (
+    <div className="flex w-full justify-start">
+      <div className="max-w-[75%]">
+        <div className="px-4 py-3 rounded-[18px_18px_18px_4px] bg-white border border-[#E6E6E6]">
+          <div className="flex items-center gap-1 h-5">
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={i}
+                animate={{ y: [0, -6, 0] }}
+                transition={{
+                  duration: 0.6,
+                  repeat: Infinity,
+                  delay: i * 0.15,
+                  ease: 'easeInOut',
+                }}
+                className="w-2 h-2 rounded-full bg-abla-green opacity-60"
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function Bubble({ mine, text, time }) {
   return (
-    <div className={`flex w-full ${mine ? 'justify-end' : 'justify-start'}`}>
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+      className={`flex w-full ${mine ? 'justify-end' : 'justify-start'}`}
+    >
       <div className="max-w-[75%]">
         <div
           className={`px-4 py-3 text-[14px] leading-5 ${
             mine
-              ? 'rounded-2xl rounded-br-sm bg-abla-green text-white'
-              : 'rounded-2xl rounded-bl-sm bg-[#F1F5F9] text-[#1E293B]'
+              ? 'rounded-[18px_18px_4px_18px] bg-abla-blue text-white'
+              : 'rounded-[18px_18px_18px_4px] bg-white border border-[#E6E6E6] text-abla-blue'
           }`}
         >
           {text}
         </div>
         <div className={`mt-1 text-[11px] text-slate-400 ${mine ? 'text-right' : 'text-left'}`}>{time}</div>
       </div>
-    </div>
+    </motion.div>
   )
 }
 
 export default function ChatView() {
   const { type } = useParams()
   const listRef = useRef(null)
+  const [shake, setShake] = useState(false)
 
   const chatMeta = useMemo(() => {
     const t = String(type || '').toLowerCase()
@@ -55,16 +89,23 @@ export default function ChatView() {
   ])
 
   const [draft, setDraft] = useState('')
+  const [isTyping, setIsTyping] = useState(false)
 
+  // Smooth scroll to bottom
   useEffect(() => {
     const el = listRef.current
     if (!el) return
-    el.scrollTop = el.scrollHeight
-  }, [messages.length])
+    el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
+  }, [messages.length, isTyping])
 
   const send = () => {
     const text = draft.trim()
-    if (!text) return
+    if (!text) {
+      // Shake animation when empty
+      setShake(true)
+      setTimeout(() => setShake(false), 300)
+      return
+    }
 
     const myMsg = {
       id: `m-${Date.now()}`,
@@ -75,6 +116,7 @@ export default function ChatView() {
 
     setMessages((prev) => [...prev, myMsg])
     setDraft('')
+    setIsTyping(true)
 
     window.setTimeout(() => {
       const reply = {
@@ -84,7 +126,8 @@ export default function ChatView() {
         createdAt: Date.now(),
       }
       setMessages((prev) => [...prev, reply])
-    }, 1000)
+      setIsTyping(false)
+    }, 2000)
   }
 
   return (
@@ -107,12 +150,28 @@ export default function ChatView() {
             {messages.map((m) => (
               <Bubble key={m.id} mine={m.mine} text={m.text} time={formatTime(m.createdAt)} />
             ))}
+            <AnimatePresence>
+              {isTyping && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 8 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <TypingIndicator />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
 
         <div className="fixed bottom-16 left-0 right-0 z-40">
           <div className="mx-auto w-full max-w-[390px] bg-white px-4 py-3">
-            <div className="flex items-center gap-2">
+            <motion.div
+              animate={shake ? { x: [-4, 4, -4, 4, 0] } : { x: 0 }}
+              transition={{ duration: 0.3 }}
+              className="flex items-center gap-2"
+            >
               <button
                 type="button"
                 className="flex h-10 w-10 items-center justify-center rounded-full text-slate-500"
@@ -128,19 +187,25 @@ export default function ChatView() {
                   if (e.key === 'Enter') send()
                 }}
                 placeholder="Escribe un mensaje..."
-                className="h-10 flex-1 rounded-full border border-slate-200 bg-white px-4 text-sm text-slate-800 placeholder:text-slate-400 focus:border-abla-green focus:outline-none"
+                className="h-10 flex-1 rounded-full border bg-white px-4 text-sm text-slate-800 placeholder:text-slate-400 focus:border-abla-green focus:outline-none transition-colors duration-200"
+                style={{ borderColor: draft.trim() ? '#56A087' : '#E6E6E6' }}
                 aria-label="Mensaje"
               />
 
               <button
                 type="button"
                 onClick={send}
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-abla-green text-white"
+                disabled={!draft.trim()}
+                className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors duration-200 ${
+                  draft.trim()
+                    ? 'bg-abla-green text-white'
+                    : 'bg-slate-200 text-slate-400'
+                }`}
                 aria-label="Enviar"
               >
                 <Send className="h-5 w-5" />
               </button>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
