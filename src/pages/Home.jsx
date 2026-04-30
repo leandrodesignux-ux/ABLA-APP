@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Bell, GalleryHorizontalEnd, MessageCircle, MoreVertical } from 'lucide-react'
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -7,20 +7,63 @@ import PageTransition from '../components/PageTransition.jsx'
 import SvgImage from '../components/SvgImage.jsx'
 import { useAppContext } from '../context/AppContext.jsx'
 
-function MoodButton({ imageSrc, label, active, onClick }) {
+const moodConfig = {
+  BIEN: { color: '#56A087', message: '¡Qué bueno saberlo! 🌟' },
+  'MAS O MENOS': { color: '#F59E0B', message: 'Estamos aquí si necesitas 💛' },
+  MAL: { color: '#EF4444', message: '¿Quieres hablar con alguien? 💙' },
+}
+
+function RippleCircles({ color }) {
+  return (
+    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+      {[0, 1, 2].map((i) => (
+        <motion.div
+          key={i}
+          initial={{ scale: 1, opacity: 0.4 }}
+          animate={{ scale: 2.5, opacity: 0 }}
+          transition={{
+            duration: 0.8,
+            delay: i * 0.15,
+            ease: 'easeOut',
+          }}
+          className="absolute w-20 h-20 rounded-full"
+          style={{ backgroundColor: color }}
+        />
+      ))}
+    </div>
+  )
+}
+
+function MoodButton({ imageSrc, label, active, onClick, mood }) {
+  const config = moodConfig[mood]
+
   return (
     <motion.button
       type="button"
-      whileTap={{ scale: 0.95 }}
       onClick={onClick}
-      className={`flex h-[84px] w-full flex-col items-center justify-center gap-1 rounded-2xl border bg-white text-slate-800 transition-shadow ${
+      className={`relative flex h-[84px] w-full flex-col items-center justify-center gap-1 rounded-2xl border bg-white text-slate-800 transition-shadow ${
         active ? 'border-abla-green shadow-sm' : 'border-[#E6E6E6]'
       }`}
       aria-label={label}
       style={{ willChange: 'transform' }}
     >
-      <SvgImage src={imageSrc} alt={label} className="h-9 w-9 object-contain" eager />
-      <div className="text-[11px] font-bold text-abla-blue">{label}</div>
+      <AnimatePresence>
+        {active && <RippleCircles color={config.color} />}
+      </AnimatePresence>
+      <motion.div
+        animate={active ? {
+          scale: [1, 1.3, 0.9, 1.1, 1],
+        } : { scale: 1 }}
+        transition={{
+          type: 'spring',
+          stiffness: 300,
+          damping: 15,
+        }}
+        className="relative z-10"
+      >
+        <SvgImage src={imageSrc} alt={label} className="h-9 w-9 object-contain" eager />
+      </motion.div>
+      <div className="text-[11px] font-bold text-abla-blue relative z-10">{label}</div>
     </motion.button>
   )
 }
@@ -106,15 +149,32 @@ export default function Home() {
 
         <section className="mt-5">
           <div className="grid grid-cols-3 gap-3">
-            <MoodButton imageSrc="/Emogis/Bien.svg" label="BIEN" active={moodHoy === 'BIEN'} onClick={() => setMood('BIEN')} />
+            <MoodButton imageSrc="/Emogis/Bien.svg" label="BIEN" mood="BIEN" active={moodHoy === 'BIEN'} onClick={() => setMood('BIEN')} />
             <MoodButton
               imageSrc="/Emogis/mas o menos.svg"
               label="MAS O MENOS"
+              mood="MAS O MENOS"
               active={moodHoy === 'MAS O MENOS'}
               onClick={() => setMood('MAS O MENOS')}
             />
-            <MoodButton imageSrc="/Emogis/mal.svg" label="MAL" active={moodHoy === 'MAL'} onClick={() => setMood('MAL')} />
+            <MoodButton imageSrc="/Emogis/mal.svg" label="MAL" mood="MAL" active={moodHoy === 'MAL'} onClick={() => setMood('MAL')} />
           </div>
+          <AnimatePresence mode="wait">
+            {moodHoy && (
+              <motion.div
+                key={moodHoy}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+                className="mt-4 text-center"
+              >
+                <p className="text-[14px] font-medium text-abla-blue">
+                  {moodConfig[moodHoy].message}
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </section>
 
         <section className="mt-6">
