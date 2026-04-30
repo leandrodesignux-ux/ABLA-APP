@@ -1,11 +1,23 @@
+import { motion } from 'framer-motion'
 import { ArrowLeft, Bell, Menu } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { useScrolled } from '../hooks/useScrolled.js'
 
-export default function Header({ title, showBack = false, showIcons = false }) {
+export default function Header({ title, showBack = false, showIcons = false, scrollRef }) {
   const navigate = useNavigate()
+  const scrolled = useScrolled(scrollRef, 10)
 
   return (
-    <header className="relative flex h-14 items-center bg-abla-green px-4 text-white">
+    <motion.header
+      animate={{
+        backgroundColor: scrolled ? 'rgba(86, 160, 135, 0.95)' : 'rgba(86, 160, 135, 1)',
+        boxShadow: scrolled ? '0 2px 20px rgba(86, 160, 135, 0.25)' : '0 0 0 rgba(86, 160, 135, 0)',
+        backdropFilter: scrolled ? 'blur(8px)' : 'blur(0px)',
+      }}
+      transition={{ duration: 0.2, ease: 'easeOut' }}
+      className="relative flex h-14 items-center px-4 text-white sticky top-0 z-50"
+      style={{ willChange: 'background-color, box-shadow, backdrop-filter' }}
+    >
       <div className="flex flex-1 items-center">
         {showBack ? (
           <button
@@ -47,6 +59,6 @@ export default function Header({ title, showBack = false, showIcons = false }) {
           <div className="h-10 w-10" aria-hidden="true" />
         )}
       </div>
-    </header>
+    </motion.header>
   )
 }
