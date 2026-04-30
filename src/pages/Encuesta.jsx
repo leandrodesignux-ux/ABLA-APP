@@ -127,7 +127,7 @@ export default function Encuesta() {
 
               <button
                 type="button"
-                onClick={() => navigate('/')}
+                onClick={() => navigate('/home')}
                 className="mt-3 h-12 w-full rounded-xl border border-abla-green bg-white font-bold text-abla-green"
                 aria-label="Volver al inicio"
               >
@@ -178,7 +178,7 @@ export default function Encuesta() {
 
               <button
                 type="button"
-                onClick={() => navigate('/')}
+                onClick={() => navigate('/home')}
                 className="mt-8 h-12 w-full rounded-xl border border-abla-green bg-white font-bold text-abla-green"
                 aria-label="Volver al inicio"
               >

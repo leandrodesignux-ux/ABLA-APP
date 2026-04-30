@@ -29,6 +29,13 @@ function RootFlow() {
     return () => clearTimeout(timer)
   }, [])
 
+  // Redirect authenticated users to /home when they land on root
+  useEffect(() => {
+    if (isAuthed && route !== 'splash' && route !== 'onboarding') {
+      navigate('/home', { replace: true })
+    }
+  }, [isAuthed, route, navigate])
+
   if (route === 'splash') {
     return (
       <div className="flex h-screen w-screen flex-col items-center justify-center bg-white">
