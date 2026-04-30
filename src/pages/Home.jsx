@@ -6,7 +6,7 @@ import BottomNav from '../components/BottomNav.jsx'
 import PageTransition from '../components/PageTransition.jsx'
 import { useAppContext } from '../context/AppContext.jsx'
 
-function MoodButton({ emoji, label, active, onClick }) {
+function MoodButton({ imageSrc, label, active, onClick }) {
   return (
     <motion.button
       type="button"
@@ -17,7 +17,7 @@ function MoodButton({ emoji, label, active, onClick }) {
       }`}
       aria-label={label}
     >
-      <div className="text-[28px] leading-none">{emoji}</div>
+      <img src={imageSrc} alt={label} className="h-9 w-9 object-contain" draggable="false" />
       <div className="text-[11px] font-bold text-abla-blue">{label}</div>
     </motion.button>
   )
@@ -104,14 +104,14 @@ export default function Home() {
 
         <section className="mt-5">
           <div className="grid grid-cols-3 gap-3">
-            <MoodButton emoji="😄" label="BIEN" active={moodHoy === 'BIEN'} onClick={() => setMood('BIEN')} />
+            <MoodButton imageSrc="/Emogis/Bien.svg" label="BIEN" active={moodHoy === 'BIEN'} onClick={() => setMood('BIEN')} />
             <MoodButton
-              emoji="😐"
+              imageSrc="/Emogis/mas o menos.svg"
               label="MAS O MENOS"
               active={moodHoy === 'MAS O MENOS'}
               onClick={() => setMood('MAS O MENOS')}
             />
-            <MoodButton emoji="😟" label="MAL" active={moodHoy === 'MAL'} onClick={() => setMood('MAL')} />
+            <MoodButton imageSrc="/Emogis/mal.svg" label="MAL" active={moodHoy === 'MAL'} onClick={() => setMood('MAL')} />
           </div>
         </section>
 

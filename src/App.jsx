@@ -18,7 +18,7 @@ import Perfil from './pages/Perfil.jsx'
 
 function RootFlow() {
   const [route, setRoute] = useState('splash')
-  const [isAuthed, setIsAuthed] = useState(false)
+  const [isAuthed, setIsAuthed] = useState(() => sessionStorage.getItem('abla_authed') === '1')
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -28,12 +28,6 @@ function RootFlow() {
     }, 1500)
     return () => clearTimeout(timer)
   }, [])
-
-  useEffect(() => {
-    if (route === 'home') {
-      navigate('/')
-    }
-  }, [route, navigate])
 
   if (route === 'splash') {
     return (
@@ -74,8 +68,9 @@ function RootFlow() {
     return (
       <Login
         onLogin={() => {
+          sessionStorage.setItem('abla_authed', '1')
           setIsAuthed(true)
-          setRoute('home')
+          navigate('/home')
         }}
       />
     )
@@ -114,6 +109,7 @@ function AnimatedRoutes() {
         <Route path="/reportar/:tipo" element={<ReporteForm />} />
         <Route path="/perfil" element={<Perfil />} />
         <Route path="/encuesta" element={<Encuesta />} />
+        <Route path="/home" element={<Home />} />
       </Routes>
     </AnimatePresence>
   )

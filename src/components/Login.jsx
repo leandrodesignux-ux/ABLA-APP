@@ -11,7 +11,7 @@ export default function Login({ onLogin }) {
 
   const submit = () => {
     onLogin?.({ email, password })
-    navigate('/')
+    // Navigation handled by onLogin via navigate('/home')
   }
 
   return (
