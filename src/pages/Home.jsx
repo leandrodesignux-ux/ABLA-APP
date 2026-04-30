@@ -96,7 +96,7 @@ export default function Home() {
   const navTiles = useMemo(
     () => [
       { label: 'CONSEJOS', imageSrc: '/Illustrations/home-consejos.svg', to: '/ayuda/consejos' },
-      { label: 'SOBRE TÍ', imageSrc: '/Illustrations/home-sobrti.svg', to: '/encuesta' },
+      { label: 'SOBRE TÍ', imageSrc: '/Illustrations/home-sobrti.svg', to: '/sobreti' },
       { label: 'ENCUESTAS', imageSrc: '/Illustrations/home-encuestas.svg', to: '/encuesta' },
     ],
     [],

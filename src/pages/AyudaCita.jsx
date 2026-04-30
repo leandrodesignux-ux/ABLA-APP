@@ -54,7 +54,7 @@ export default function AyudaCita() {
       {
         name: 'Carmen Silva',
         role: 'Orientadora',
-        avatarSrc: '/Avatars/psi-1.svg',
+        avatarSrc: '/Avatars/psi-3.svg',
         days: 'Lun a Vie',
       },
     ],
