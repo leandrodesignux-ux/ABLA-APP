@@ -15,6 +15,7 @@ import Reportar from './pages/Reportar.jsx'
 import ReporteForm from './pages/ReporteForm.jsx'
 import Encuesta from './pages/Encuesta.jsx'
 import Perfil from './pages/Perfil.jsx'
+import SobreTi from './pages/SobreTi.jsx'
 
 function RootFlow() {
   const [route, setRoute] = useState('splash')
@@ -116,6 +117,7 @@ function AnimatedRoutes() {
         <Route path="/reportar/:tipo" element={<ReporteForm />} />
         <Route path="/perfil" element={<Perfil />} />
         <Route path="/encuesta" element={<Encuesta />} />
+        <Route path="/sobreti" element={<SobreTi />} />
         <Route path="/home" element={<Home />} />
       </Routes>
     </AnimatePresence>
