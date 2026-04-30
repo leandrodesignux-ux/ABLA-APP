@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-ro
 // Lazy load pages for code splitting
 const Login = lazy(() => import('./components/Login.jsx'))
 const Onboarding = lazy(() => import('./components/Onboarding.jsx'))
+const OnboardingApp = lazy(() => import('./components/OnboardingApp.jsx'))
 const ChatSelect = lazy(() => import('./pages/ChatSelect.jsx'))
 const ChatView = lazy(() => import('./pages/ChatView.jsx'))
 const Ayuda = lazy(() => import('./pages/Ayuda.jsx'))
@@ -35,6 +36,7 @@ function PageLoader() {
 function RootFlow() {
   const [route, setRoute] = useState('splash')
   const [isAuthed, setIsAuthed] = useState(() => sessionStorage.getItem('abla_authed') === '1')
+  const [appOnbDone, setAppOnbDone] = useState(() => sessionStorage.getItem('abla_app_onb') === '1')
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -45,12 +47,12 @@ function RootFlow() {
     return () => clearTimeout(timer)
   }, [])
 
-  // Redirect authenticated users to /home when they land on root
   useEffect(() => {
-    if (isAuthed && route !== 'splash' && route !== 'onboarding') {
-      navigate('/home', { replace: true })
+    if (isAuthed && appOnbDone && route !== 'splash' && route !== 'onboarding') {
+      const savedPerfil = sessionStorage.getItem('abla_perfil')
+      navigate(savedPerfil ? '/home' : '/sobreti', { replace: true })
     }
-  }, [isAuthed, route, navigate])
+  }, [isAuthed, appOnbDone, route, navigate])
 
   if (route === 'splash') {
     return (
@@ -93,7 +95,19 @@ function RootFlow() {
         onLogin={() => {
           sessionStorage.setItem('abla_authed', '1')
           setIsAuthed(true)
-          navigate('/home')
+        }}
+      />
+    )
+  }
+
+  if (isAuthed && !appOnbDone) {
+    return (
+      <OnboardingApp
+        onDone={() => {
+          sessionStorage.setItem('abla_app_onb', '1')
+          setAppOnbDone(true)
+          const savedPerfil = sessionStorage.getItem('abla_perfil')
+          navigate(savedPerfil ? '/home' : '/sobreti')
         }}
       />
     )
