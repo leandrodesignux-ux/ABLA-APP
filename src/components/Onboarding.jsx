@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import PageTransition from './PageTransition.jsx'
+import SvgImage from './SvgImage.jsx'
 
 const slideVariants = {
   enter: (direction) => ({
@@ -70,20 +71,20 @@ export default function Onboarding({ onDone }) {
     <div className="min-h-screen w-full bg-white px-4 pt-8 pb-24">
       <div className="mx-auto w-full max-w-[390px]">
         <div className="flex justify-center">
-          <img src="/Logo/abla-logo.svg" alt="ABLA" className="h-20 w-20 select-none" draggable="false" />
+          <SvgImage src="/Logo/abla-logo.svg" alt="ABLA" className="h-20 w-20 select-none" eager />
         </div>
 
         <div className="mt-10">
           <div className="relative mx-auto h-[200px] w-[280px]">
             <div className="absolute left-0 top-1/2 -translate-y-1/2">
               <div className="h-20 w-20 overflow-hidden rounded-full border border-abla-green/60 bg-white opacity-50">
-                <img src={leftThumb.imageSrc} alt="" className="h-full w-full object-cover" draggable="false" />
+                <SvgImage src={leftThumb.imageSrc} alt="" className="h-full w-full object-cover" eager />
               </div>
             </div>
 
             <div className="absolute right-0 top-1/2 -translate-y-1/2">
               <div className="h-20 w-20 overflow-hidden rounded-full border border-abla-green/60 bg-white opacity-50">
-                <img src={rightThumb.imageSrc} alt="" className="h-full w-full object-cover" draggable="false" />
+                <SvgImage src={rightThumb.imageSrc} alt="" className="h-full w-full object-cover" eager />
               </div>
             </div>
 

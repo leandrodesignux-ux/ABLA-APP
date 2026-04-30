@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BottomNav from '../components/BottomNav.jsx'
 import PageTransition from '../components/PageTransition.jsx'
+import SvgImage from '../components/SvgImage.jsx'
 import { useAppContext } from '../context/AppContext.jsx'
 
 function MoodButton({ imageSrc, label, active, onClick }) {
@@ -16,8 +17,9 @@ function MoodButton({ imageSrc, label, active, onClick }) {
         active ? 'border-abla-green shadow-sm' : 'border-[#E6E6E6]'
       }`}
       aria-label={label}
+      style={{ willChange: 'transform' }}
     >
-      <img src={imageSrc} alt={label} className="h-9 w-9 object-contain" draggable="false" />
+      <SvgImage src={imageSrc} alt={label} className="h-9 w-9 object-contain" eager />
       <div className="text-[11px] font-bold text-abla-blue">{label}</div>
     </motion.button>
   )
@@ -87,16 +89,16 @@ export default function Home() {
           >
             <MoreVertical className="h-5 w-5" />
           </button>
-          <div className="ml-1 h-8 w-8 overflow-hidden rounded-full border-2 border-white/60 bg-white/10">
-            <img src={user.avatar} alt="" className="h-full w-full object-cover" draggable="false" />
+          <div className="ml-1 h-8 w-8 overflow-hidden rounded-full border-2 border-white/60 bg-white/10" style={{ willChange: 'transform' }}>
+            <SvgImage src={user.avatar} alt="" className="h-full w-full object-cover" eager />
           </div>
         </div>
       </header>
 
       <div className="mx-auto w-full max-w-[390px] px-4">
         <section className="mt-5 text-center">
-          <div className="mx-auto flex h-[90px] w-[90px] items-center justify-center overflow-hidden rounded-full border-[3px] border-abla-green bg-white">
-            <img src={user.avatar} alt="" className="h-full w-full object-cover" draggable="false" />
+          <div className="mx-auto flex h-[90px] w-[90px] items-center justify-center overflow-hidden rounded-full border-[3px] border-abla-green bg-white" style={{ willChange: 'transform' }}>
+            <SvgImage src={user.avatar} alt="" className="h-full w-full object-cover" eager />
           </div>
           <div className="mt-4 text-[20px] font-bold text-abla-blue">¡Hola {user.name}!</div>
           <div className="mt-1 text-[14px] text-[#64748B]">¿Cómo te sientes?</div>
@@ -131,6 +133,7 @@ export default function Home() {
         transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
         className="fixed bottom-20 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full bg-abla-green px-8 py-3 font-semibold text-white shadow-xl"
         aria-label="Chatear"
+        style={{ willChange: 'transform' }}
       >
         <MessageCircle className="h-5 w-5" />
         + CHATEAR
