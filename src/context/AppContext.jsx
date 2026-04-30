@@ -5,7 +5,7 @@ const AppContext = createContext(null)
 const initialState = {
   user: {
     name: 'Matías',
-    avatar: '/avatars/avatar-matias.svg',
+    avatar: '/Avatars/avatar-matias.svg',
   },
   moodHoy: null,
   reportesEnviados: [],

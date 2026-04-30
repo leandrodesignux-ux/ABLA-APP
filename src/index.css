@@ -1,6 +1,11 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-abla-green: #56A087;
+  --color-abla-blue: #3F5577;
+  --color-abla-bg: #F5F7F9;
+  --color-abla-border: #E6E6E6;
+}
 
 .glass-panel {
   background: rgba(30, 41, 59, 0.55);

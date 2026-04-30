@@ -39,7 +39,7 @@ export default function ChatView() {
   const chatMeta = useMemo(() => {
     const t = String(type || '').toLowerCase()
     if (t === 'anonimo') return { title: 'Chat Anónimo', avatarSrc: null }
-    if (t === 'tutor') return { title: 'Mi Tutor', avatarSrc: '/avatars/avatar-tutor.svg' }
+    if (t === 'tutor') return { title: 'Mi Tutor', avatarSrc: '/Avatars/avatar-tutor.svg' }
     if (t === 'profesor') return { title: 'Profesor', avatarSrc: null }
     if (t === 'grupal') return { title: 'Grupal', avatarSrc: null }
     return { title: 'Chat', avatarSrc: null }

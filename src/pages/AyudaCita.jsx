@@ -40,19 +40,19 @@ export default function AyudaCita() {
       {
         name: 'Ana García',
         role: 'Psicopedagoga',
-        avatarSrc: '/avatars/psi-1.svg',
+        avatarSrc: '/Avatars/psi-1.svg',
         days: 'Lun/Mié/Vie',
       },
       {
         name: 'Luis Muñoz',
         role: 'Psicólogo',
-        avatarSrc: '/avatars/psi-2.svg',
+        avatarSrc: '/Avatars/psi-2.svg',
         days: 'Mar/Jue',
       },
       {
         name: 'Carmen Silva',
         role: 'Orientadora',
-        avatarSrc: '/avatars/psi-1.svg',
+        avatarSrc: '/Avatars/psi-1.svg',
         days: 'Lun a Vie',
       },
     ],

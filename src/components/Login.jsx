@@ -19,7 +19,7 @@ export default function Login({ onLogin }) {
     <div className="min-h-screen bg-white px-4 pb-24 text-slate-800">
       <div className="mx-auto w-full max-w-[390px]">
         <div className="mt-[60px] flex flex-col items-center">
-          <img src="/logo/abla-logo.svg" alt="ABLA" className="h-[120px] w-[120px] select-none" draggable="false" />
+          <img src="/Logo/abla-logo.svg" alt="ABLA" className="h-[120px] w-[120px] select-none" draggable="false" />
           <div className="mt-4 text-[22px] font-bold text-abla-blue">¡Bienvenido/a!</div>
         </div>
 

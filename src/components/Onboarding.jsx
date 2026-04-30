@@ -70,7 +70,7 @@ export default function Onboarding({ onDone }) {
     <div className="min-h-screen w-full bg-white px-4 pt-8 pb-24">
       <div className="mx-auto w-full max-w-[390px]">
         <div className="flex justify-center">
-          <img src="/logo/abla-logo.svg" alt="ABLA" className="h-20 w-20 select-none" draggable="false" />
+          <img src="/Logo/abla-logo.svg" alt="ABLA" className="h-20 w-20 select-none" draggable="false" />
         </div>
 
         <div className="mt-10">
