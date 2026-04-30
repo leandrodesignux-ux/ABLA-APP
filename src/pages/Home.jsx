@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { Bell, GalleryHorizontalEnd, MessageCircle, MoreVertical } from 'lucide-react'
+import { AlertTriangle, Bell, BookOpen, Calendar, ClipboardList, MessageCircle } from 'lucide-react'
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BottomNav from '../components/BottomNav.jsx'
@@ -92,6 +92,15 @@ function NavTile({ label, imageSrc, to }) {
 export default function Home() {
   const navigate = useNavigate()
   const { user, moodHoy, setMood } = useAppContext()
+  const moodDotColor = moodHoy === 'BIEN' ? '#22c55e' : moodHoy === 'MAL' ? '#ef4444' : '#f59e0b'
+
+  const quickActions = [
+    { label: 'Chat anónimo', to: '/chat/anonimo', Icon: MessageCircle },
+    { label: 'Pedir cita', to: '/ayuda/cita', Icon: Calendar },
+    { label: 'Consejos', to: '/ayuda/consejos', Icon: BookOpen },
+    { label: 'Reportar', to: '/reportar', Icon: AlertTriangle },
+    { label: 'Encuesta', to: '/encuesta', Icon: ClipboardList },
+  ]
 
   const navTiles = useMemo(
     () => [
@@ -105,35 +114,69 @@ export default function Home() {
   return (
     <PageTransition>
     <div className="min-h-screen bg-abla-bg pb-24 text-slate-800">
-      <header className="flex h-14 items-center bg-abla-green px-4 text-white">
-        <div className="flex flex-1 items-center" />
+      <header className="bg-abla-green text-white">
+        <div className="flex h-14 items-center justify-between px-4">
+          <button
+            type="button"
+            onClick={() => navigate('/perfil')}
+            className="flex items-center gap-2"
+            aria-label="Ir a perfil"
+          >
+            <div className="h-8 w-8 overflow-hidden rounded-full border-2 border-white/60 bg-white/10" style={{ willChange: 'transform' }}>
+              <SvgImage src={user.avatar} alt="" className="h-full w-full object-cover" eager />
+            </div>
+            <div className="text-left text-[12px] leading-tight">
+              <div className="text-white/80">Hola,</div>
+              <div className="flex items-center gap-1.5 font-semibold text-white">
+                {user.name}
+                {moodHoy ? <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: moodDotColor }} /> : null}
+              </div>
+            </div>
+          </button>
 
-        <div className="text-center text-base font-semibold">Home</div>
+          <img
+            src="/Logo/abla-logo.svg"
+            alt="ABLA"
+            className="h-7 w-auto brightness-0 invert"
+            draggable="false"
+          />
 
-        <div className="flex flex-1 items-center justify-end gap-2">
-          <button
-            type="button"
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10"
-            aria-label="Galería"
-          >
-            <GalleryHorizontalEnd className="h-5 w-5" />
-          </button>
-          <button
-            type="button"
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10"
-            aria-label="Notificaciones"
-          >
-            <Bell className="h-5 w-5" />
-          </button>
-          <button
-            type="button"
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10"
-            aria-label="Más"
-          >
-            <MoreVertical className="h-5 w-5" />
-          </button>
-          <div className="ml-1 h-8 w-8 overflow-hidden rounded-full border-2 border-white/60 bg-white/10" style={{ willChange: 'transform' }}>
-            <SvgImage src={user.avatar} alt="" className="h-full w-full object-cover" eager />
+          <div className="flex items-center gap-2">
+            <motion.button
+              type="button"
+              onClick={() => navigate('/chat/anonimo')}
+              animate={{ scale: [1, 1.08, 1] }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-red-500 text-[9px] font-black text-white"
+              aria-label="SOS"
+            >
+              SOS
+            </motion.button>
+            <button
+              type="button"
+              onClick={() => {}}
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10"
+              aria-label="Notificaciones"
+            >
+              <Bell className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+
+        <div className="h-12 border-t border-white/10 bg-abla-green/90">
+          <div className="flex h-full snap-x gap-2 overflow-x-auto px-4 py-1">
+            {quickActions.map((qa) => (
+              <button
+                key={qa.label}
+                type="button"
+                onClick={() => navigate(qa.to)}
+                className="flex flex-shrink-0 snap-start flex-col items-center gap-1 rounded-xl bg-white/10 px-3 py-1 transition-colors hover:bg-white/20"
+                aria-label={qa.label}
+              >
+                <qa.Icon className="h-4 w-4" />
+                <span className="text-[10px] font-medium leading-none">{qa.label}</span>
+              </button>
+            ))}
           </div>
         </div>
       </header>
