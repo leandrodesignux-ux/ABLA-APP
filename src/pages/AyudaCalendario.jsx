@@ -28,15 +28,15 @@ function DayButton({ label, disabled, selected, onClick, isOutsideMonth }) {
     <motion.button
       type="button"
       whileTap={{ scale: disabled ? 1 : 0.96 }}
-      onClick={disabled ? undefined : onClick}
+      onClick={!disabled && !isOutsideMonth ? onClick : undefined}
       className={`flex h-9 w-9 items-center justify-center rounded-full text-[13px] font-semibold ${
         selected
           ? 'bg-abla-green text-white'
           : 'bg-white text-slate-700'
-      } ${disabled ? 'opacity-40' : ''} ${isOutsideMonth ? 'text-slate-300' : ''}`}
+      } ${disabled ? 'opacity-40' : ''} ${isOutsideMonth ? 'opacity-0 text-slate-300' : ''}`}
       aria-label={label}
     >
-      {label}
+      {isOutsideMonth ? null : label}
     </motion.button>
   )
 }
@@ -50,9 +50,11 @@ export default function AyudaCalendario() {
   const proName = proFromState || proFromQuery || 'Profesional'
 
   const today = useMemo(() => startOfDay(new Date()), [])
+  const [monthOffset, setMonthOffset] = useState(0)
 
   const monthInfo = useMemo(() => {
     const now = new Date()
+    now.setMonth(now.getMonth() + monthOffset)
     const year = now.getFullYear()
     const month = now.getMonth()
 
@@ -73,10 +75,15 @@ export default function AyudaCalendario() {
     }
 
     return { monthLabel, cells, year, month }
-  }, [])
+  }, [monthOffset])
 
   const [selectedDate, setSelectedDate] = useState(null)
   const [selectedTime, setSelectedTime] = useState(null)
+
+  const changeMonth = (nextOffset) => {
+    setMonthOffset(nextOffset)
+    setSelectedDate(null)
+  }
 
   const timeSlots = useMemo(() => ['09:00', '10:00', '11:00', '15:00', '16:00', '17:00'], [])
 
@@ -100,7 +107,31 @@ export default function AyudaCalendario() {
         <div className="mt-6 text-[16px] font-bold text-abla-blue">{proName}</div>
 
         <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm">
-          <div className="text-center text-[14px] font-semibold text-slate-700">{monthInfo.monthLabel}</div>
+          <div className="flex items-center justify-between">
+            <motion.button
+              type="button"
+              whileTap={{ scale: 0.9 }}
+              disabled={monthOffset === 0}
+              onClick={() => changeMonth(monthOffset - 1)}
+              className="flex h-8 w-8 items-center justify-center rounded-full text-slate-500 disabled:opacity-40"
+              aria-label="Mes anterior"
+            >
+              &lt;
+            </motion.button>
+
+            <div className="text-center text-[14px] font-semibold text-slate-700">{monthInfo.monthLabel}</div>
+
+            <motion.button
+              type="button"
+              whileTap={{ scale: 0.9 }}
+              disabled={monthOffset === 2}
+              onClick={() => changeMonth(monthOffset + 1)}
+              className="flex h-8 w-8 items-center justify-center rounded-full text-slate-500 disabled:opacity-40"
+              aria-label="Mes siguiente"
+            >
+              &gt;
+            </motion.button>
+          </div>
 
           <div className="mt-4 grid grid-cols-7 gap-2 text-center text-[12px] font-semibold text-slate-500">
             <div>Lu</div>
