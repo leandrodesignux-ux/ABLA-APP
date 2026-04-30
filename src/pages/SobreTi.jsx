@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import PageTransition from '../components/PageTransition.jsx'
+import { useAppContext } from '../context/AppContext.jsx'
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -49,12 +50,17 @@ const options = [
 
 function OptionCard({ option, isSelected, onSelect }) {
   const navigate = useNavigate()
+  const { setPerfil } = useAppContext()
 
   const handleClick = () => {
     onSelect(option.id)
+    setPerfil(option.id)
+    sessionStorage.setItem('abla_perfil', option.id)
     // Small delay to show selection feedback before navigating
     setTimeout(() => {
-      navigate('/home')
+      if (option.id === 'estudiante') navigate('/home')
+      if (option.id === 'apoderado') navigate('/home/apoderado')
+      if (option.id === 'profesional') navigate('/home/profesional')
     }, 200)
   }
 

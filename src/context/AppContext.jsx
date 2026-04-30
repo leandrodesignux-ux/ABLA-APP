@@ -7,6 +7,7 @@ const initialState = {
     name: 'Matías',
     avatar: '/Avatars/avatar-matias.svg',
   },
+  perfil: sessionStorage.getItem('abla_perfil') || null,
   moodHoy: null,
   reportesEnviados: [],
 }
@@ -16,6 +17,11 @@ export function AppProvider({ children }) {
 
   const setMood = useCallback((mood) => {
     setState((prev) => ({ ...prev, moodHoy: mood }))
+  }, [])
+
+  const setPerfil = useCallback((p) => {
+    setState((prev) => ({ ...prev, perfil: p }))
+    sessionStorage.setItem('abla_perfil', p)
   }, [])
 
   const addReporte = useCallback((reporte) => {
@@ -29,9 +35,10 @@ export function AppProvider({ children }) {
     () => ({
       ...state,
       setMood,
+      setPerfil,
       addReporte,
     }),
-    [state, setMood, addReporte],
+    [state, setMood, setPerfil, addReporte],
   )
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>

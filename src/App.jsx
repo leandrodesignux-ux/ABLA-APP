@@ -14,6 +14,8 @@ const AyudaCalendario = lazy(() => import('./pages/AyudaCalendario.jsx'))
 const AyudaConfirmacion = lazy(() => import('./pages/AyudaConfirmacion.jsx'))
 const Consejos = lazy(() => import('./pages/Consejos.jsx'))
 const Home = lazy(() => import('./pages/Home.jsx'))
+const HomeApoderado = lazy(() => import('./pages/HomeApoderado.jsx'))
+const HomeProfesional = lazy(() => import('./pages/HomeProfesional.jsx'))
 const Reportar = lazy(() => import('./pages/Reportar.jsx'))
 const ReporteForm = lazy(() => import('./pages/ReporteForm.jsx'))
 const Encuesta = lazy(() => import('./pages/Encuesta.jsx'))
@@ -39,6 +41,14 @@ function RootFlow() {
   const [appOnbDone, setAppOnbDone] = useState(() => sessionStorage.getItem('abla_app_onb') === '1')
   const navigate = useNavigate()
 
+  const getHomePath = () => {
+    const savedPerfil = sessionStorage.getItem('abla_perfil')
+    if (savedPerfil === 'apoderado') return '/home/apoderado'
+    if (savedPerfil === 'profesional') return '/home/profesional'
+    if (savedPerfil === 'estudiante') return '/home'
+    return '/sobreti'
+  }
+
   useEffect(() => {
     const timer = setTimeout(() => {
       const seen = window.localStorage.getItem('abla_onboarding_seen') === '1'
@@ -49,8 +59,7 @@ function RootFlow() {
 
   useEffect(() => {
     if (isAuthed && appOnbDone && route !== 'splash' && route !== 'onboarding') {
-      const savedPerfil = sessionStorage.getItem('abla_perfil')
-      navigate(savedPerfil ? '/home' : '/sobreti', { replace: true })
+      navigate(getHomePath(), { replace: true })
     }
   }, [isAuthed, appOnbDone, route, navigate])
 
@@ -106,8 +115,7 @@ function RootFlow() {
         onDone={() => {
           sessionStorage.setItem('abla_app_onb', '1')
           setAppOnbDone(true)
-          const savedPerfil = sessionStorage.getItem('abla_perfil')
-          navigate(savedPerfil ? '/home' : '/sobreti')
+          navigate(getHomePath())
         }}
       />
     )
@@ -148,6 +156,8 @@ function AnimatedRoutes() {
         <Route path="/encuesta" element={<Encuesta />} />
         <Route path="/sobreti" element={<SobreTi />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/home/apoderado" element={<HomeApoderado />} />
+        <Route path="/home/profesional" element={<HomeProfesional />} />
       </Routes>
     </AnimatePresence>
   )
