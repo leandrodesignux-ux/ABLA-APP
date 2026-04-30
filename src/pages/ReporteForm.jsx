@@ -145,7 +145,9 @@ export default function ReporteForm() {
 
         <motion.button
           type="button"
-          whileTap={{ scale: 0.98 }}
+          whileHover={!submitted ? { scale: 1.02 } : {}}
+          whileTap={!submitted ? { scale: 0.96 } : {}}
+          transition={{ type: 'spring', stiffness: 400, damping: 17 }}
           disabled={submitted}
           onClick={() => setSubmitted(true)}
           className={`mt-6 h-12 w-full rounded-xl font-bold text-white ${

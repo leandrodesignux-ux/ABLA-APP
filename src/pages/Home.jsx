@@ -30,10 +30,10 @@ function NavTile({ label, imageSrc, to }) {
     <motion.button
       type="button"
       onClick={() => navigate(to)}
-      whileHover={{ scale: 1.03 }}
-      whileTap={{ scale: 0.96 }}
-      transition={{ type: 'spring', stiffness: 320, damping: 22 }}
-      className="flex w-full flex-col items-center justify-start"
+      whileHover={{ scale: 1.02, boxShadow: '0 4px 16px rgba(63,85,119,0.15)' }}
+      whileTap={{ scale: 0.97 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+      className="flex w-full flex-col items-center justify-start rounded-2xl p-2"
       aria-label={label}
     >
       <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-2 border-abla-green bg-white">

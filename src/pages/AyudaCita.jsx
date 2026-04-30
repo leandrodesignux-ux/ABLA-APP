@@ -20,7 +20,9 @@ function ProCard({ name, role, avatarSrc, days, onSchedule }) {
 
         <motion.button
           type="button"
-          whileTap={{ scale: 0.98 }}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.96 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 17 }}
           onClick={onSchedule}
           className="h-9 rounded-xl bg-abla-green px-4 text-[12px] font-bold text-white"
           aria-label={`Agendar con ${name}`}

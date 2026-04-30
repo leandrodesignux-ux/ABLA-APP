@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import { Home, HeartHandshake, AlertTriangle, MessageCircle, User } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 
@@ -5,18 +6,25 @@ function TabLink({ to, icon: Icon, label, active }) {
   return (
     <Link
       to={to}
-      className="flex h-full flex-1 flex-col items-center justify-center"
+      className="flex h-full flex-1 flex-col items-center justify-center relative"
       aria-label={label}
     >
-      <div
+      <motion.div
+        whileTap={{ scale: 0.9 }}
         className={`flex flex-col items-center justify-center gap-1 text-tech-data font-medium ${
           active ? 'text-abla-green' : 'text-[#94A3B8]'
         }`}
       >
         <Icon className="h-5 w-5" />
         <span>{label}</span>
-        <span className={`mt-1 h-1 w-1 rounded-full ${active ? 'bg-abla-green' : 'bg-transparent'}`} />
-      </div>
+      </motion.div>
+      {active && (
+        <motion.div
+          layoutId="nav-indicator"
+          className="absolute bottom-2 h-1 w-1 rounded-full bg-abla-green"
+          transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+        />
+      )}
     </Link>
   )
 }

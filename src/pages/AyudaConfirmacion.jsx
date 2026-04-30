@@ -32,8 +32,15 @@ export default function AyudaConfirmacion() {
       <div className="mx-auto flex min-h-[calc(100vh-56px)] w-full max-w-[390px] flex-col items-center justify-center px-4 pb-10 text-center">
         <motion.div
           initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', stiffness: 420, damping: 26 }}
+          animate={{ scale: [1.05, 1] }}
+          transition={{
+            scale: {
+              type: 'spring',
+              stiffness: 200,
+              damping: 15,
+              times: [0, 0.3, 1],
+            },
+          }}
           className="flex h-24 w-24 items-center justify-center"
           aria-hidden="true"
         >
@@ -58,22 +65,28 @@ export default function AyudaConfirmacion() {
           </div>
         </div>
 
-        <button
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.96 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 17 }}
           type="button"
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/home')}
           className="mt-6 h-12 w-full rounded-xl bg-abla-green font-bold text-white"
           aria-label="Volver al inicio"
         >
           VOLVER AL INICIO
-        </button>
+        </motion.button>
 
-        <button
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.96 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 17 }}
           type="button"
           className="mt-3 h-12 w-full rounded-xl border border-abla-green bg-white font-bold text-abla-green"
           aria-label="Añadir recordatorio"
         >
           AÑADIR RECORDATORIO
-        </button>
+        </motion.button>
       </div>
     </div>
     </PageTransition>

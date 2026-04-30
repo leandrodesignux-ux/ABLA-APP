@@ -62,9 +62,14 @@ function OptionCard({ option, isSelected, onSelect }) {
     <motion.button
       type="button"
       variants={itemVariants}
+      whileHover={{ scale: 1.02, boxShadow: '0 4px 16px rgba(63,85,119,0.15)' }}
       whileTap={{ scale: 0.97 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+      animate={{
+        backgroundColor: isSelected ? 'rgba(86, 160, 135, 0.1)' : 'rgba(255, 255, 255, 1)',
+      }}
       onClick={handleClick}
-      className={`w-full flex items-center gap-4 p-4 rounded-2xl border-2 bg-white transition-all duration-200 ${
+      className={`w-full flex items-center gap-4 p-4 rounded-2xl border-2 transition-all duration-200 ${
         isSelected
           ? 'border-abla-green shadow-md'
           : 'border-[#E6E6E6] hover:border-abla-green/50'

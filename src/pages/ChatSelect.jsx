@@ -11,7 +11,9 @@ function OptionCard({ title, description, to, icon, avatarSrc }) {
   return (
     <motion.button
       type="button"
-      whileTap={{ scale: 0.98 }}
+      whileHover={{ scale: 1.02, boxShadow: '0 4px 16px rgba(63,85,119,0.15)' }}
+      whileTap={{ scale: 0.97 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 17 }}
       onClick={() => navigate(to)}
       className="flex w-full items-center gap-3 rounded-2xl bg-white p-4 shadow-sm"
       aria-label={title}

@@ -164,8 +164,11 @@ export default function AyudaCalendario() {
           </div>
         </div>
 
-        <button
+        <motion.button
           type="button"
+          whileHover={canConfirm ? { scale: 1.02 } : {}}
+          whileTap={canConfirm ? { scale: 0.96 } : {}}
+          transition={{ type: 'spring', stiffness: 400, damping: 17 }}
           onClick={() => {
             if (!canConfirm) return
             const qp = new URLSearchParams()
@@ -180,7 +183,7 @@ export default function AyudaCalendario() {
           aria-label="Confirmar cita"
         >
           CONFIRMAR CITA
-        </button>
+        </motion.button>
       </div>
     </div>
     </PageTransition>

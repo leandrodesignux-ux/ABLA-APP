@@ -52,9 +52,11 @@ function SurveySelector({ onSelectSurvey }) {
             <div key={survey.id} className="text-center">
               <p className="text-[16px] text-slate-700 mb-4">{survey.title}</p>
               <motion.button
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                 onClick={() => onSelectSurvey(survey.id)}
-                className="w-[240px] h-11 bg-abla-blue text-white font-medium rounded-lg shadow-sm hover:bg-opacity-90 transition-colors"
+                className="w-[240px] h-11 bg-abla-blue text-white font-medium rounded-lg shadow-sm"
               >
                 CONTESTAR
               </motion.button>
@@ -133,7 +135,11 @@ function TutorSurvey({ onBack, onComplete }) {
                     key={opt}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setAnswers((prev) => ({ ...prev, [q.id]: opt }))}
-                    className={`w-full text-left py-3 border-b transition-colors ${
+                    animate={{
+                      backgroundColor: answers[q.id] === opt ? 'rgba(86, 160, 135, 0.1)' : 'transparent',
+                    }}
+                    transition={{ duration: 0.2 }}
+                    className={`w-full text-left py-3 px-3 rounded-lg border-b transition-colors ${
                       answers[q.id] === opt
                         ? 'text-abla-green border-abla-green font-medium'
                         : 'text-slate-700 border-slate-300'
@@ -172,7 +178,9 @@ function TutorSurvey({ onBack, onComplete }) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
               onClick={() => onComplete()}
               className="mt-8 w-full h-12 bg-abla-blue text-white font-bold rounded-lg"
             >
@@ -281,7 +289,11 @@ function ExperienceSurvey({ onBack, onComplete }) {
                     key={opt}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setAnswers((prev) => ({ ...prev, [section.key]: opt }))}
-                    className={`w-full text-left py-3 border-b transition-colors ${
+                    animate={{
+                      backgroundColor: answers[section.key] === opt ? 'rgba(86, 160, 135, 0.1)' : 'transparent',
+                    }}
+                    transition={{ duration: 0.2 }}
+                    className={`w-full text-left py-3 px-3 rounded-lg border-b transition-colors ${
                       answers[section.key] === opt
                         ? 'text-abla-green border-abla-green font-medium'
                         : 'text-slate-700 border-slate-300'
@@ -302,7 +314,9 @@ function ExperienceSurvey({ onBack, onComplete }) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
               onClick={handleFinalize}
               className="mt-8 w-full h-12 bg-abla-blue text-white font-bold rounded-lg"
             >

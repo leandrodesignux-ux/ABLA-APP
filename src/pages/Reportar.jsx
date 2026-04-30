@@ -8,9 +8,11 @@ function ReportCard({ title, description, imageSrc, accentColor, onClick }) {
   return (
     <motion.button
       type="button"
-      whileTap={{ scale: 0.98 }}
+      whileHover={{ scale: 1.02, boxShadow: '0 4px 16px rgba(63,85,119,0.15)' }}
+      whileTap={{ scale: 0.97 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 17 }}
       onClick={onClick}
-      className="w-full"
+      className="w-full rounded-2xl"
     >
       <div className="flex w-full items-center gap-4 rounded-2xl bg-white p-4 shadow-sm">
         <div className="h-14 w-1 rounded-full" style={{ backgroundColor: accentColor }} aria-hidden="true" />
