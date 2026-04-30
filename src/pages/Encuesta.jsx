@@ -1,203 +1,360 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { useMemo, useState } from 'react'
+import { ArrowLeft, Check, Paperclip, Smile, Image as ImageIcon } from 'lucide-react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import PageTransition from '../components/PageTransition.jsx'
 
-function MoodOption({ active, emoji, title, subtitle, imageSrc, onClick }) {
+// Screen 1: Survey Selector
+function SurveySelector({ onSelectSurvey }) {
+  const navigate = useNavigate()
+
+  const surveys = [
+    { id: 'tutor', title: '¿Qué opinas sobre tu tutor?' },
+    { id: 'experiencia', title: '¿Cómo es tu experiencia en el instituto?' },
+    { id: 'mejora', title: 'Ayúdanos a mejorar' },
+  ]
+
   return (
-    <motion.button
-      type="button"
-      onClick={onClick}
-      whileTap={{ scale: 0.98 }}
-      animate={{ scale: active ? 1.1 : 1 }}
-      transition={{ type: 'spring', stiffness: 420, damping: 26 }}
-      className="flex w-full flex-col items-center"
-      aria-label={title}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="min-h-screen bg-white"
     >
-      <div
-        className={`flex h-[120px] w-[120px] items-center justify-center overflow-hidden rounded-full border-2 bg-white shadow-sm transition-colors ${
-          active ? 'border-abla-green' : 'border-[#E6E6E6]'
-        }`}
-      >
-        <img src={imageSrc} alt="" className="h-full w-full object-contain p-5" draggable="false" />
+      {/* Header */}
+      <div className="h-14 bg-abla-green flex items-center justify-center relative px-4">
+        <button
+          onClick={() => navigate('/home')}
+          className="absolute left-4 text-white"
+          aria-label="Volver"
+        >
+          <ArrowLeft className="h-6 w-6" />
+        </button>
+        <h1 className="text-lg font-semibold text-white">Encuestas</h1>
       </div>
 
-      <div className="mt-3 text-[26px] leading-none">{emoji}</div>
-      <div className="mt-1 text-[14px] font-bold text-abla-blue">{title}</div>
-      <div className="mt-1 max-w-[280px] text-center text-[12px] leading-5 text-slate-600">{subtitle}</div>
-    </motion.button>
+      <div className="px-6 py-8">
+        {/* Circular illustration */}
+        <div className="flex justify-center mb-10">
+          <div className="w-[180px] h-[180px] rounded-full border-4 border-abla-green flex items-center justify-center bg-white overflow-hidden">
+            <img
+              src="/Illustrations/encuestas.svg"
+              alt=""
+              className="w-full h-full object-contain p-4"
+              draggable="false"
+            />
+          </div>
+        </div>
+
+        {/* Survey options */}
+        <div className="space-y-8">
+          {surveys.map((survey) => (
+            <div key={survey.id} className="text-center">
+              <p className="text-[16px] text-slate-700 mb-4">{survey.title}</p>
+              <motion.button
+                whileTap={{ scale: 0.98 }}
+                onClick={() => onSelectSurvey(survey.id)}
+                className="w-[240px] h-11 bg-abla-blue text-white font-medium rounded-lg shadow-sm hover:bg-opacity-90 transition-colors"
+              >
+                CONTESTAR
+              </motion.button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+// Screen 2: Tutor Survey
+function TutorSurvey({ onBack, onComplete }) {
+  const navigate = useNavigate()
+  const [answers, setAnswers] = useState({
+    q1: '',
+    q2: '',
+    q3: '',
+  })
+  const [comment, setComment] = useState('')
+
+  const questions = [
+    {
+      id: 'q1',
+      text: '¿Qué opinas del tutor?',
+      options: ['Es muy bueno', 'Podría mejorar', 'No me gusta'],
+    },
+    {
+      id: 'q2',
+      text: '¿Que tipo de afinidad tienes con el tutor?',
+      options: ['Muy buena', 'Podría mejorar', 'Ninguna'],
+    },
+    {
+      id: 'q3',
+      text: '¿Cómo podría mejorar?',
+      options: ['Más comunicación', 'Más apoyo emocional', 'Mayor disponibilidad'],
+    },
+  ]
+
+  const isAnswered = Object.values(answers).some((a) => a !== '')
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 300 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -300 }}
+      className="min-h-screen bg-white"
+    >
+      {/* Header */}
+      <div className="h-14 bg-abla-green flex items-center justify-center relative px-4">
+        <button
+          onClick={onBack}
+          className="absolute left-4 text-white"
+          aria-label="Volver"
+        >
+          <ArrowLeft className="h-6 w-6" />
+        </button>
+        <h1 className="text-lg font-semibold text-white">Encuestas</h1>
+      </div>
+
+      <div className="px-6 py-6">
+        {/* Title */}
+        <div className="text-center mb-8">
+          <h2 className="text-[26px] font-bold text-abla-blue">Camila Lopez</h2>
+          <p className="text-[14px] text-slate-500 mt-1">¿Qué opinas del tutor?</p>
+        </div>
+
+        {/* Questions */}
+        <div className="space-y-8">
+          {questions.map((q) => (
+            <div key={q.id} className="border-b border-[#E6E6E6] pb-6">
+              <p className="text-[14px] text-abla-blue text-center mb-4">{q.text}</p>
+              <div className="space-y-3">
+                {q.options.map((opt) => (
+                  <motion.button
+                    key={opt}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setAnswers((prev) => ({ ...prev, [q.id]: opt }))}
+                    className={`w-full text-left py-3 border-b transition-colors ${
+                      answers[q.id] === opt
+                        ? 'text-abla-green border-abla-green font-medium'
+                        : 'text-slate-700 border-slate-300'
+                    }`}
+                  >
+                    {opt}
+                  </motion.button>
+                ))}
+              </div>
+            </div>
+          ))}
+
+          {/* Comment section */}
+          <div className="border-b border-[#E6E6E6] pb-6">
+            <p className="text-[14px] text-abla-blue text-center mb-4">¿Cómo podría mejorar?</p>
+            <div className="relative">
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Escribe tu comentario..."
+                className="w-full h-28 p-4 bg-[#F5F7F9] rounded-lg resize-none text-[14px] text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-abla-green"
+              />
+              <div className="absolute bottom-3 right-3 flex items-center gap-3 text-slate-400">
+                <Paperclip className="h-5 w-5" />
+                <Smile className="h-5 w-5" />
+                <ImageIcon className="h-5 w-5" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Finalizar button */}
+        <AnimatePresence>
+          {isAnswered && (
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => onComplete()}
+              className="mt-8 w-full h-12 bg-abla-blue text-white font-bold rounded-lg"
+            >
+              FINALIZAR
+            </motion.button>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  )
+}
+
+// Screen 3: Experience Survey
+function ExperienceSurvey({ onBack, onComplete }) {
+  const [answers, setAnswers] = useState({
+    lugar: '',
+    escuela: '',
+    acosado: '',
+    molestado: '',
+  })
+  const [showSuccess, setShowSuccess] = useState(false)
+
+  const sections = [
+    {
+      title: '¿Dónde crees que ocurren más episodios violentos?',
+      key: 'lugar',
+      options: ['Pasillos', 'Baños', 'Gimnasio'],
+    },
+    {
+      title: '¿Qué puede hacer la escuela para detener el acoso escolar?',
+      key: 'escuela',
+      options: ['Hablar sobre el acoso escolar en clases', 'Hacer reglas contra el bullying', 'Supervisar mejor'],
+    },
+    {
+      title: '¿Cuántos niños te han acosado?',
+      key: 'acosado',
+      options: ['No me han acosado', '1-2', 'más de 4'],
+    },
+    {
+      title: '¿Puedes decirnos como te han molestado?',
+      key: 'molestado',
+      options: ['No me han molestado', 'Me han agredido físicamente', 'Me han molestado por redes sociales'],
+    },
+  ]
+
+  const isComplete = Object.values(answers).every((a) => a !== '')
+
+  const handleFinalize = () => {
+    setShowSuccess(true)
+    setTimeout(() => {
+      onComplete()
+    }, 1500)
+  }
+
+  if (showSuccess) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="min-h-screen bg-white flex items-center justify-center"
+      >
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+          className="flex flex-col items-center"
+        >
+          <div className="w-24 h-24 rounded-full bg-abla-green flex items-center justify-center mb-4">
+            <Check className="h-12 w-12 text-white" />
+          </div>
+          <p className="text-lg font-semibold text-abla-blue">¡Gracias!</p>
+          <p className="text-sm text-slate-500">Tu respuesta fue enviada</p>
+        </motion.div>
+      </motion.div>
+    )
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 300 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -300 }}
+      className="min-h-screen bg-white"
+    >
+      {/* Header */}
+      <div className="h-14 bg-abla-green flex items-center justify-center relative px-4">
+        <button
+          onClick={onBack}
+          className="absolute left-4 text-white"
+          aria-label="Volver"
+        >
+          <ArrowLeft className="h-6 w-6" />
+        </button>
+        <h1 className="text-lg font-semibold text-white">Encuestas</h1>
+      </div>
+
+      <div className="px-6 py-6 pb-24">
+        {/* Questions */}
+        <div className="space-y-8">
+          {sections.map((section) => (
+            <div key={section.key} className="border-b border-[#E6E6E6] pb-6">
+              <p className="text-[14px] text-abla-blue text-center mb-4 px-4">{section.title}</p>
+              <div className="space-y-3">
+                {section.options.map((opt) => (
+                  <motion.button
+                    key={opt}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setAnswers((prev) => ({ ...prev, [section.key]: opt }))}
+                    className={`w-full text-left py-3 border-b transition-colors ${
+                      answers[section.key] === opt
+                        ? 'text-abla-green border-abla-green font-medium'
+                        : 'text-slate-700 border-slate-300'
+                    }`}
+                  >
+                    {opt}
+                  </motion.button>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Finalizar button */}
+        <AnimatePresence>
+          {isComplete && (
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleFinalize}
+              className="mt-8 w-full h-12 bg-abla-blue text-white font-bold rounded-lg"
+            >
+              FINALIZAR
+            </motion.button>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
   )
 }
 
 export default function Encuesta() {
   const navigate = useNavigate()
-  const [step, setStep] = useState(1)
-  const [mood, setMood] = useState(null)
+  const [currentScreen, setCurrentScreen] = useState('selector') // selector, tutor, experiencia
 
-  const moodConfig = useMemo(
-    () => ({
-      BIEN: {
-        title: '¡Es genial que te sientas bien!',
-        subtitle: '¡Son esos días especiales!',
-        gradient: 'bg-gradient-to-b from-[#EAF7F2] via-[#F5F7F9] to-white',
-      },
-      'MAS O MENOS': {
-        title: 'Va a mejorar 😊',
-        subtitle: 'Recuerda que no estás solo/a',
-        gradient: 'bg-gradient-to-b from-[#FFF7E6] via-[#F5F7F9] to-white',
-      },
-      MAL: {
-        title: 'Tranquilo/a, aquí estamos',
-        subtitle: '¿Quieres hablar con alguien?',
-        gradient: 'bg-gradient-to-b from-[#FCE7F3] via-[#F5F7F9] to-white',
-      },
-    }),
-    [],
-  )
+  const handleSurveySelect = (surveyId) => {
+    if (surveyId === 'tutor') {
+      setCurrentScreen('tutor')
+    } else if (surveyId === 'experiencia' || surveyId === 'mejora') {
+      setCurrentScreen('experiencia')
+    }
+  }
 
-  const canContinue = Boolean(mood)
+  const handleComplete = () => {
+    navigate('/home')
+  }
 
   return (
     <PageTransition>
-    <div className="min-h-screen bg-abla-bg">
       <AnimatePresence mode="wait">
-        {step === 1 ? (
-          <motion.div
-            key="step-1"
-            initial={{ opacity: 0, x: 16 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -16 }}
-            transition={{ duration: 0.2 }}
-            className="mx-auto w-full max-w-[390px] px-4 pb-10"
-          >
-            <div className="pt-10">
-              <div className="flex justify-center">
-                <img src="/Logo/abla-logo.svg" alt="" className="h-8 w-auto select-none" draggable="false" />
-              </div>
-
-              <div className="mt-6 text-center text-[22px] font-bold text-abla-blue">Encuesta diaria</div>
-              <div className="mt-1 text-center text-[14px] text-slate-600">¿Cómo te sientes hoy?</div>
-
-              <div className="mt-8 flex flex-col items-center gap-7">
-                <MoodOption
-                  active={mood === 'BIEN'}
-                  emoji="😄"
-                  title="BIEN"
-                  subtitle="Sigue así, tu bienestar es importante."
-                  imageSrc="/Illustrations/encuesta-bien.svg"
-                  onClick={() => setMood('BIEN')}
-                />
-
-                <MoodOption
-                  active={mood === 'MAS O MENOS'}
-                  emoji="😐"
-                  title="MAS O MENOS"
-                  subtitle="A veces cuesta, pero puedes con esto."
-                  imageSrc="/Illustrations/encuesta-masomenos.svg"
-                  onClick={() => setMood('MAS O MENOS')}
-                />
-
-                <MoodOption
-                  active={mood === 'MAL'}
-                  emoji="😟"
-                  title="MAL"
-                  subtitle="No estás solo/a. Pide ayuda cuando lo necesites."
-                  imageSrc="/Illustrations/encuesta-mal.svg"
-                  onClick={() => setMood('MAL')}
-                />
-              </div>
-
-              <AnimatePresence>
-                {canContinue && (
-                  <motion.button
-                    key="continue"
-                    type="button"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    transition={{ duration: 0.18 }}
-                    onClick={() => setStep(2)}
-                    className="mt-8 h-12 w-full rounded-xl bg-abla-green font-bold text-white"
-                    aria-label="Continuar"
-                  >
-                    CONTINUAR
-                  </motion.button>
-                )}
-              </AnimatePresence>
-
-              <button
-                type="button"
-                onClick={() => navigate('/home')}
-                className="mt-3 h-12 w-full rounded-xl border border-abla-green bg-white font-bold text-abla-green"
-                aria-label="Volver al inicio"
-              >
-                VOLVER AL INICIO
-              </button>
-            </div>
-          </motion.div>
-        ) : (
-          <motion.div
-            key="step-2"
-            initial={{ opacity: 0, x: 16 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -16 }}
-            transition={{ duration: 0.2 }}
-            className={`min-h-screen ${moodConfig[mood]?.gradient || 'bg-abla-bg'}`}
-          >
-            <div className="mx-auto flex min-h-screen w-full max-w-[390px] flex-col items-center justify-center px-4 pb-10 text-center">
-              <div className="flex justify-center">
-                <img src="/Logo/abla-logo.svg" alt="" className="h-8 w-auto select-none" draggable="false" />
-              </div>
-
-              <div className="mt-8 text-[22px] font-bold text-abla-blue">{moodConfig[mood]?.title}</div>
-              <div className="mt-2 text-[14px] text-slate-700">{moodConfig[mood]?.subtitle}</div>
-
-              {mood === 'MAL' && (
-                <div className="mt-8 flex w-full flex-col gap-3">
-                  <motion.button
-                    type="button"
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => navigate('/chat')}
-                    className="h-12 w-full rounded-xl bg-abla-green font-bold text-white"
-                    aria-label="Chatear ahora"
-                  >
-                    Chatear ahora
-                  </motion.button>
-
-                  <motion.button
-                    type="button"
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => navigate('/ayuda/consejos')}
-                    className="h-12 w-full rounded-xl border border-abla-green bg-white font-bold text-abla-green"
-                    aria-label="Ver consejos"
-                  >
-                    Ver consejos
-                  </motion.button>
-                </div>
-              )}
-
-              <button
-                type="button"
-                onClick={() => navigate('/home')}
-                className="mt-8 h-12 w-full rounded-xl border border-abla-green bg-white font-bold text-abla-green"
-                aria-label="Volver al inicio"
-              >
-                VOLVER AL INICIO
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="mt-3 text-[13px] font-semibold text-slate-600"
-                aria-label="Volver"
-              >
-                Volver
-              </button>
-            </div>
-          </motion.div>
+        {currentScreen === 'selector' && (
+          <SurveySelector
+            key="selector"
+            onSelectSurvey={handleSurveySelect}
+          />
+        )}
+        {currentScreen === 'tutor' && (
+          <TutorSurvey
+            key="tutor"
+            onBack={() => setCurrentScreen('selector')}
+            onComplete={handleComplete}
+          />
+        )}
+        {currentScreen === 'experiencia' && (
+          <ExperienceSurvey
+            key="experiencia"
+            onBack={() => setCurrentScreen('selector')}
+            onComplete={handleComplete}
+          />
         )}
       </AnimatePresence>
-    </div>
     </PageTransition>
   )
 }
