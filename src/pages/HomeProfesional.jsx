@@ -196,7 +196,7 @@ function DetailDrawer({ caso, onClose, onDerive, onChat }) {
 
 export default function HomeProfesional() {
   const navigate = useNavigate()
-  const { user } = useAppContext()
+  const { user, reglamentoLeido } = useAppContext()
   const [casos, setCasos] = useState(mockCasos)
   const [filtro, setFiltro] = useState('todos')
   const [selectedCaso, setSelectedCaso] = useState(null)
@@ -273,6 +273,22 @@ export default function HomeProfesional() {
         </header>
 
         <main className="mx-auto w-full max-w-[390px] px-4">
+          <button
+            type="button"
+            onClick={() => navigate('/reglamento')}
+            className="mt-5 flex w-full items-center justify-between rounded-2xl bg-white px-4 py-3 text-left shadow-sm"
+          >
+            <div className="text-[13px] font-semibold text-abla-blue">
+              Reglamento interno
+              {reglamentoLeido && (
+                <span className="ml-2 inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-bold text-green-700">
+                  Leído
+                </span>
+              )}
+            </div>
+            <span className="text-slate-400">→</span>
+          </button>
+
           <div className="mt-5 flex gap-2">
             {[
               { id: 'todos', label: 'Todos' },

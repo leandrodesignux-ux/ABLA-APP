@@ -19,6 +19,7 @@ const Home = lazy(() => import('./pages/Home.jsx'))
 const HomeApoderado = lazy(() => import('./pages/HomeApoderado.jsx'))
 const HomeProfesional = lazy(() => import('./pages/HomeProfesional.jsx'))
 const CertificadosNEE = lazy(() => import('./pages/CertificadosNEE.jsx'))
+const Reglamento = lazy(() => import('./pages/Reglamento.jsx'))
 const Reportar = lazy(() => import('./pages/Reportar.jsx'))
 const ReporteForm = lazy(() => import('./pages/ReporteForm.jsx'))
 const Encuesta = lazy(() => import('./pages/Encuesta.jsx'))
@@ -164,6 +165,7 @@ function AnimatedRoutes() {
         <Route path="/home/apoderado" element={<HomeApoderado />} />
         <Route path="/home/profesional" element={<HomeProfesional />} />
         <Route path="/certificados-nee" element={<CertificadosNEE />} />
+        <Route path="/reglamento" element={<Reglamento />} />
       </Routes>
     </AnimatePresence>
   )
