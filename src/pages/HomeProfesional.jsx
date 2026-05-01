@@ -288,6 +288,14 @@ export default function HomeProfesional() {
             </div>
             <span className="text-slate-400">→</span>
           </button>
+          <button
+            type="button"
+            onClick={() => navigate('/faqs')}
+            className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white px-4 py-3 text-left shadow-sm"
+          >
+            <div className="text-[13px] font-semibold text-abla-blue">Preguntas frecuentes</div>
+            <span className="text-slate-400">→</span>
+          </button>
 
           <div className="mt-5 flex gap-2">
             {[

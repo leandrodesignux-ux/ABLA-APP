@@ -182,6 +182,14 @@ export default function HomeApoderado() {
                 </div>
                 <ChevronRight className="h-4 w-4 text-slate-400" />
               </button>
+              <button
+                type="button"
+                onClick={() => navigate('/faqs')}
+                className="flex items-center justify-between rounded-xl bg-abla-bg px-3 py-3"
+              >
+                <div className="text-[13px] font-medium text-slate-700">Preguntas frecuentes</div>
+                <ChevronRight className="h-4 w-4 text-slate-400" />
+              </button>
               <div className="flex items-center justify-between rounded-xl bg-abla-bg px-3 py-3">
                 <div className="text-[13px] font-medium text-slate-700">Protocolo escolar anti-bullying</div>
                 <ExternalLink className="h-4 w-4 text-slate-400" />
