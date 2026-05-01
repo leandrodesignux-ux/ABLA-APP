@@ -63,14 +63,14 @@ export default function ChatSelect() {
           <OptionCard
             title="Profesor"
             description="Elige un profesor"
-            to="/chat/profesor"
+            to="/chat/elegir-profesor"
             icon={<GraduationCap className="h-6 w-6 text-abla-green" aria-hidden="true" />}
           />
 
           <OptionCard
             title="Grupal"
             description="Salas de chat grupales"
-            to="/chat/grupal"
+            to="/chat/grupos"
             icon={<Users className="h-6 w-6 text-abla-green" aria-hidden="true" />}
           />
         </div>

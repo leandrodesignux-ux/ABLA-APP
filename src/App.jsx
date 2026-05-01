@@ -8,6 +8,8 @@ const Onboarding = lazy(() => import('./components/Onboarding.jsx'))
 const OnboardingApp = lazy(() => import('./components/OnboardingApp.jsx'))
 const ChatSelect = lazy(() => import('./pages/ChatSelect.jsx'))
 const ChatView = lazy(() => import('./pages/ChatView.jsx'))
+const ChatProfesor = lazy(() => import('./pages/ChatProfesor.jsx'))
+const ChatGrupal = lazy(() => import('./pages/ChatGrupal.jsx'))
 const Ayuda = lazy(() => import('./pages/Ayuda.jsx'))
 const AyudaCita = lazy(() => import('./pages/AyudaCita.jsx'))
 const AyudaCalendario = lazy(() => import('./pages/AyudaCalendario.jsx'))
@@ -144,6 +146,8 @@ function AnimatedRoutes() {
         <Route path="/" element={<RootFlow />} />
         <Route path="/login" element={<Login />} />
         <Route path="/chat" element={<ChatSelect />} />
+        <Route path="/chat/elegir-profesor" element={<ChatProfesor />} />
+        <Route path="/chat/grupos" element={<ChatGrupal />} />
         <Route path="/chat/:type" element={<ChatView />} />
         <Route path="/ayuda" element={<Ayuda />} />
         <Route path="/ayuda/consejos" element={<Consejos />} />

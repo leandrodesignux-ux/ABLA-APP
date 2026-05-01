@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Paperclip, Send } from 'lucide-react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import BottomNav from '../components/BottomNav.jsx'
 import Header from '../components/Header.jsx'
 import PageTransition from '../components/PageTransition.jsx'
@@ -68,18 +68,23 @@ function Bubble({ mine, text, time }) {
 
 export default function ChatView() {
   const { type } = useParams()
+  const location = useLocation()
   const navigate = useNavigate()
   const listRef = useRef(null)
   const [shake, setShake] = useState(false)
+
+  const profesorNombre = location.state?.profesorNombre || 'Profesor'
+  const profesorAvatarSrc = location.state?.avatarSrc || null
+  const grupoNombre = location.state?.grupoNombre || 'Grupo'
 
   const chatMeta = useMemo(() => {
     const t = String(type || '').toLowerCase()
     if (t === 'anonimo') return { title: 'Chat Anónimo', avatarSrc: null, initialMessage: 'Hola, estoy aquí para escucharte.' }
     if (t === 'tutor') return { title: 'Mi Tutor', avatarSrc: '/Avatars/avatar-tutor.svg', initialMessage: 'Hola, soy tu tutor/a. ¿En qué puedo ayudarte?' }
-    if (t === 'profesor') return { title: 'Profesor', avatarSrc: null, initialMessage: 'Hola, soy tu profesor. ¿En qué te puedo ayudar?' }
-    if (t === 'grupal') return { title: 'Grupal', avatarSrc: null, initialMessage: 'Hola, este es el chat grupal. ¿Qué desean conversar?' }
+    if (t === 'profesor') return { title: profesorNombre, avatarSrc: profesorAvatarSrc, initialMessage: 'Hola, soy tu profesor. ¿En qué te puedo ayudar?' }
+    if (t === 'grupal') return { title: grupoNombre, avatarSrc: null, initialMessage: 'Bienvenido/a al grupo. Aquí puedes compartir tu experiencia.' }
     return { title: 'Chat', avatarSrc: null, initialMessage: 'Hola, estoy aquí para escucharte.' }
-  }, [type])
+  }, [type, profesorNombre, profesorAvatarSrc, grupoNombre])
 
   const flow = useMemo(() => {
     const t = String(type || '').toLowerCase()
