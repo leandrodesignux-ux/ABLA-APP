@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { CheckCircle } from 'lucide-react'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header.jsx'
 import PageTransition from '../components/PageTransition.jsx'
 
@@ -19,9 +20,11 @@ function Bullet({ text }) {
   )
 }
 
-function Slide({ imageSrc, title, bullets }) {
+function Slide({ imageSrc, title, bullets, actions }) {
+  const navigate = useNavigate()
+
   return (
-    <div className="h-[520px] w-full">
+    <div className="h-[560px] w-full">
       <div className="flex h-full w-full flex-col overflow-hidden rounded-3xl bg-white shadow-md">
         <div className="flex h-[40%] items-center justify-center bg-abla-bg">
           <img src={imageSrc} alt="" className="h-full w-full object-contain p-6" draggable="false" />
@@ -34,6 +37,24 @@ function Slide({ imageSrc, title, bullets }) {
               <Bullet key={b} text={b} />
             ))}
           </div>
+          {actions?.length > 0 && (
+            <div className="mt-5 flex flex-col gap-2">
+              {actions.map((action) => (
+                <button
+                  key={action.label}
+                  type="button"
+                  onClick={() => navigate(action.to)}
+                  className={`h-10 w-full rounded-xl text-[12px] font-bold ${
+                    action.variant === 'filled'
+                      ? 'bg-abla-green text-white'
+                      : 'border border-abla-blue bg-white text-abla-blue'
+                  }`}
+                >
+                  {action.label}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -49,6 +70,10 @@ const slides = [
       'Aléjate de la situación y prioriza tu seguridad.',
       'Guarda evidencia (mensajes, fotos) y pide ayuda.',
     ],
+    actions: [
+      { label: 'Hacer un reporte ahora', to: '/reportar', variant: 'filled' },
+      { label: 'Hablar anónimamente', to: '/chat/anonimo', variant: 'outline' },
+    ],
   },
   {
     imageSrc: '/Illustrations/ansiedad.svg',
@@ -58,6 +83,10 @@ const slides = [
       'Documenta todo: fechas, horas y testimonios.',
       'Busca ayuda profesional si es necesario.',
     ],
+    actions: [
+      { label: 'Agendar cita con psicólogo', to: '/ayuda/cita', variant: 'filled' },
+      { label: 'Hablar con mi tutor', to: '/chat/tutor', variant: 'outline' },
+    ],
   },
   {
     imageSrc: '/Illustrations/consejos-redes.svg',
@@ -66,6 +95,10 @@ const slides = [
       'Limita el tiempo en redes sociales.',
       'Desconecta antes de dormir para descansar mejor.',
       'Sigue cuentas que te inspiren positivamente.',
+    ],
+    actions: [
+      { label: 'Reportar cyberbullying', to: '/reportar/cyberbullying', variant: 'filled' },
+      { label: 'Ver encuesta de bienestar', to: '/encuesta', variant: 'outline' },
     ],
   },
 ]
@@ -110,7 +143,7 @@ export default function Consejos() {
         <Header title="Consejos prácticos" showBack showIcons={false} />
 
         <div className="mx-auto w-full max-w-[390px] px-4 pb-10">
-          <div className="mt-6 relative overflow-hidden">
+          <div className="relative mt-6 max-h-[560px] overflow-hidden">
             <AnimatePresence initial={false} custom={direction} mode="wait">
               <motion.div
                 key={index}
@@ -130,6 +163,7 @@ export default function Consejos() {
                   imageSrc={slides[index].imageSrc}
                   title={slides[index].title}
                   bullets={slides[index].bullets}
+                  actions={slides[index].actions}
                 />
               </motion.div>
             </AnimatePresence>
