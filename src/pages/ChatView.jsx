@@ -1,10 +1,11 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Paperclip, Send } from 'lucide-react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import BottomNav from '../components/BottomNav.jsx'
 import Header from '../components/Header.jsx'
 import PageTransition from '../components/PageTransition.jsx'
+import { anonimoBotFlows, tutorBotFlows, CHAT_END_ACTIONS } from '../data/chatFlows.js'
 
 function formatTime(date) {
   try {
@@ -67,29 +68,92 @@ function Bubble({ mine, text, time }) {
 
 export default function ChatView() {
   const { type } = useParams()
+  const navigate = useNavigate()
   const listRef = useRef(null)
   const [shake, setShake] = useState(false)
 
   const chatMeta = useMemo(() => {
     const t = String(type || '').toLowerCase()
-    if (t === 'anonimo') return { title: 'Chat Anónimo', avatarSrc: null }
-    if (t === 'tutor') return { title: 'Mi Tutor', avatarSrc: '/Avatars/avatar-tutor.svg' }
-    if (t === 'profesor') return { title: 'Profesor', avatarSrc: null }
-    if (t === 'grupal') return { title: 'Grupal', avatarSrc: null }
-    return { title: 'Chat', avatarSrc: null }
+    if (t === 'anonimo') return { title: 'Chat Anónimo', avatarSrc: null, initialMessage: 'Hola, estoy aquí para escucharte.' }
+    if (t === 'tutor') return { title: 'Mi Tutor', avatarSrc: '/Avatars/avatar-tutor.svg', initialMessage: 'Hola, soy tu tutor/a. ¿En qué puedo ayudarte?' }
+    if (t === 'profesor') return { title: 'Profesor', avatarSrc: null, initialMessage: 'Hola, soy tu profesor. ¿En qué te puedo ayudar?' }
+    if (t === 'grupal') return { title: 'Grupal', avatarSrc: null, initialMessage: 'Hola, este es el chat grupal. ¿Qué desean conversar?' }
+    return { title: 'Chat', avatarSrc: null, initialMessage: 'Hola, estoy aquí para escucharte.' }
   }, [type])
 
+  const flow = useMemo(() => {
+    const t = String(type || '').toLowerCase()
+    if (t === 'tutor') return tutorBotFlows
+    if (t === 'anonimo') return anonimoBotFlows
+    return null
+  }, [type])
+
+  const [flowNode, setFlowNode] = useState('initial')
+  const [quickReplies, setQuickReplies] = useState(flow?.initial?.quickReplies || [])
+
+  useEffect(() => {
+    setFlowNode('initial')
+    setQuickReplies(flow?.initial?.quickReplies || [])
+  }, [flow])
+
+  const initialMsg = flow?.initial?.botMessage || chatMeta.initialMessage || 'Hola, estoy aquí para escucharte.'
   const [messages, setMessages] = useState(() => [
     {
       id: 'm-1',
       mine: false,
-      text: 'Hola, estoy aquí para escucharte. ¿Cómo te sientes hoy?',
+      text: initialMsg,
       createdAt: Date.now(),
     },
   ])
 
+  useEffect(() => {
+    setMessages([
+      {
+        id: `m-${Date.now()}`,
+        mine: false,
+        text: initialMsg,
+        createdAt: Date.now(),
+      },
+    ])
+  }, [initialMsg])
+
   const [draft, setDraft] = useState('')
   const [isTyping, setIsTyping] = useState(false)
+
+  const handleQuickReply = (reply) => {
+    const userMsg = {
+      id: `m-${Date.now()}`,
+      mine: true,
+      text: reply.label,
+      createdAt: Date.now(),
+    }
+    setMessages((prev) => [...prev, userMsg])
+    setQuickReplies([])
+
+    if (CHAT_END_ACTIONS[reply.next]) {
+      setTimeout(() => navigate(CHAT_END_ACTIONS[reply.next]), 800)
+      return
+    }
+
+    if (!flow) return
+
+    setIsTyping(true)
+    const nextNode = flow[reply.next] || flow.libre
+    setTimeout(() => {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `m-${Date.now()}-r`,
+          mine: false,
+          text: nextNode?.botMessage || flow?.libre?.botMessage || 'Cuéntame más. Estoy escuchando.',
+          createdAt: Date.now(),
+        },
+      ])
+      setIsTyping(false)
+      setFlowNode(reply.next)
+      setQuickReplies(nextNode?.quickReplies || [])
+    }, 1500)
+  }
 
   // Smooth scroll to bottom
   useEffect(() => {
@@ -119,14 +183,19 @@ export default function ChatView() {
     setIsTyping(true)
 
     window.setTimeout(() => {
+      const freeNode = flow?.libre
       const reply = {
         id: `m-${Date.now()}-r`,
         mine: false,
-        text: 'Gracias por contarme. ¿Puedes contarme más sobre lo que está pasando?',
+        text: freeNode?.botMessage || 'Gracias por contarme. ¿Puedes contarme más sobre lo que está pasando?',
         createdAt: Date.now(),
       }
       setMessages((prev) => [...prev, reply])
       setIsTyping(false)
+      if (freeNode) {
+        setFlowNode('libre')
+        setQuickReplies(freeNode.quickReplies || [])
+      }
     }, 2000)
   }
 
@@ -167,6 +236,20 @@ export default function ChatView() {
 
         <div className="fixed bottom-16 left-0 right-0 z-40">
           <div className="mx-auto w-full max-w-[390px] bg-white px-4 py-3">
+            {quickReplies.length > 0 ? (
+              <div className="mb-3 flex gap-2 overflow-x-auto">
+                {quickReplies.map((qr) => (
+                  <button
+                    key={`${flowNode}-${qr.label}`}
+                    type="button"
+                    onClick={() => handleQuickReply(qr)}
+                    className="shrink-0 rounded-full border border-abla-blue bg-white px-3 py-2 text-[12px] font-medium text-abla-blue"
+                  >
+                    {qr.label}
+                  </button>
+                ))}
+              </div>
+            ) : null}
             <motion.div
               animate={shake ? { x: [-4, 4, -4, 4, 0] } : { x: 0 }}
               transition={{ duration: 0.3 }}
