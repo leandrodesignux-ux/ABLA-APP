@@ -21,6 +21,8 @@ const HomeProfesional = lazy(() => import('./pages/HomeProfesional.jsx'))
 const CertificadosNEE = lazy(() => import('./pages/CertificadosNEE.jsx'))
 const Reglamento = lazy(() => import('./pages/Reglamento.jsx'))
 const FAQs = lazy(() => import('./pages/FAQs.jsx'))
+const Protocolos = lazy(() => import('./pages/Protocolos.jsx'))
+const ProtocoloDetalle = lazy(() => import('./pages/ProtocoloDetalle.jsx'))
 const Reportar = lazy(() => import('./pages/Reportar.jsx'))
 const ReporteForm = lazy(() => import('./pages/ReporteForm.jsx'))
 const Encuesta = lazy(() => import('./pages/Encuesta.jsx'))
@@ -168,6 +170,8 @@ function AnimatedRoutes() {
         <Route path="/certificados-nee" element={<CertificadosNEE />} />
         <Route path="/reglamento" element={<Reglamento />} />
         <Route path="/faqs" element={<FAQs />} />
+        <Route path="/protocolos" element={<Protocolos />} />
+        <Route path="/protocolos/:id" element={<ProtocoloDetalle />} />
       </Routes>
     </AnimatePresence>
   )
