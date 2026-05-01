@@ -1,0 +1,51 @@
+// FAQs vinculadas al reglamento interno
+export const FAQS = [
+  {
+    id: 'f1',
+    perfil: ['apoderado', 'profesional'],
+    pregunta: '¿Qué debo hacer si mi hijo/a me cuenta que lo están acosando?',
+    respuesta: 'Según el Art. 6 del Reglamento, puede denunciarlo de forma anónima o dirigirse directamente a la dirección. El establecimiento tiene 5 días hábiles para iniciar la investigación (Art. 7). Se recomienda documentar los hechos con fechas y guardar evidencia digital si es cyberbullying.',
+    articulosRelacionados: ['Art. 6', 'Art. 7', 'Art. 8'],
+    categoria: 'bullying',
+  },
+  {
+    id: 'f2',
+    perfil: ['apoderado'],
+    pregunta: '¿El colegio puede expulsar a mi hijo/a por denunciar?',
+    respuesta: 'No. El Art. 14 garantiza que las medidas disciplinarias no pueden afectar la continuidad educativa del estudiante. Si usted siente que hay represalias, tiene derecho a elevar la situación a la Superintendencia de Educación.',
+    articulosRelacionados: ['Art. 14', 'Art. 15'],
+    categoria: 'derechos',
+  },
+  {
+    id: 'f3',
+    perfil: ['apoderado', 'profesional'],
+    pregunta: '¿Qué son las adaptaciones curriculares para NEE?',
+    respuesta: 'Son modificaciones en la metodología, evaluación o contenido para que estudiantes con NEE puedan participar en igualdad de condiciones. Se establecen en el Plan de Apoyo Individual (PAI) y son obligatorias para todos los docentes (Art. 11).',
+    articulosRelacionados: ['Art. 9', 'Art. 10', 'Art. 11'],
+    categoria: 'nee',
+  },
+  {
+    id: 'f4',
+    perfil: ['apoderado'],
+    pregunta: '¿Cuándo me deben llamar si mi hijo/a tiene un problema grave?',
+    respuesta: 'El Art. 13 establece que ante una falta grave o gravísima, el establecimiento debe contactar al apoderado en un plazo máximo de 24 horas hábiles. Si esto no ocurre, puede exigirlo formalmente por escrito.',
+    articulosRelacionados: ['Art. 13'],
+    categoria: 'comunicacion',
+  },
+  {
+    id: 'f5',
+    perfil: ['profesional'],
+    pregunta: '¿Cuál es mi responsabilidad legal ante un caso de violencia que presencio?',
+    respuesta: 'Como funcionario del establecimiento, está obligado a reportar cualquier situación de maltrato. El encubrimiento puede acarrear responsabilidad administrativa y legal. Debe notificar al Encargado de Convivencia (Art. 4) y dejar registro escrito.',
+    articulosRelacionados: ['Art. 2', 'Art. 3', 'Art. 4'],
+    categoria: 'responsabilidad',
+  },
+  {
+    id: 'f6',
+    perfil: ['profesional'],
+    pregunta: '¿Cómo clasifico una falta para saber qué protocolo aplicar?',
+    respuesta: 'Según el Art. 12: Leve = conflictos esporádicos sin daño físico. Grave = acoso repetido, daño psicológico o discriminación. Gravísima = violencia física con lesiones, cyberbullying sostenido, o conductas de riesgo suicida. Ante cualquier duda, clasifique como grave.',
+    articulosRelacionados: ['Art. 12', 'Art. 13'],
+    categoria: 'clasificacion',
+  },
+]
