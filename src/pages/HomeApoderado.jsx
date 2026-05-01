@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { AlertTriangle, Bell, BookOpen, Calendar, ChevronRight, ExternalLink, MessageCircle } from 'lucide-react'
+import { AlertTriangle, Bell, BookOpen, Calendar, ChevronRight, MessageCircle } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import BottomNav from '../components/BottomNav.jsx'
 import PageTransition from '../components/PageTransition.jsx'
@@ -164,58 +164,48 @@ export default function HomeApoderado() {
           </section>
 
           <section className="mt-5 rounded-2xl bg-white p-4 shadow-sm">
-            <div className="text-[16px] font-bold text-abla-blue">Información y apoyo</div>
+            <div className="text-[16px] font-bold text-abla-blue">Recursos y documentos</div>
 
             <div className="mt-3 flex flex-col gap-3">
-              <button
-                type="button"
-                onClick={() => navigate('/reglamento')}
-                className="flex items-center justify-between rounded-xl bg-abla-bg px-3 py-3"
-              >
-                <div className="text-[13px] font-medium text-slate-700">
-                  Reglamento interno
-                  {reglamentoLeido && (
-                    <span className="ml-2 inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-bold text-green-700">
-                      Leído
+              {[
+                {
+                  label: 'Reglamento interno',
+                  icon: '📋',
+                  to: '/reglamento',
+                  sub: reglamentoLeido ? '✓ Leído' : 'Pendiente de lectura',
+                },
+                { label: 'Preguntas frecuentes', icon: '❓', to: '/faqs', sub: 'Vinculadas al reglamento' },
+                { label: 'Protocolos de denuncia', icon: '🛡️', to: '/protocolos', sub: 'Bullying, violencia, cyberbullying' },
+                {
+                  label: 'Condiciones de mi hijo/a',
+                  icon: '🧠',
+                  to: '/apoderado/nee',
+                  sub:
+                    certificadosNEE.length > 0
+                      ? `${certificadosNEE.length} condición(es) registrada(s)`
+                      : 'Sin condiciones registradas',
+                  badge: certificadosNEE.some((c) => NEE_TYPES.find((t) => t.id === c.tipo)?.urgente) ? 'ALERTA' : null,
+                },
+              ].map((item) => (
+                <button
+                  key={item.label}
+                  type="button"
+                  onClick={() => navigate(item.to)}
+                  className="flex items-center gap-3 rounded-xl bg-abla-bg px-3 py-3"
+                >
+                  <span className="text-base">{item.icon}</span>
+                  <div className="min-w-0 flex-1 text-left">
+                    <div className="text-[13px] font-semibold text-abla-blue">{item.label}</div>
+                    <div className="truncate text-[12px] text-slate-500">{item.sub}</div>
+                  </div>
+                  {item.badge && (
+                    <span className="rounded-full bg-red-100 px-2 py-1 text-[10px] font-bold text-red-700">
+                      {item.badge}
                     </span>
                   )}
-                </div>
-                <ChevronRight className="h-4 w-4 text-slate-400" />
-              </button>
-              <button
-                type="button"
-                onClick={() => navigate('/faqs')}
-                className="flex items-center justify-between rounded-xl bg-abla-bg px-3 py-3"
-              >
-                <div className="text-[13px] font-medium text-slate-700">Preguntas frecuentes</div>
-                <ChevronRight className="h-4 w-4 text-slate-400" />
-              </button>
-              <div className="flex items-center justify-between rounded-xl bg-abla-bg px-3 py-3">
-                <div className="text-[13px] font-medium text-slate-700">Protocolo escolar anti-bullying</div>
-                <ExternalLink className="h-4 w-4 text-slate-400" />
-              </div>
-              <div className="flex items-center justify-between rounded-xl bg-abla-bg px-3 py-3">
-                <div className="text-[13px] font-medium text-slate-700">Cómo hablar con tu hijo/a</div>
-                <ExternalLink className="h-4 w-4 text-slate-400" />
-              </div>
-              <button
-                type="button"
-                onClick={() => navigate('/apoderado/nee')}
-                className="flex items-center justify-between rounded-xl bg-abla-bg px-3 py-3"
-              >
-                <div className="flex items-center gap-2">
-                  <span className="text-base">🧠</span>
-                  <div className="text-left text-[13px] font-medium text-slate-700">
-                    Condiciones de mi hijo/a
-                    {certificadosNEE.length > 0 && (
-                      <span className="ml-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-abla-blue px-1.5 text-[10px] font-bold text-white">
-                        {certificadosNEE.length}
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <ChevronRight className="h-4 w-4 text-slate-400" />
-              </button>
+                  <ChevronRight className="h-4 w-4 text-slate-400" />
+                </button>
+              ))}
             </div>
           </section>
         </main>

@@ -121,7 +121,16 @@ function CasoCard({ caso, onOpen }) {
 }
 
 function DetailDrawer({ caso, onClose, onDerive, onChat }) {
+  const navigate = useNavigate()
   const config = levelConfig[caso.nivel]
+  const protocoloId =
+    caso.tipo === 'Violencia física'
+      ? 'violencia_fisica'
+      : caso.tipo === 'Cyberbullying'
+        ? 'cyberbullying'
+        : caso.tipo.toLowerCase().includes('acoso')
+          ? 'bullying'
+          : null
 
   return (
     <motion.div
@@ -181,6 +190,19 @@ function DetailDrawer({ caso, onClose, onDerive, onChat }) {
         >
           DERIVAR A PROFESIONAL
         </motion.button>
+        {protocoloId && (
+          <motion.button
+            type="button"
+            whileTap={{ scale: 0.96 }}
+            onClick={() => {
+              onClose()
+              navigate(`/protocolos/${protocoloId}`)
+            }}
+            className="h-12 rounded-xl border border-amber-400 bg-amber-50 text-[13px] font-bold text-amber-700"
+          >
+            📋 Ver protocolo para este caso
+          </motion.button>
+        )}
         <motion.button
           type="button"
           whileTap={{ scale: 0.96 }}
@@ -217,6 +239,12 @@ export default function HomeProfesional() {
     setCasos((prev) => prev.map((c) => (c.id === caso.id ? { ...c, derivado: true } : c)))
     setSelectedCaso(null)
   }
+
+  const herramientas = [
+    { label: 'Protocolos', icon: '🛡️', to: '/protocolos' },
+    { label: 'Reglamento', icon: '📋', to: '/reglamento' },
+    { label: 'FAQs', icon: '❓', to: '/faqs' },
+  ]
 
   return (
     <PageTransition>
@@ -312,6 +340,20 @@ export default function HomeProfesional() {
                 }`}
               >
                 {tab.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-3 flex gap-2">
+            {herramientas.map((h) => (
+              <button
+                key={h.label}
+                type="button"
+                onClick={() => navigate(h.to)}
+                className="flex flex-1 flex-col items-center gap-1 rounded-2xl bg-white py-3 shadow-sm"
+              >
+                <span className="text-base">{h.icon}</span>
+                <span className="text-[12px] font-semibold text-abla-blue">{h.label}</span>
               </button>
             ))}
           </div>
