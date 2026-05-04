@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { AlertTriangle, Bell, BookOpen, Calendar, ClipboardList, MessageCircle } from 'lucide-react'
+import { AlertCircle, AlertTriangle, Bell, BookOpen, Calendar, ClipboardList, MessageCircle } from 'lucide-react'
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BottomNav from '../components/BottomNav.jsx'
@@ -219,6 +219,39 @@ export default function Home() {
             )}
           </AnimatePresence>
         </section>
+
+        <AnimatePresence>
+          {moodHoy === 'MAL' && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              className="mt-5 rounded-2xl border border-red-200 bg-red-50 p-4"
+            >
+              <div className="flex items-start gap-3">
+                <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-500" aria-hidden="true" />
+                <div className="min-w-0 flex-1">
+                  <div className="text-[15px] font-bold text-abla-blue">¿Necesitas ayuda ahora?</div>
+                  <div className="mt-3 grid grid-cols-2 gap-2">
+                    <a
+                      href="tel:147"
+                      className="flex h-10 items-center justify-center rounded-xl bg-red-500 text-[12px] font-bold text-white"
+                    >
+                      Llamar al 147
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => navigate('/chat/anonimo')}
+                      className="h-10 rounded-xl border border-red-300 bg-white text-[12px] font-bold text-red-600"
+                    >
+                      Hablar aquí
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <section className="mt-6">
           <div className="grid grid-cols-3 gap-4">

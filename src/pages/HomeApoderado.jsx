@@ -6,6 +6,7 @@ import PageTransition from '../components/PageTransition.jsx'
 import SvgImage from '../components/SvgImage.jsx'
 import { useAppContext } from '../context/AppContext.jsx'
 import { NEE_TYPES } from '../data/neeTypes.js'
+import { LINEAS_EMERGENCIA } from '../data/recursosAyuda.js'
 
 const alertSigns = [
   'Cambios repentinos de humor o comportamiento',
@@ -17,6 +18,7 @@ const alertSigns = [
 export default function HomeApoderado() {
   const navigate = useNavigate()
   const { user, certificadosNEE, reglamentoLeido } = useAppContext()
+  const lineasUrgentes = LINEAS_EMERGENCIA.filter((linea) => linea.urgente)
 
   const tieneNEEUrgente = certificadosNEE.some((c) => {
     const tipo = NEE_TYPES.find((t) => t.id === c.tipo)
@@ -205,6 +207,28 @@ export default function HomeApoderado() {
                   )}
                   <ChevronRight className="h-4 w-4 text-slate-400" />
                 </button>
+              ))}
+            </div>
+          </section>
+
+          <section className="mt-5 rounded-2xl bg-white p-4 shadow-sm">
+            <div className="text-[16px] font-bold text-abla-blue">Recursos de Emergencia</div>
+            <div className="mt-3 flex flex-col gap-2">
+              {lineasUrgentes.map((linea) => (
+                <div key={linea.id} className="flex items-center gap-2 rounded-xl bg-red-50 px-3 py-2">
+                  <span className="text-base">{linea.icono}</span>
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate text-[12px] font-bold text-abla-blue">{linea.nombre}</div>
+                    <div className="text-[13px] font-black text-red-600">{linea.numero}</div>
+                  </div>
+                  <a
+                    href={`tel:${linea.numero}`}
+                    className="rounded-lg bg-red-500 px-3 py-1.5 text-[11px] font-bold text-white"
+                    aria-label={`Llamar a ${linea.nombre}`}
+                  >
+                    Llamar
+                  </a>
+                </div>
               ))}
             </div>
           </section>

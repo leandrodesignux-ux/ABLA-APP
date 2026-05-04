@@ -1,12 +1,13 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Paperclip, Send } from 'lucide-react'
+import { FileText, Paperclip, Send } from 'lucide-react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import BottomNav from '../components/BottomNav.jsx'
 import Header from '../components/Header.jsx'
 import PageTransition from '../components/PageTransition.jsx'
 import { useAppContext } from '../context/AppContext.jsx'
 import { anonimoBotFlows, tutorBotFlows, apoderadoBotFlows, profesionalBotFlows, CHAT_END_ACTIONS } from '../data/chatFlows.js'
+import { MENSAJES_RAPIDOS_APODERADO } from '../data/recursosAyuda.js'
 
 function formatTime(date) {
   try {
@@ -77,10 +78,12 @@ export default function ChatView() {
   const navigate = useNavigate()
   const listRef = useRef(null)
   const [shake, setShake] = useState(false)
+  const [templatesOpen, setTemplatesOpen] = useState(false)
 
   const profesorNombre = location.state?.profesorNombre || 'Profesor'
   const profesorAvatarSrc = location.state?.avatarSrc || null
   const grupoNombre = location.state?.grupoNombre || 'Grupo'
+  const showQuickTemplates = perfil === 'apoderado' && (chatType === 'tutor' || chatType === 'anonimo')
 
   const chatMeta = useMemo(() => {
     const t = String(chatType || 'anonimo').toLowerCase()
@@ -290,6 +293,17 @@ export default function ChatView() {
                 <Paperclip className="h-5 w-5" />
               </button>
 
+              {showQuickTemplates ? (
+                <button
+                  type="button"
+                  onClick={() => setTemplatesOpen(true)}
+                  className="flex h-10 w-10 items-center justify-center rounded-full text-slate-500"
+                  aria-label="Plantillas rápidas"
+                >
+                  <FileText className="h-5 w-5" />
+                </button>
+              ) : null}
+
               <input
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
@@ -319,6 +333,53 @@ export default function ChatView() {
           </div>
         </div>
       </div>
+
+      <AnimatePresence>
+        {templatesOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-end bg-black/40"
+            onClick={() => setTemplatesOpen(false)}
+          >
+            <motion.div
+              initial={{ y: 100 }}
+              animate={{ y: 0 }}
+              exit={{ y: 100 }}
+              transition={{ duration: 0.22 }}
+              className="max-h-[70vh] w-full overflow-y-auto rounded-t-3xl bg-white p-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="mx-auto mb-4 h-1 w-12 rounded-full bg-slate-200" />
+              <div className="text-[18px] font-bold text-abla-blue">Plantillas Rápidas</div>
+              <div className="mt-1 text-[13px] text-slate-500">Selecciona un mensaje estructurado para editarlo antes de enviar.</div>
+
+              <div className="mt-4 flex flex-col gap-3">
+                {MENSAJES_RAPIDOS_APODERADO.map((template) => (
+                  <div key={template.id} className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="text-2xl">{template.icono}</div>
+                      <div className="text-[14px] font-bold text-abla-blue">{template.tipo}</div>
+                    </div>
+                    <div className="mt-3 text-sm leading-6 text-slate-600">{template.plantilla}</div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setDraft(template.plantilla)
+                        setTemplatesOpen(false)
+                      }}
+                      className="mt-4 h-10 w-full rounded-xl bg-abla-green text-[12px] font-bold text-white"
+                    >
+                      Usar esta plantilla
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <BottomNav />
     </div>
