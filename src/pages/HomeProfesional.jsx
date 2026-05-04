@@ -5,7 +5,9 @@ import { useNavigate } from 'react-router-dom'
 import BottomNav from '../components/BottomNav.jsx'
 import PageTransition from '../components/PageTransition.jsx'
 import SvgImage from '../components/SvgImage.jsx'
+import { Toast } from '../components/Toast.jsx'
 import { useAppContext } from '../context/AppContext.jsx'
+import { NEE_TYPES } from '../data/neeTypes.js'
 
 const mockCasos = [
   {
@@ -18,6 +20,7 @@ const mockCasos = [
     edad: 14,
     curso: '3°B',
     derivado: false,
+    nee: 'ansiedad',
   },
   {
     id: 'c2',
@@ -40,6 +43,7 @@ const mockCasos = [
     edad: 13,
     curso: '2°C',
     derivado: false,
+    nee: 'tdah',
   },
   {
     id: 'c4',
@@ -100,6 +104,15 @@ function CasoCard({ caso, onOpen }) {
             </span>
           </div>
           <div className="mt-2 text-[15px] font-bold text-slate-800">{caso.nombre}</div>
+          {caso.nee && (() => {
+            const neeType = NEE_TYPES.find((t) => t.id === caso.nee)
+            return neeType ? (
+              <div className={`mt-1 inline-flex items-center gap-1 rounded-full border px-2 py-1 text-[10px] font-bold ${neeType.color}`}>
+                <span>{neeType.icon}</span>
+                <span>{neeType.label}</span>
+              </div>
+            ) : null
+          })()}
           <div className="mt-0.5 text-[12px] text-slate-500">
             {caso.tipo}{caso.curso ? ` · ${caso.curso}` : ''}
           </div>
@@ -181,6 +194,27 @@ function DetailDrawer({ caso, onClose, onDerive, onChat }) {
 
       <div className="mt-4 rounded-xl bg-abla-bg p-4 text-[13px] leading-5 text-slate-700">{caso.descripcion}</div>
 
+      {caso.nee && (() => {
+        const neeType = NEE_TYPES.find((t) => t.id === caso.nee)
+        return neeType ? (
+          <div className={`mt-4 rounded-xl border p-3 text-[12px] font-semibold ${neeType.color}`}>
+            <div>{neeType.icon} Condición registrada: {neeType.label}</div>
+            {neeType.protocoloId && (
+              <button
+                type="button"
+                onClick={() => {
+                  onClose()
+                  navigate(`/protocolos/${neeType.protocoloId}`)
+                }}
+                className="mt-2 text-[11px] font-semibold underline"
+              >
+                Ver protocolo específico →
+              </button>
+            )}
+          </div>
+        ) : null
+      })()}
+
       <div className="mt-4 flex flex-col gap-3">
         <motion.button
           type="button"
@@ -222,6 +256,8 @@ export default function HomeProfesional() {
   const [casos, setCasos] = useState(mockCasos)
   const [filtro, setFiltro] = useState('todos')
   const [selectedCaso, setSelectedCaso] = useState(null)
+  const [toast, setToast] = useState('')
+  const casosUrgentes = casos.filter((caso) => caso.nivel === 'critico' && !caso.derivado).length
 
   const casosFiltrados = useMemo(
     () =>
@@ -238,6 +274,8 @@ export default function HomeProfesional() {
   const deriveCaso = (caso) => {
     setCasos((prev) => prev.map((c) => (c.id === caso.id ? { ...c, derivado: true } : c)))
     setSelectedCaso(null)
+    setToast('Caso derivado correctamente')
+    setTimeout(() => setToast(''), 2500)
   }
 
   const herramientas = [
@@ -295,8 +333,14 @@ export default function HomeProfesional() {
             </div>
           </div>
 
-          <div className="flex h-12 items-center border-t border-white/10 bg-abla-green/90 px-4">
+          <div className="flex h-12 items-center justify-between border-t border-white/10 bg-abla-green/90 px-4">
             <div className="text-[14px] font-semibold">Panel Profesional</div>
+            {casosUrgentes > 0 && (
+              <div className="flex items-center gap-1 rounded-full bg-red-500 px-2 py-1 text-[11px] font-bold text-white">
+                <span className="h-1.5 w-1.5 rounded-full bg-white" />
+                <span>{casosUrgentes} urgente{casosUrgentes > 1 ? 's' : ''}</span>
+              </div>
+            )}
           </div>
         </header>
 
@@ -383,6 +427,7 @@ export default function HomeProfesional() {
         </main>
 
         <BottomNav />
+        <Toast message={toast} visible={Boolean(toast)} />
       </div>
     </PageTransition>
   )
