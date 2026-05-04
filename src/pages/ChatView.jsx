@@ -69,6 +69,9 @@ function Bubble({ mine, text, time }) {
 export default function ChatView() {
   const { type } = useParams()
   const location = useLocation()
+  const chatType = ['anonimo', 'tutor', 'profesor', 'grupal'].includes(type)
+    ? type
+    : 'anonimo'
   const navigate = useNavigate()
   const listRef = useRef(null)
   const [shake, setShake] = useState(false)
@@ -78,20 +81,24 @@ export default function ChatView() {
   const grupoNombre = location.state?.grupoNombre || 'Grupo'
 
   const chatMeta = useMemo(() => {
-    const t = String(type || '').toLowerCase()
+    const t = String(chatType || 'anonimo').toLowerCase()
     if (t === 'anonimo') return { title: 'Chat Anónimo', avatarSrc: null, initialMessage: 'Hola, estoy aquí para escucharte.' }
     if (t === 'tutor') return { title: 'Mi Tutor', avatarSrc: '/Avatars/avatar-tutor.svg', initialMessage: 'Hola, soy tu tutor/a. ¿En qué puedo ayudarte?' }
     if (t === 'profesor') return { title: profesorNombre, avatarSrc: profesorAvatarSrc, initialMessage: 'Hola, soy tu profesor. ¿En qué te puedo ayudar?' }
     if (t === 'grupal') return { title: grupoNombre, avatarSrc: null, initialMessage: 'Bienvenido/a al grupo. Aquí puedes compartir tu experiencia.' }
-    return { title: 'Chat', avatarSrc: null, initialMessage: 'Hola, estoy aquí para escucharte.' }
-  }, [type, profesorNombre, profesorAvatarSrc, grupoNombre])
+    return {
+      title: 'Chat',
+      subtitle: 'Conversación confidencial',
+      avatarSrc: '/Illustrations/chat-anonimo.svg',
+    }
+  }, [chatType, profesorNombre, profesorAvatarSrc, grupoNombre])
 
   const flow = useMemo(() => {
-    const t = String(type || '').toLowerCase()
+    const t = String(chatType || 'anonimo').toLowerCase()
     if (t === 'tutor') return tutorBotFlows
     if (t === 'anonimo') return anonimoBotFlows
     return null
-  }, [type])
+  }, [chatType])
 
   const [flowNode, setFlowNode] = useState('initial')
   const [quickReplies, setQuickReplies] = useState(flow?.initial?.quickReplies || [])

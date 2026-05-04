@@ -169,6 +169,22 @@ export default function Perfil() {
           >
             Cerrar Sesión
           </motion.button>
+
+          {/* Acerca de */}
+          <div className="mt-6 rounded-2xl bg-white p-4 text-center shadow-sm">
+            <div className="text-[18px] font-bold text-abla-blue">ABLA</div>
+            <div className="mt-1 text-[13px] text-slate-500">App anti-bullying escolar</div>
+
+            <div className="mt-4 rounded-xl bg-abla-bg p-3">
+              <div className="text-[11px] font-medium uppercase tracking-[0.18em] text-slate-400">
+                Diseñado y creado por
+              </div>
+              <div className="mt-1 text-[14px] font-bold text-abla-blue">Leandro Balbian</div>
+              <div className="text-[12px] font-medium text-slate-500">Product Designer</div>
+            </div>
+
+            <div className="mt-3 text-[11px] font-medium text-slate-400">v2.0 · Mayo 2026</div>
+          </div>
         </div>
       </div>
 
