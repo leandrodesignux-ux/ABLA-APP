@@ -1,188 +1,161 @@
-import { AnimatePresence, motion } from 'framer-motion'
-import { CheckCircle } from 'lucide-react'
-import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import BottomNav from '../components/BottomNav.jsx'
 import Header from '../components/Header.jsx'
 import PageTransition from '../components/PageTransition.jsx'
+import { useAppContext } from '../context/AppContext.jsx'
+import { FRASES_APOYO, FRASES_EVITAR, MICROCAPSULAS, RED_FLAGS_DATA } from '../data/consejosData.js'
 
-const slideVariants = {
-  enter: { x: 300, opacity: 0 },
-  center: { x: 0, opacity: 1 },
-  exit: { x: -300, opacity: 0 },
+const tabs = ['Señales', 'Actualidad', 'Qué Decir']
+const categorias = ['Físico', 'Material', 'Conductual', 'Emocional', 'Digital', 'Social', 'Grave']
+
+function getActionRoute(action) {
+  const text = action.toLowerCase()
+  if (text.includes('reporte')) return '/reportar'
+  if (text.includes('cita') || text.includes('psicólogo')) return '/ayuda/cita'
+  if (text.includes('tutor')) return '/chat/tutor'
+  if (text.includes('privacidad') || text.includes('redes')) return '/ayuda'
+  return '/ayuda'
 }
-
-function Bullet({ text }) {
-  return (
-    <div className="flex items-start gap-2">
-      <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-abla-green" aria-hidden="true" />
-      <div className="text-[13px] leading-5 text-slate-600">{text}</div>
-    </div>
-  )
-}
-
-function Slide({ imageSrc, title, bullets, actions }) {
-  const navigate = useNavigate()
-
-  return (
-    <div className="h-[560px] w-full">
-      <div className="flex h-full w-full flex-col overflow-hidden rounded-3xl bg-white shadow-md">
-        <div className="flex h-[40%] items-center justify-center bg-abla-bg">
-          <img src={imageSrc} alt="" className="h-full w-full object-contain p-6" draggable="false" />
-        </div>
-
-        <div className="flex flex-1 flex-col p-5">
-          <div className="text-[16px] font-bold text-abla-blue">{title}</div>
-          <div className="mt-4 flex flex-col gap-3">
-            {bullets.map((b) => (
-              <Bullet key={b} text={b} />
-            ))}
-          </div>
-          {actions?.length > 0 && (
-            <div className="mt-5 flex flex-col gap-2">
-              {actions.map((action) => (
-                <button
-                  key={action.label}
-                  type="button"
-                  onClick={() => navigate(action.to)}
-                  className={`h-10 w-full rounded-xl text-[12px] font-bold ${
-                    action.variant === 'filled'
-                      ? 'bg-abla-green text-white'
-                      : 'border border-abla-blue bg-white text-abla-blue'
-                  }`}
-                >
-                  {action.label}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-const slides = [
-  {
-    imageSrc: '/Illustrations/consejos-acoso.svg',
-    title: '¿Qué hacer ante situaciones de violencia?',
-    bullets: [
-      'Busca un adulto de confianza y cuenta lo que ocurre.',
-      'Aléjate de la situación y prioriza tu seguridad.',
-      'Guarda evidencia (mensajes, fotos) y pide ayuda.',
-    ],
-    actions: [
-      { label: 'Hacer un reporte ahora', to: '/reportar', variant: 'filled' },
-      { label: 'Hablar anónimamente', to: '/chat/anonimo', variant: 'outline' },
-    ],
-  },
-  {
-    imageSrc: '/Illustrations/ansiedad.svg',
-    title: 'Cómo actuar ante el acoso',
-    bullets: [
-      'Mantén la calma y no respondas con agresividad.',
-      'Documenta todo: fechas, horas y testimonios.',
-      'Busca ayuda profesional si es necesario.',
-    ],
-    actions: [
-      { label: 'Agendar cita con psicólogo', to: '/ayuda/cita', variant: 'filled' },
-      { label: 'Hablar con mi tutor', to: '/chat/tutor', variant: 'outline' },
-    ],
-  },
-  {
-    imageSrc: '/Illustrations/consejos-redes.svg',
-    title: 'Cuida tu bienestar digital',
-    bullets: [
-      'Limita el tiempo en redes sociales.',
-      'Desconecta antes de dormir para descansar mejor.',
-      'Sigue cuentas que te inspiren positivamente.',
-    ],
-    actions: [
-      { label: 'Reportar cyberbullying', to: '/reportar/cyberbullying', variant: 'filled' },
-      { label: 'Ver encuesta de bienestar', to: '/encuesta', variant: 'outline' },
-    ],
-  },
-]
 
 export default function Consejos() {
-  const [index, setIndex] = useState(0)
-  const [direction, setDirection] = useState(0)
-
-  const goTo = (i) => {
-    const newIndex = Math.max(0, Math.min(i, slides.length - 1))
-    setDirection(newIndex > index ? 1 : -1)
-    setIndex(newIndex)
-  }
-
-  const onPanEnd = (_, info) => {
-    const threshold = 50
-    if (info.offset.x < -threshold && index < slides.length - 1) {
-      goTo(index + 1)
-    } else if (info.offset.x > threshold && index > 0) {
-      goTo(index - 1)
-    }
-  }
-
-  const variants = {
-    enter: (direction) => ({
-      x: direction > 0 ? 300 : -300,
-      opacity: 0,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-    },
-    exit: (direction) => ({
-      x: direction > 0 ? -300 : 300,
-      opacity: 0,
-    }),
-  }
+  const navigate = useNavigate()
+  const { perfil } = useAppContext()
+  const [activeTab, setActiveTab] = useState('Señales')
+  const perfilActivo = perfil || 'estudiante'
+  const microcapsulas = MICROCAPSULAS.filter((capsula) => capsula.perfil.includes(perfilActivo))
+  const redFlagsPorCategoria = useMemo(
+    () =>
+      categorias.map((categoria) => ({
+        categoria,
+        items: RED_FLAGS_DATA.filter((item) => item.categoria === categoria),
+      })).filter((grupo) => grupo.items.length > 0),
+    [],
+  )
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-abla-bg">
-        <Header title="Consejos prácticos" showBack showIcons={false} />
+      <div className="min-h-screen bg-abla-bg pb-24">
+        <Header title="Consejos" showBack showIcons={false} />
 
-        <div className="mx-auto w-full max-w-[390px] px-4 pb-10">
-          <div className="relative mt-6 max-h-[560px] overflow-hidden">
-            <AnimatePresence initial={false} custom={direction} mode="wait">
-              <motion.div
-                key={index}
-                custom={direction}
-                variants={variants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.3 }}
-                drag="x"
-                dragConstraints={{ left: 0, right: 0 }}
-                dragElastic={0.2}
-                onPanEnd={onPanEnd}
-                className="cursor-grab active:cursor-grabbing"
-              >
-                <Slide
-                  imageSrc={slides[index].imageSrc}
-                  title={slides[index].title}
-                  bullets={slides[index].bullets}
-                  actions={slides[index].actions}
-                />
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
-          <div className="mt-6 flex items-center justify-center gap-2" aria-label="Progreso">
-            {slides.map((_, i) => (
+        <div className="mx-auto w-full max-w-[390px] px-4">
+          <div className="mt-5 flex gap-2 overflow-x-auto pb-1">
+            {tabs.map((tab) => (
               <button
-                key={i}
+                key={tab}
                 type="button"
-                onClick={() => goTo(i)}
-                className={`h-2.5 w-2.5 rounded-full transition-colors ${
-                  i === index ? 'bg-abla-green' : 'bg-[#E6E6E6]'
+                onClick={() => setActiveTab(tab)}
+                className={`shrink-0 rounded-full px-4 py-2 text-[13px] font-bold transition-colors ${
+                  activeTab === tab
+                    ? 'bg-abla-green text-white'
+                    : 'bg-white text-abla-blue shadow-sm'
                 }`}
-                aria-label={`Consejo ${i + 1}`}
-              />
+              >
+                {tab}
+              </button>
             ))}
           </div>
+
+          <div className="mt-5">
+            {activeTab === 'Señales' && (
+              <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-5">
+                {redFlagsPorCategoria.map((grupo) => (
+                  <section key={grupo.categoria}>
+                    <div className="mb-2 text-[16px] font-bold text-abla-blue">{grupo.categoria}</div>
+                    <div className="flex flex-col gap-2">
+                      {grupo.items.map((item) => (
+                        <div
+                          key={item.indicador}
+                          className={`rounded-2xl p-3 shadow-sm ${
+                            item.urgente ? 'border border-red-200 bg-red-50' : 'bg-white'
+                          }`}
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className="text-2xl">{item.emoji}</div>
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center gap-2">
+                                <div className="text-[14px] font-bold text-abla-blue">{item.indicador}</div>
+                                {item.urgente && (
+                                  <div className="rounded-full bg-red-100 px-2 py-0.5 text-[9px] font-black text-red-600">
+                                    ⚠️ URGENTE
+                                  </div>
+                                )}
+                              </div>
+                              <div className="mt-1 text-[12px] leading-5 text-slate-500">{item.descripcion}</div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                ))}
+              </motion.div>
+            )}
+
+            {activeTab === 'Actualidad' && (
+              <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-3">
+                {microcapsulas.map((capsula) => (
+                  <div key={capsula.id} className="rounded-2xl bg-white p-4 shadow-sm">
+                    <div className="flex items-start gap-3">
+                      <div
+                        className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-3xl text-white"
+                        style={{ backgroundColor: capsula.color }}
+                      >
+                        {capsula.icono}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-[15px] font-bold text-abla-blue">{capsula.titulo}</div>
+                        <div className="mt-2 text-[13px] font-bold leading-5 text-slate-700">{capsula.dato}</div>
+                        <div className="mt-2 text-[12px] leading-5 text-slate-500">{capsula.consejo}</div>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => navigate(getActionRoute(capsula.accion))}
+                      className="mt-4 h-10 w-full rounded-xl bg-abla-green text-[12px] font-bold text-white"
+                    >
+                      {capsula.accion}
+                    </button>
+                  </div>
+                ))}
+              </motion.div>
+            )}
+
+            {activeTab === 'Qué Decir' && (
+              <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-6">
+                <section>
+                  <div className="mb-3 text-[16px] font-bold text-abla-blue">Frases que sí ayudan</div>
+                  <div className="flex flex-col gap-3">
+                    {FRASES_APOYO.map((item) => (
+                      <div key={item.fase} className="rounded-2xl border border-green-100 bg-green-50 p-4 shadow-sm">
+                        <div className="text-[11px] font-black uppercase tracking-[0.16em] text-abla-green">{item.fase}</div>
+                        <div className="mt-2 text-[14px] font-bold leading-5 text-abla-blue">“{item.frase}”</div>
+                        <div className="mt-2 text-[12px] leading-5 text-slate-500">{item.proposito}</div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                <section>
+                  <div className="mb-3 text-[16px] font-bold text-abla-blue">Frases que dañan</div>
+                  <div className="rounded-2xl bg-white p-4 shadow-sm">
+                    <div className="flex flex-col gap-3">
+                      {FRASES_EVITAR.map((frase) => (
+                        <div key={frase} className="flex items-start gap-2 text-[13px] font-semibold text-slate-600">
+                          <span>❌</span>
+                          <span>{frase}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+              </motion.div>
+            )}
+          </div>
         </div>
+
+        <BottomNav />
       </div>
     </PageTransition>
   )
