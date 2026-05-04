@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import {
   AlertTriangle,
+  BookMarked,
   Calendar,
   ClipboardList,
   Heart,
@@ -65,7 +66,7 @@ export default function BottomNav() {
 
   const itemsApoderado = [
     { to: '/home/apoderado', label: 'Inicio', icon: Home, match: (p) => p === '/home/apoderado' },
-    { to: '/ayuda/cita', label: 'Cita', icon: Calendar, match: (p) => p.startsWith('/ayuda') },
+    { to: '/bitacora', label: 'Bitácora', icon: BookMarked, match: (p) => p.startsWith('/bitacora') },
     { to: '/protocolos', label: 'Protocolos', icon: Shield, match: (p) => p.startsWith('/protocolos') },
     { to: '/apoderado/nee', label: 'Mi hijo/a', icon: Heart, match: (p) => p.startsWith('/apoderado') },
     { to: '/perfil', label: 'Perfil', icon: User, match: (p) => p.startsWith('/perfil') },
@@ -75,7 +76,7 @@ export default function BottomNav() {
     { to: '/home/profesional', label: 'Casos', icon: ClipboardList, match: (p) => p === '/home/profesional' },
     { to: '/chat', label: 'Chat', icon: MessageCircle, match: (p) => p.startsWith('/chat') },
     { to: '/protocolos', label: 'Protocolos', icon: Shield, match: (p) => p.startsWith('/protocolos') },
-    { to: '/faqs', label: 'FAQs', icon: HelpCircle, match: (p) => p.startsWith('/faqs') },
+    { to: '/bitacora', label: 'Bitácora', icon: BookMarked, match: (p) => p.startsWith('/bitacora') },
     { to: '/perfil', label: 'Perfil', icon: User, match: (p) => p.startsWith('/perfil') },
   ]
 
@@ -89,12 +90,14 @@ export default function BottomNav() {
     '/home/profesional': () => import('../pages/HomeProfesional.jsx'),
     '/chat': () => import('../pages/ChatSelect.jsx'),
     '/protocolos': () => import('../pages/Protocolos.jsx'),
+    '/bitacora': () => import('../pages/Bitacora.jsx'),
     '/faqs': () => import('../pages/FAQs.jsx'),
     '/perfil': () => import('../pages/Perfil.jsx'),
   } : perfil === 'apoderado' ? {
     '/home/apoderado': () => import('../pages/HomeApoderado.jsx'),
     '/ayuda/cita': () => import('../pages/AyudaCita.jsx'),
     '/protocolos': () => import('../pages/Protocolos.jsx'),
+    '/bitacora': () => import('../pages/Bitacora.jsx'),
     '/apoderado/nee': () => import('../pages/CertificadosNEE.jsx'),
     '/perfil': () => import('../pages/Perfil.jsx'),
   } : {

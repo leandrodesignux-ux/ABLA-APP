@@ -25,6 +25,7 @@ const Protocolos = lazy(() => import('./pages/Protocolos.jsx'))
 const ProtocoloDetalle = lazy(() => import('./pages/ProtocoloDetalle.jsx'))
 const Reportar = lazy(() => import('./pages/Reportar.jsx'))
 const ReporteForm = lazy(() => import('./pages/ReporteForm.jsx'))
+const Bitacora = lazy(() => import('./pages/Bitacora.jsx'))
 const Encuesta = lazy(() => import('./pages/Encuesta.jsx'))
 const Perfil = lazy(() => import('./pages/Perfil.jsx'))
 const SobreTi = lazy(() => import('./pages/SobreTi.jsx'))
@@ -161,6 +162,7 @@ function AnimatedRoutes() {
         <Route path="/ayuda/cita/confirmacion" element={<AyudaConfirmacion />} />
         <Route path="/reportar" element={<Reportar />} />
         <Route path="/reportar/:tipo" element={<ReporteForm />} />
+        <Route path="/bitacora" element={<Bitacora />} />
         <Route path="/perfil" element={<Perfil />} />
         <Route path="/encuesta" element={<Encuesta />} />
         <Route path="/sobreti" element={<SobreTi />} />
