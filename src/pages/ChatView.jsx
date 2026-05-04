@@ -5,7 +5,8 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import BottomNav from '../components/BottomNav.jsx'
 import Header from '../components/Header.jsx'
 import PageTransition from '../components/PageTransition.jsx'
-import { anonimoBotFlows, tutorBotFlows, CHAT_END_ACTIONS } from '../data/chatFlows.js'
+import { useAppContext } from '../context/AppContext.jsx'
+import { anonimoBotFlows, tutorBotFlows, apoderadoBotFlows, profesionalBotFlows, CHAT_END_ACTIONS } from '../data/chatFlows.js'
 
 function formatTime(date) {
   try {
@@ -69,7 +70,8 @@ function Bubble({ mine, text, time }) {
 export default function ChatView() {
   const { type } = useParams()
   const location = useLocation()
-  const chatType = ['anonimo', 'tutor', 'profesor', 'grupal'].includes(type)
+  const { perfil } = useAppContext()
+  const chatType = ['anonimo', 'tutor', 'profesor', 'grupal', 'profesional', 'apoyo-apoderado', 'grupos'].includes(type)
     ? type
     : 'anonimo'
   const navigate = useNavigate()
@@ -82,23 +84,31 @@ export default function ChatView() {
 
   const chatMeta = useMemo(() => {
     const t = String(chatType || 'anonimo').toLowerCase()
-    if (t === 'anonimo') return { title: 'Chat Anónimo', avatarSrc: null, initialMessage: 'Hola, estoy aquí para escucharte.' }
-    if (t === 'tutor') return { title: 'Mi Tutor', avatarSrc: '/Avatars/avatar-tutor.svg', initialMessage: 'Hola, soy tu tutor/a. ¿En qué puedo ayudarte?' }
-    if (t === 'profesor') return { title: profesorNombre, avatarSrc: profesorAvatarSrc, initialMessage: 'Hola, soy tu profesor. ¿En qué te puedo ayudar?' }
-    if (t === 'grupal') return { title: grupoNombre, avatarSrc: null, initialMessage: 'Bienvenido/a al grupo. Aquí puedes compartir tu experiencia.' }
-    return {
-      title: 'Chat',
-      subtitle: 'Conversación confidencial',
-      avatarSrc: '/Illustrations/chat-anonimo.svg',
+    if (t === 'profesional') return {
+      title: 'Asistente de Protocolos',
+      avatarSrc: null,
+      initialMessage: 'Hola. ¿Qué necesitas gestionar hoy?',
     }
-  }, [chatType, profesorNombre, profesorAvatarSrc, grupoNombre])
+    if (perfil === 'apoderado' && t === 'anonimo') return {
+      title: 'Orientación Anónima',
+      avatarSrc: null,
+      initialMessage: 'Hola. Estoy aquí para ayudarte a proteger a tu hijo/a. ¿Qué situación quieres reportar o consultar?',
+    }
+    if (t === 'tutor') return { title: 'Mi Tutor', avatarSrc: '/Avatars/avatar-tutor.svg', initialMessage: 'Hola, soy tu tutor/a. ¿En qué puedo ayudarte?' }
+    if (t === 'anonimo') return { title: 'Chat Anónimo', avatarSrc: null, initialMessage: 'Hola, estoy aquí para escucharte. ¿Qué está pasando?' }
+    if (t === 'profesor') return { title: profesorNombre, avatarSrc: profesorAvatarSrc, initialMessage: 'Hola, soy tu profesor. ¿En qué te puedo ayudar?' }
+    if (t === 'grupal') return { title: grupoNombre, avatarSrc: null, initialMessage: 'Bienvenido/a al grupo.' }
+    return { title: 'Chat', avatarSrc: null, initialMessage: 'Hola, estoy aquí.' }
+  }, [chatType, perfil, profesorNombre, profesorAvatarSrc, grupoNombre])
 
   const flow = useMemo(() => {
     const t = String(chatType || 'anonimo').toLowerCase()
+    if (t === 'profesional') return profesionalBotFlows
+    if (perfil === 'apoderado' && (t === 'anonimo' || t === 'apoyo-apoderado')) return apoderadoBotFlows
     if (t === 'tutor') return tutorBotFlows
     if (t === 'anonimo') return anonimoBotFlows
-    return null
-  }, [chatType])
+    return anonimoBotFlows
+  }, [chatType, perfil])
 
   const [flowNode, setFlowNode] = useState('initial')
   const [quickReplies, setQuickReplies] = useState(flow?.initial?.quickReplies || [])
@@ -216,6 +226,11 @@ export default function ChatView() {
     <div className="min-h-screen bg-abla-bg pb-24">
       <div className="relative">
         <Header title={chatMeta.title} showBack showIcons={false} />
+        {chatType === 'anonimo' ? (
+          <div className="pointer-events-none absolute left-1/2 top-[36px] -translate-x-1/2 text-[11px] font-medium text-slate-500">
+            Confidencial 🔒
+          </div>
+        ) : null}
         {chatMeta.avatarSrc ? (
           <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2">
             <div className="h-9 w-9 overflow-hidden rounded-full border-2 border-white/60 bg-white/10">
