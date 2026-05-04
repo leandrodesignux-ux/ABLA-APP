@@ -9,6 +9,36 @@ import { Toast } from '../components/Toast.jsx'
 import { useAppContext } from '../context/AppContext.jsx'
 import { NEE_TYPES } from '../data/neeTypes.js'
 
+const PROFESIONALES_DERIVACION = [
+  {
+    id: 'p1',
+    nombre: 'Psic. Ana García',
+    rol: 'Psicóloga clínica',
+    avatar: '/Avatars/psi-1.svg',
+    especialidades: ['Violencia física', 'Cyberbullying', 'ansiedad', 'autolesion'],
+    disponible: true,
+    descripcion: 'Esp. en trauma infantil y crisis emocional',
+  },
+  {
+    id: 'p2',
+    nombre: 'Psic. Luis Muñoz',
+    rol: 'Psicólogo educacional',
+    avatar: '/Avatars/psi-2.svg',
+    especialidades: ['Acoso verbal', 'Cyberbullying', 'tdah', 'autismo'],
+    disponible: true,
+    descripcion: 'Esp. en NEE y convivencia escolar',
+  },
+  {
+    id: 'p3',
+    nombre: 'Orient. Carmen Silva',
+    rol: 'Orientadora escolar',
+    avatar: '/Avatars/psi-3.svg',
+    especialidades: ['Violencia física', 'Acoso verbal', 'Anonimo', 'Conflicto puntual'],
+    disponible: false,
+    descripcion: 'Esp. en mediación y resolución de conflictos',
+  },
+]
+
 const mockCasos = [
   {
     id: 'c1',
@@ -203,8 +233,8 @@ function DetailDrawer({ caso, onClose, onDerive, onChat }) {
               <button
                 type="button"
                 onClick={() => {
-                  onClose()
                   navigate(`/protocolos/${neeType.protocoloId}`)
+                  setTimeout(() => onClose(), 50)
                 }}
                 className="mt-2 text-[11px] font-semibold underline"
               >
@@ -229,8 +259,8 @@ function DetailDrawer({ caso, onClose, onDerive, onChat }) {
             type="button"
             whileTap={{ scale: 0.96 }}
             onClick={() => {
-              onClose()
               navigate(`/protocolos/${protocoloId}`)
+              setTimeout(() => onClose(), 50)
             }}
             className="h-12 rounded-xl border border-amber-400 bg-amber-50 text-[13px] font-bold text-amber-700"
           >
@@ -257,6 +287,7 @@ export default function HomeProfesional() {
   const [filtro, setFiltro] = useState('todos')
   const [selectedCaso, setSelectedCaso] = useState(null)
   const [toast, setToast] = useState('')
+  const [derivarModal, setDerivarModal] = useState(null)
   const casosUrgentes = casos.filter((caso) => caso.nivel === 'critico' && !caso.derivado).length
 
   const casosFiltrados = useMemo(
@@ -404,16 +435,27 @@ export default function HomeProfesional() {
 
           <AnimatePresence>
             {selectedCaso ? (
-              <DetailDrawer
-                key={selectedCaso.id}
-                caso={selectedCaso}
-                onClose={() => setSelectedCaso(null)}
-                onDerive={deriveCaso}
-                onChat={() => {
-                  setSelectedCaso(null)
-                  navigate('/chat/tutor')
-                }}
-              />
+              <div className="mt-5">
+                <DetailDrawer
+                  key={selectedCaso.id}
+                  caso={selectedCaso}
+                  onClose={() => setSelectedCaso(null)}
+                  onDerive={(caso) => {
+                    setDerivarModal(caso)
+                    setTimeout(() => setSelectedCaso(null), 50)
+                  }}
+                  onChat={() => {
+                    navigate('/chat/tutor', {
+                      state: {
+                        profesorNombre: 'Tutor del establecimiento',
+                        avatarSrc: '/Avatars/avatar-tutor.svg',
+                        fromProfesional: true,
+                      }
+                    })
+                    setTimeout(() => setSelectedCaso(null), 50)
+                  }}
+                />
+              </div>
             ) : null}
           </AnimatePresence>
 
@@ -425,6 +467,104 @@ export default function HomeProfesional() {
             </AnimatePresence>
           </motion.div>
         </main>
+
+        {derivarModal && (
+          <div
+            className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 px-4 pb-4"
+            onClick={() => setDerivarModal(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 24 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-[390px] rounded-3xl bg-white p-4 shadow-xl"
+            >
+              <div className="flex items-center justify-between">
+                <div className="text-[18px] font-bold text-abla-blue">Derivar caso</div>
+                <button
+                  type="button"
+                  onClick={() => setDerivarModal(null)}
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-abla-bg"
+                  aria-label="Cerrar derivación"
+                >
+                  <X className="h-4 w-4 text-slate-500" />
+                </button>
+              </div>
+
+              <div className="mt-2 text-[13px] text-slate-500">
+                Selecciona el profesional para el caso de {derivarModal.nombre}
+              </div>
+
+              <div className="mt-4 max-h-[440px] overflow-y-auto">
+                {(() => {
+                  const caso = derivarModal
+                  const recomendados = PROFESIONALES_DERIVACION.filter((p) =>
+                    p.especialidades.some(
+                      (e) =>
+                        e === caso.tipo ||
+                        e === caso.nee ||
+                        caso.tipo.toLowerCase().includes(e.toLowerCase()),
+                    ),
+                  )
+                  const otros = PROFESIONALES_DERIVACION.filter((p) => !recomendados.includes(p))
+
+                  const ProfCard = ({ prof, highlight }) => (
+                    <button
+                      key={prof.id}
+                      type="button"
+                      onClick={() => {
+                        if (!prof.disponible) return
+                        deriveCaso(caso)
+                        setDerivarModal(null)
+                      }}
+                      className={`mb-3 flex w-full items-center gap-3 rounded-2xl p-3 text-left transition-colors ${
+                        highlight
+                          ? 'border-2 border-abla-green bg-green-50'
+                          : 'border border-slate-200 bg-white'
+                      } ${!prof.disponible ? 'cursor-not-allowed opacity-50' : ''}`}
+                    >
+                      <img src={prof.avatar} alt="" className="h-12 w-12 rounded-full object-cover" draggable="false" />
+                      <div className="min-w-0 flex-1">
+                        <div className="text-[13px] font-bold text-slate-800">{prof.nombre}</div>
+                        <div className="text-[12px] font-semibold text-slate-500">{prof.rol}</div>
+                        <div className="mt-0.5 text-[11px] text-slate-400">{prof.descripcion}</div>
+                      </div>
+                      <div className={`shrink-0 text-[10px] font-bold ${prof.disponible ? 'text-abla-green' : 'text-slate-400'}`}>
+                        {prof.disponible ? '● Disponible' : '○ No disp.'}
+                      </div>
+                    </button>
+                  )
+
+                  return (
+                    <>
+                      {recomendados.length > 0 && (
+                        <>
+                          <div className="mb-2 text-[12px] font-bold text-abla-green">
+                            ✓ Recomendados para este caso
+                          </div>
+                          {recomendados.map((p) => (
+                            <ProfCard key={p.id} prof={p} highlight />
+                          ))}
+                        </>
+                      )}
+                      {otros.length > 0 && (
+                        <>
+                          <div className="mb-2 mt-3 text-[12px] font-bold text-slate-500">
+                            Otros profesionales
+                          </div>
+                          {otros.map((p) => (
+                            <ProfCard key={p.id} prof={p} />
+                          ))}
+                        </>
+                      )}
+                    </>
+                  )
+                })()}
+              </div>
+            </motion.div>
+          </div>
+        )}
 
         <BottomNav />
         <Toast message={toast} visible={Boolean(toast)} />
