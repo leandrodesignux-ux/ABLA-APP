@@ -44,7 +44,7 @@ const options = [
     id: 'profesional',
     label: 'Profesional',
     description: 'Psicólogo, docente, etc.',
-    icon: '/Illustrations/psi-1.svg',
+    icon: '/Illustrations/profesional.svg',
   },
 ]
 
@@ -86,7 +86,7 @@ function OptionCard({ option, isSelected, onSelect }) {
         <img
           src={option.icon}
           alt=""
-          className="h-full w-full object-cover"
+          className="h-full w-full object-contain p-1"
           draggable="false"
         />
       </div>
