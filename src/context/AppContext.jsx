@@ -35,7 +35,16 @@ export function AppProvider({ children }) {
 
   const addReporte = useCallback((reporte) => {
     setState((prev) => {
-      const updated = [...prev.reportesEnviados, { ...reporte, fecha: new Date().toISOString() }]
+      const updated = [...prev.reportesEnviados, {
+        ...reporte,
+        id: `BIM-${Date.now()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`,
+        fecha: new Date().toISOString(),
+        estadoProtocolo: 'recibido',
+        severidad: reporte.severidad || 'medio',
+        frecuencia: reporte.frecuencia || '',
+        tieneEvidencia: reporte.tieneEvidencia || false,
+        tiposEvidencia: reporte.tiposEvidencia || [],
+      }]
       SS.setItem('abla_reportes', JSON.stringify(updated))
       return { ...prev, reportesEnviados: updated }
     })

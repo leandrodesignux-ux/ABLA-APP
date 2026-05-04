@@ -183,6 +183,12 @@ export default function ChatView() {
 
   const [draft, setDraft] = useState('')
   const [isTyping, setIsTyping] = useState(false)
+  const [hasUserSent, setHasUserSent] = useState(false)
+  const inputPlaceholder = perfil === 'apoderado'
+    ? 'Describe la situación...'
+    : perfil === 'profesional'
+      ? 'Escribe tu consulta...'
+      : 'Escribe cómo te sientes...'
 
   const handleQuickReply = (reply) => {
     const userMsg = {
@@ -192,6 +198,7 @@ export default function ChatView() {
       createdAt: Date.now(),
     }
     setMessages((prev) => [...prev, userMsg])
+    setHasUserSent(true)
     setQuickReplies([])
 
     if (CHAT_END_ACTIONS[reply.next]) {
@@ -226,6 +233,12 @@ export default function ChatView() {
     el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
   }, [messages.length, isTyping])
 
+  useEffect(() => {
+    const el = listRef.current
+    if (!el) return
+    el.scrollTo({ top: el.scrollHeight, behavior: 'instant' })
+  }, [])
+
   const send = () => {
     const text = draft.trim()
     if (!text) {
@@ -243,6 +256,7 @@ export default function ChatView() {
     }
 
     setMessages((prev) => [...prev, myMsg])
+    setHasUserSent(true)
     setDraft('')
     setIsTyping(true)
 
@@ -285,15 +299,22 @@ export default function ChatView() {
       <div className="mx-auto flex min-h-[calc(100vh-56px-96px)] w-full max-w-[390px] flex-col">
         <div ref={listRef} className="flex-1 overflow-y-auto px-4 py-4">
           <div className="flex flex-col gap-3">
-            {messages.map((m) => (
-              <Bubble
-                key={m.id}
-                mine={m.mine}
-                text={m.text}
-                time={formatTime(m.createdAt)}
-                urgent={!m.mine && (m.text.includes('147') || m.text.includes('600 360 7777') || m.text.includes('Línea de la Vida'))}
-              />
-            ))}
+            {messages.map((m, index) => {
+              const isLastUserMessage = m.mine && index === messages.length - 1
+              return (
+                <div key={m.id}>
+                  <Bubble
+                    mine={m.mine}
+                    text={m.text}
+                    time={formatTime(m.createdAt)}
+                    urgent={!m.mine && (m.text.includes('147') || m.text.includes('600 360 7777') || m.text.includes('Línea de la Vida'))}
+                  />
+                  {hasUserSent && isTyping && isLastUserMessage ? (
+                    <div className="mt-1 text-right text-[11px] text-slate-400">Entregado ✓</div>
+                  ) : null}
+                </div>
+              )
+            })}
             <AnimatePresence>
               {isTyping && (
                 <motion.div
@@ -311,18 +332,24 @@ export default function ChatView() {
 
         <div className="fixed bottom-16 left-0 right-0 z-40">
           <div className="mx-auto w-full max-w-[390px] bg-white px-4 py-3">
+            {chatType === 'anonimo' ? (
+              <div className="mb-2 text-[11px] text-slate-500">🔒 Esta conversación es completamente confidencial</div>
+            ) : null}
             {quickReplies.length > 0 ? (
-              <div className="mb-3 flex gap-2 overflow-x-auto">
-                {quickReplies.map((qr) => (
-                  <button
-                    key={`${flowNode}-${qr.label}`}
-                    type="button"
-                    onClick={() => handleQuickReply(qr)}
-                    className="shrink-0 rounded-full border border-abla-blue bg-white px-3 py-2 text-[12px] font-medium text-abla-blue"
-                  >
-                    {qr.label}
-                  </button>
-                ))}
+              <div className="relative mb-3">
+                <div className="scrollbar-hide flex gap-2 overflow-x-auto pr-8">
+                  {quickReplies.map((qr) => (
+                    <button
+                      key={`${flowNode}-${qr.label}`}
+                      type="button"
+                      onClick={() => handleQuickReply(qr)}
+                      className="shrink-0 rounded-full border border-abla-blue bg-white px-3 py-2 text-[12px] font-medium text-abla-blue"
+                    >
+                      {qr.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="pointer-events-none absolute bottom-0 right-0 top-0 w-8 bg-gradient-to-l from-white to-transparent" />
               </div>
             ) : null}
             <motion.div
@@ -349,17 +376,25 @@ export default function ChatView() {
                 </button>
               ) : null}
 
-              <input
-                value={draft}
-                onChange={(e) => setDraft(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') send()
-                }}
-                placeholder="Escribe un mensaje..."
-                className="h-10 flex-1 rounded-full border bg-white px-4 text-sm text-slate-800 placeholder:text-slate-400 focus:border-abla-green focus:outline-none transition-colors duration-200"
-                style={{ borderColor: draft.trim() ? '#56A087' : '#E6E6E6' }}
-                aria-label="Mensaje"
-              />
+              <div className="relative flex-1">
+                <input
+                  value={draft}
+                  maxLength={500}
+                  onChange={(e) => setDraft(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') send()
+                  }}
+                  placeholder={inputPlaceholder}
+                  className="h-10 w-full rounded-full border bg-white px-4 pr-14 text-sm text-slate-800 placeholder:text-slate-400 focus:border-abla-green focus:outline-none transition-colors duration-200"
+                  style={{ borderColor: draft.trim() ? '#56A087' : '#E6E6E6' }}
+                  aria-label="Mensaje"
+                />
+                {draft.length > 0 ? (
+                  <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-slate-400">
+                    {draft.length}/500
+                  </div>
+                ) : null}
+              </div>
 
               <button
                 type="button"
