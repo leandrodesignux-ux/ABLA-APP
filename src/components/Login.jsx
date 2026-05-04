@@ -1,93 +1,83 @@
-import { Eye, EyeOff, Lock, Mail } from 'lucide-react'
-import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import PageTransition from './PageTransition.jsx'
 import SvgImage from './SvgImage.jsx'
 
 export default function Login({ onLogin }) {
   const navigate = useNavigate()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-
-  const submit = () => {
-    onLogin?.({ email, password })
-    // Navigation handled by onLogin via navigate('/home')
-  }
 
   return (
     <PageTransition>
-    <div className="min-h-screen bg-white px-4 pb-24 text-slate-800">
-      <div className="mx-auto w-full max-w-[390px]">
-        <div className="mt-[60px] flex flex-col items-center">
-          <SvgImage src="/Logo/abla-logo.svg" alt="ABLA" className="h-[120px] w-[120px] select-none" eager />
-          <div className="mt-4 text-[22px] font-bold text-abla-blue">¡Bienvenido/a!</div>
-        </div>
+      <div className="min-h-screen bg-abla-bg px-4 text-slate-800">
+        <div className="mx-auto flex min-h-screen w-full max-w-[390px] flex-col justify-between py-10">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45 }}
+            className="flex flex-col items-center text-center"
+          >
+            <SvgImage src="/Logo/abla-logo.svg" alt="ABLA" className="h-[96px] w-[96px] select-none" eager />
+            <div className="mt-4 text-[34px] font-black tracking-tight text-abla-blue">ABLA</div>
+            <div className="mt-1 text-[18px] font-bold text-abla-green">Tu espacio seguro</div>
+            <p className="mt-3 max-w-[300px] text-[14px] leading-6 text-slate-500">
+              App anti-bullying escolar para estudiantes, apoderados y profesionales
+            </p>
+          </motion.div>
 
-        <div className="mt-8 rounded-2xl bg-white p-6 shadow-md">
-          <label className="block text-sm font-medium text-slate-700">Correo electrónico</label>
-          <div className="mt-2 flex h-12 items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 focus-within:border-abla-blue">
-            <Mail className="h-5 w-5 text-slate-400" aria-hidden="true" />
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="h-full w-full bg-transparent text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none"
-              placeholder="tu@correo.com"
-              autoComplete="email"
-            />
-          </div>
-
-          <label className="mt-4 block text-sm font-medium text-slate-700">Contraseña</label>
-          <div className="mt-2 flex h-12 items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 focus-within:border-abla-blue">
-            <Lock className="h-5 w-5 text-slate-400" aria-hidden="true" />
-            <input
-              type={showPassword ? 'text' : 'password'}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="h-full w-full bg-transparent text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none"
-              placeholder="••••••••"
-              autoComplete="current-password"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword((v) => !v)}
-              className="flex h-9 w-9 items-center justify-center rounded-lg"
-              aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.92 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.15, duration: 0.45 }}
+            className="relative mx-auto flex h-[240px] w-[240px] items-center justify-center"
+          >
+            {[1, 2, 3].map((i) => (
+              <motion.div
+                key={i}
+                animate={{ scale: [1, 1.08, 1], opacity: [0.2, 0.4, 0.2] }}
+                transition={{ duration: 2.2, repeat: Infinity, delay: i * 0.25 }}
+                className="absolute rounded-full border border-abla-green/30"
+                style={{
+                  height: `${120 + i * 38}px`,
+                  width: `${120 + i * 38}px`,
+                }}
+              />
+            ))}
+            <motion.div
+              animate={{ y: [0, -8, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+              className="relative z-10 flex h-[132px] w-[132px] items-center justify-center rounded-full bg-white shadow-xl"
             >
-              {showPassword ? <EyeOff className="h-5 w-5 text-slate-400" /> : <Eye className="h-5 w-5 text-slate-400" />}
-            </button>
-          </div>
+              <SvgImage src="/Illustrations/Profesional.svg" alt="" className="h-[104px] w-[104px]" eager />
+            </motion.div>
+          </motion.div>
 
-          <div className="mt-3 flex justify-end">
-            <button type="button" className="text-sm font-medium text-abla-green" aria-label="Olvidaste tu contraseña">
-              ¿Olvidaste tu contraseña?
-            </button>
-          </div>
-
-          <button
-            type="button"
-            className="mt-4 h-12 w-full rounded-xl bg-abla-green font-semibold text-white"
-            onClick={submit}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25, duration: 0.45 }}
+            className="flex flex-col items-center"
           >
-            Iniciar Sesión
-          </button>
+            <motion.button
+              type="button"
+              whileTap={{ scale: 0.97 }}
+              onClick={() => {
+                navigate('/')
+                onLogin?.()
+              }}
+              className="h-14 w-full rounded-2xl bg-abla-green text-[16px] font-bold text-white shadow-lg"
+              style={{ boxShadow: '0 8px 24px rgba(86,160,135,0.35)' }}
+            >
+              INGRESAR A ABLA
+            </motion.button>
 
-          <div className="mt-5 flex items-center gap-3">
-            <div className="h-px flex-1 bg-[#E6E6E6]" />
-            <div className="text-sm text-slate-400">o</div>
-            <div className="h-px flex-1 bg-[#E6E6E6]" />
-          </div>
-
-          <button
-            type="button"
-            className="mt-5 h-12 w-full rounded-xl border border-abla-green bg-white font-semibold text-abla-green"
-          >
-            Registrarse
-          </button>
+            <div className="mt-8 text-center">
+              <div className="text-[11px] font-medium uppercase tracking-[0.2em] text-slate-400">Diseñado por</div>
+              <div className="mt-1 text-[14px] font-bold text-abla-blue">Leandro Balbian</div>
+              <div className="text-[12px] font-medium text-slate-400">Product Designer</div>
+            </div>
+          </motion.div>
         </div>
       </div>
-    </div>
     </PageTransition>
   )
 }

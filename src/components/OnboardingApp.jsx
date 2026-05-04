@@ -137,7 +137,7 @@ export default function OnboardingApp({ onDone }) {
             onClick={next}
             className="h-12 w-full rounded-xl bg-abla-green font-semibold text-white"
           >
-            {index === slides.length - 1 ? 'EMPEZAR' : 'CONTINUAR'}
+            {index === slides.length - 1 ? 'EMPEZAR' : 'SIGUIENTE'}
           </motion.button>
         </div>
       </div>
