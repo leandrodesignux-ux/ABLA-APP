@@ -4,15 +4,16 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import Header from '../components/Header.jsx'
 import PageTransition from '../components/PageTransition.jsx'
+import { useAppContext } from '../context/AppContext.jsx'
 
-function Chip({ active, label, onClick }) {
+function Chip({ active, label, onClick, className = '', activeClassName = '' }) {
   return (
     <motion.button
       type="button"
       whileTap={{ scale: 0.97 }}
       onClick={onClick}
       className={`h-10 rounded-full px-4 text-[13px] font-bold transition-colors ${
-        active ? 'bg-abla-green text-white' : 'bg-white text-abla-blue border border-[#E6E6E6]'
+        active ? activeClassName || 'bg-abla-green text-white' : `bg-white text-abla-blue border border-[#E6E6E6] ${className}`
       }`}
       aria-label={label}
     >
@@ -44,6 +45,7 @@ function TextInput({ icon, placeholder, value, onChange }) {
 export default function ReporteForm() {
   const { tipo } = useParams()
   const navigate = useNavigate()
+  const { addReporte } = useAppContext()
 
   const title = useMemo(() => {
     const t = (tipo || '').toLowerCase()
@@ -58,13 +60,33 @@ export default function ReporteForm() {
   const [where, setWhere] = useState('')
   const [who, setWho] = useState('')
   const [anon, setAnon] = useState(true)
+  const [severidad, setSeveridad] = useState('medio')
+  const [frecuencia, setFrecuencia] = useState('')
+  const [tieneEvidencia, setTieneEvidencia] = useState(false)
+  const [tiposEvidencia, setTiposEvidencia] = useState([])
   const [submitted, setSubmitted] = useState(false)
 
-  useEffect(() => {
-    if (!submitted) return
-    const t = window.setTimeout(() => navigate(-1), 2000)
-    return () => window.clearTimeout(t)
-  }, [submitted, navigate])
+  const toggleTipoEvidencia = (value) => {
+    setTiposEvidencia((prev) => (
+      prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value]
+    ))
+  }
+
+  const submitReporte = () => {
+    addReporte({
+      tipo: tipo,
+      descripcion: desc,
+      lugar: where,
+      cuando: when,
+      quien: who,
+      anonimo: anon,
+      severidad,
+      frecuencia,
+      tieneEvidencia,
+      tiposEvidencia,
+    })
+    setSubmitted(true)
+  }
 
   return (
     <PageTransition>
@@ -81,6 +103,72 @@ export default function ReporteForm() {
             placeholder="Escribe aquí lo que pasó..."
             className="mt-2 w-full resize-none rounded-xl border border-[#E6E6E6] bg-white p-3 text-[14px] text-slate-800 outline-none placeholder:text-slate-400 focus:border-abla-green"
           />
+        </div>
+
+        <div className="mt-5">
+          <FieldLabel>Nivel de gravedad</FieldLabel>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {['leve', 'medio', 'grave', 'urgente'].map((option) => (
+              <Chip
+                key={option}
+                label={option}
+                active={severidad === option}
+                onClick={() => setSeveridad(option)}
+                className={option === 'urgente' ? 'border-red-400 text-red-500' : ''}
+                activeClassName={option === 'urgente' ? 'bg-red-500 text-white' : ''}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-5">
+          <FieldLabel>¿Con qué frecuencia ocurre?</FieldLabel>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {[
+              { label: 'Primera vez', value: 'primera-vez' },
+              { label: 'Ocasional', value: 'ocasional' },
+              { label: 'Frecuente', value: 'frecuente' },
+              { label: 'Todos los días', value: 'diario' },
+            ].map((option) => (
+              <Chip
+                key={option.value}
+                label={option.label}
+                active={frecuencia === option.value}
+                onClick={() => setFrecuencia(option.value)}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-5">
+          <FieldLabel>¿Tienes evidencia?</FieldLabel>
+          <button
+            type="button"
+            onClick={() => setTieneEvidencia((prev) => !prev)}
+            className={`mt-2 h-10 rounded-full px-4 text-[13px] font-bold transition-colors ${
+              tieneEvidencia ? 'bg-abla-green text-white' : 'border border-[#E6E6E6] bg-white text-abla-blue'
+            }`}
+          >
+            {tieneEvidencia ? 'Sí, tengo evidencia' : 'No por ahora'}
+          </button>
+
+          {tieneEvidencia ? (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {[
+                { label: 'Foto', value: 'foto' },
+                { label: 'Captura de pantalla', value: 'captura' },
+                { label: 'Audio', value: 'audio' },
+                { label: 'Testigo presencial', value: 'testigo' },
+              ].map((option) => (
+                <Chip
+                  key={option.value}
+                  label={option.label}
+                  active={tiposEvidencia.includes(option.value)}
+                  onClick={() => toggleTipoEvidencia(option.value)}
+                />
+              ))}
+            </div>
+          ) : null}
         </div>
 
         <div className="mt-5">
@@ -149,7 +237,7 @@ export default function ReporteForm() {
           whileTap={!submitted ? { scale: 0.96 } : {}}
           transition={{ type: 'spring', stiffness: 400, damping: 17 }}
           disabled={submitted}
-          onClick={() => setSubmitted(true)}
+          onClick={submitReporte}
           className={`mt-6 h-12 w-full rounded-xl font-bold text-white ${
             submitted ? 'bg-slate-300' : 'bg-abla-green'
           }`}
@@ -183,7 +271,23 @@ export default function ReporteForm() {
                 <CheckCircle className="h-16 w-16 text-abla-green" />
               </motion.div>
               <div className="mt-2 text-[16px] font-bold text-abla-blue">Reporte enviado</div>
-              <div className="mt-1 text-[13px] text-slate-600">Gracias por contarlo. Volviendo…</div>
+              <div className="mt-1 text-[13px] text-slate-600">Gracias por contarlo.</div>
+              <div className="mt-5 flex flex-col gap-3">
+                <button
+                  type="button"
+                  onClick={() => navigate(-1)}
+                  className="h-12 w-full rounded-xl bg-abla-green text-[13px] font-bold text-white"
+                >
+                  Volver
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigate('/bitacora')}
+                  className="h-12 w-full rounded-xl border border-abla-green text-[13px] font-bold text-abla-green"
+                >
+                  Ver en Bitácora
+                </button>
+              </div>
             </motion.div>
           </motion.div>
         )}
