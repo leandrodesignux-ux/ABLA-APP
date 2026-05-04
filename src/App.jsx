@@ -167,6 +167,7 @@ function AnimatedRoutes() {
         <Route path="/home" element={<Home />} />
         <Route path="/home/apoderado" element={<HomeApoderado />} />
         <Route path="/home/profesional" element={<HomeProfesional />} />
+        <Route path="/apoderado/nee" element={<CertificadosNEE />} />
         <Route path="/certificados-nee" element={<CertificadosNEE />} />
         <Route path="/reglamento" element={<Reglamento />} />
         <Route path="/faqs" element={<FAQs />} />

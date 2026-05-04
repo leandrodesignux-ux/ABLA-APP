@@ -47,9 +47,26 @@ function ReportItem({ title, statusLabel }) {
   )
 }
 
+function StatCard({ label, value }) {
+  return (
+    <div className="rounded-2xl bg-white p-4 text-center shadow-sm">
+      <div className="text-[22px] font-bold text-abla-blue">{value}</div>
+      <div className="mt-1 text-[12px] font-semibold text-slate-500">{label}</div>
+    </div>
+  )
+}
+
 export default function Perfil() {
   const navigate = useNavigate()
-  const { user, reportesEnviados } = useAppContext()
+  const { user, perfil, setPerfil, clearSession, reportesEnviados, citasAgendadas, certificadosNEE } = useAppContext()
+
+  const perfilLabel = perfil === 'estudiante'
+    ? '🎒 Estudiante'
+    : perfil === 'apoderado'
+      ? '👨‍👩‍👧 Apoderado'
+      : perfil === 'profesional'
+        ? '🏫 Profesional'
+        : '—'
 
   return (
     <PageTransition>
@@ -70,8 +87,24 @@ export default function Perfil() {
         <div className="px-4">
           <div className="mt-12 text-center">
             <div className="text-[20px] font-bold text-abla-blue">{user.name}</div>
-            <div className="mt-1 text-[13px] text-slate-500">Estudiante · 3ERA Entrega</div>
+            <div className="mt-2 inline-flex rounded-full bg-white px-3 py-1 text-[12px] font-bold text-abla-blue shadow-sm">
+              {perfilLabel}
+            </div>
           </div>
+
+          {perfil === 'estudiante' && (
+            <div className="mt-6 grid grid-cols-2 gap-3">
+              <StatCard label="Reportes enviados" value={reportesEnviados.length} />
+              <StatCard label="Citas agendadas" value={citasAgendadas.length} />
+            </div>
+          )}
+
+          {perfil === 'apoderado' && (
+            <div className="mt-6 grid grid-cols-2 gap-3">
+              <StatCard label="Citas agendadas" value={citasAgendadas.length} />
+              <StatCard label="Certificados NEE" value={certificadosNEE.length} />
+            </div>
+          )}
 
           <div className="mt-6 flex flex-col gap-3">
             <InfoCard
@@ -114,10 +147,24 @@ export default function Perfil() {
             type="button"
             whileTap={{ scale: 0.98 }}
             onClick={() => {
-              window.localStorage.clear()
+              setPerfil(null)
+              sessionStorage.removeItem('abla_perfil')
+              navigate('/sobreti')
+            }}
+            className="mt-8 h-12 w-full rounded-xl border border-abla-blue text-[13px] font-semibold text-abla-blue"
+            aria-label="Cambiar perfil"
+          >
+            Cambiar perfil
+          </motion.button>
+
+          <motion.button
+            type="button"
+            whileTap={{ scale: 0.98 }}
+            onClick={() => {
+              clearSession()
               navigate('/login')
             }}
-            className="mt-8 h-12 w-full rounded-xl border border-[#EF4444] bg-white font-bold text-[#EF4444]"
+            className="mt-3 h-12 w-full rounded-xl border border-[#EF4444] bg-white font-bold text-[#EF4444]"
             aria-label="Cerrar sesión"
           >
             Cerrar Sesión
