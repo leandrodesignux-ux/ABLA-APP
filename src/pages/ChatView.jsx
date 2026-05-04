@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { FileText, Paperclip, Send } from 'lucide-react'
+import { FileText, Paperclip, Phone, Send } from 'lucide-react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import BottomNav from '../components/BottomNav.jsx'
 import Header from '../components/Header.jsx'
@@ -15,6 +15,27 @@ function formatTime(date) {
   } catch {
     return ''
   }
+}
+
+function parseMessageWithLinks(text) {
+  const phoneRegex = /(147|600 360 7777)/g
+  const parts = []
+  let lastIndex = 0
+  let match
+
+  while ((match = phoneRegex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push({ type: 'text', value: text.slice(lastIndex, match.index) })
+    }
+    parts.push({ type: 'link', value: match[0] })
+    lastIndex = match.index + match[0].length
+  }
+
+  if (lastIndex < text.length) {
+    parts.push({ type: 'text', value: text.slice(lastIndex) })
+  }
+
+  return parts
 }
 
 // Typing indicator with 3 animated dots
@@ -44,7 +65,10 @@ function TypingIndicator() {
   )
 }
 
-function Bubble({ mine, text, time }) {
+function Bubble({ mine, text, time, urgent }) {
+  const isUrgent = !mine && urgent
+  const content = isUrgent ? parseMessageWithLinks(text) : [{ type: 'text', value: text }]
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
@@ -57,10 +81,25 @@ function Bubble({ mine, text, time }) {
           className={`px-4 py-3 text-[14px] leading-5 ${
             mine
               ? 'rounded-[18px_18px_4px_18px] bg-abla-blue text-white'
-              : 'rounded-[18px_18px_18px_4px] bg-white border border-[#E6E6E6] text-abla-blue'
+              : `rounded-[18px_18px_18px_4px] border text-abla-blue ${
+                isUrgent ? 'border-[#E6E6E6] border-l-4 border-l-red-400 bg-red-50' : 'border-[#E6E6E6] bg-white'
+              }`
           }`}
         >
-          {text}
+          {content.map((part, index) => (
+            part.type === 'link' ? (
+              <a
+                key={`${part.value}-${index}`}
+                href={`tel:${part.value}`}
+                className="inline-flex items-center gap-1 font-bold text-blue-600 underline"
+              >
+                <Phone className="h-3 w-3" aria-hidden="true" />
+                {part.value}
+              </a>
+            ) : (
+              <span key={`${part.value}-${index}`}>{part.value}</span>
+            )
+          ))}
         </div>
         <div className={`mt-1 text-[11px] text-slate-400 ${mine ? 'text-right' : 'text-left'}`}>{time}</div>
       </div>
@@ -247,7 +286,13 @@ export default function ChatView() {
         <div ref={listRef} className="flex-1 overflow-y-auto px-4 py-4">
           <div className="flex flex-col gap-3">
             {messages.map((m) => (
-              <Bubble key={m.id} mine={m.mine} text={m.text} time={formatTime(m.createdAt)} />
+              <Bubble
+                key={m.id}
+                mine={m.mine}
+                text={m.text}
+                time={formatTime(m.createdAt)}
+                urgent={!m.mine && (m.text.includes('147') || m.text.includes('600 360 7777') || m.text.includes('Línea de la Vida'))}
+              />
             ))}
             <AnimatePresence>
               {isTyping && (
