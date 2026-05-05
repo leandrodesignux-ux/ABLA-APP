@@ -1,23 +1,25 @@
-import { AnimatePresence, motion } from 'framer-motion'
-import { AlertTriangle, Bell, BookOpen, Calendar, ChevronRight, MessageCircle } from 'lucide-react'
+﻿import { AnimatePresence, motion } from 'framer-motion'
+import { AlertTriangle, Bell, BookOpen, Calendar, ChevronRight, MessageCircle, Star } from 'lucide-react'
+import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BottomNav from '../components/BottomNav.jsx'
 import PageTransition from '../components/PageTransition.jsx'
 import SvgImage from '../components/SvgImage.jsx'
 import { useAppContext } from '../context/AppContext.jsx'
 import { NEE_TYPES } from '../data/neeTypes.js'
+import { PROFESORES, CATEGORIAS_SITUACION } from '../data/profesoresData.js'
 import { LINEAS_EMERGENCIA } from '../data/recursosAyuda.js'
 
 const alertSigns = [
   'Cambios repentinos de humor o comportamiento',
-  'Evita ir al colegio sin razón aparente',
-  'Heridas inexplicables o ropa dañada',
+  'Evita ir al colegio sin razÃ³n aparente',
+  'Heridas inexplicables o ropa daÃ±ada',
   'Pierde objetos o dinero frecuentemente',
 ]
 
 export default function HomeApoderado() {
   const navigate = useNavigate()
-  const { user, certificadosNEE, reglamentoLeido } = useAppContext()
+  const { user, certificadosNEE, reglamentoLeido, ratingsEncuesta } = useAppContext()
   const lineasUrgentes = LINEAS_EMERGENCIA.filter((linea) => linea.urgente)
 
   const tieneNEEUrgente = certificadosNEE.some((c) => {
@@ -28,9 +30,42 @@ export default function HomeApoderado() {
   const directActions = [
     { label: 'Pedir cita', to: '/ayuda/cita', Icon: Calendar, color: 'text-abla-green' },
     { label: 'Hablar con tutor', to: '/chat/tutor', Icon: MessageCircle, color: 'text-abla-blue' },
-    { label: 'Guías para padres', to: '/ayuda/consejos', Icon: BookOpen, color: 'text-abla-green' },
+    { label: 'GuÃ­as para padres', to: '/ayuda/consejos', Icon: BookOpen, color: 'text-abla-green' },
     { label: 'Hacer reporte', to: '/reportar', Icon: AlertTriangle, color: 'text-red-500' },
   ]
+
+  const rankingProfesores = useMemo(() => {
+    return PROFESORES.map((prof) => {
+      const profRatings = ratingsEncuesta?.[prof.id] || {}
+
+      let totalVotos = 0
+      let sumaTotal = 0
+      const categoriasPorPromedio = []
+
+      Object.entries(profRatings).forEach(([catId, data]) => {
+        totalVotos += data.total
+        sumaTotal += data.suma
+        const cat = CATEGORIAS_SITUACION.find((c) => c.id === catId)
+        if (cat) {
+          categoriasPorPromedio.push({
+            ...cat,
+            promedio: (data.suma / data.total).toFixed(1),
+            total: data.total,
+          })
+        }
+      })
+
+      categoriasPorPromedio.sort((a, b) => b.promedio - a.promedio)
+
+      return {
+        ...prof,
+        promedioGeneral: totalVotos > 0 ? (sumaTotal / totalVotos).toFixed(1) : null,
+        totalVotos,
+        top2Categorias: categoriasPorPromedio.slice(0, 2),
+      }
+    }).filter((p) => p.promedioGeneral !== null)
+      .sort((a, b) => b.promedioGeneral - a.promedioGeneral)
+  }, [ratingsEncuesta])
 
   return (
     <PageTransition>
@@ -97,14 +132,14 @@ export default function HomeApoderado() {
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <div className="text-[12px] font-bold text-red-700">🔴 Alerta activa</div>
-                    <div className="text-[14px] font-black text-red-800">REQUIERE ATENCIÓN</div>
+                    <div className="text-[12px] font-bold text-red-700">ðŸ”´ Alerta activa</div>
+                    <div className="text-[14px] font-black text-red-800">REQUIERE ATENCIÃ“N</div>
                   </div>
                 </div>
 
                 <div className="mt-2 text-[13px] text-red-900">
-                  Tu hijo/a tiene una condición que requiere seguimiento activo. Revisa las recomendaciones y el
-                  protocolo de actuación.
+                  Tu hijo/a tiene una condiciÃ³n que requiere seguimiento activo. Revisa las recomendaciones y el
+                  protocolo de actuaciÃ³n.
                 </div>
 
                 <button
@@ -112,7 +147,7 @@ export default function HomeApoderado() {
                   onClick={() => navigate('/apoderado/nee')}
                   className="mt-3 h-9 rounded-xl bg-red-600 px-4 text-[12px] font-bold text-white"
                 >
-                  Ver protocolos →
+                  Ver protocolos â†’
                 </button>
               </motion.section>
             )}
@@ -120,11 +155,11 @@ export default function HomeApoderado() {
 
           <section className="mt-5 rounded-2xl bg-white p-4 shadow-sm">
             <div className="text-[18px] font-bold text-abla-blue">Bienvenido/a</div>
-            <div className="mt-1 text-[14px] text-slate-500">Aquí puedes apoyar a tu hijo/a</div>
+            <div className="mt-1 text-[14px] text-slate-500">AquÃ­ puedes apoyar a tu hijo/a</div>
           </section>
 
           <section className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4">
-            <div className="text-[16px] font-bold text-amber-700">Señales de alerta</div>
+            <div className="text-[16px] font-bold text-amber-700">SeÃ±ales de alerta</div>
 
             <div className="mt-3 flex flex-col gap-3">
               {alertSigns.map((sign) => (
@@ -141,7 +176,7 @@ export default function HomeApoderado() {
               onClick={() => navigate('/ayuda/consejos')}
               className="mt-4 h-10 rounded-xl border border-amber-400 px-4 text-[13px] font-semibold text-amber-700"
             >
-              Leer guía completa →
+              Leer guÃ­a completa â†’
             </motion.button>
           </section>
 
@@ -165,6 +200,87 @@ export default function HomeApoderado() {
             </div>
           </section>
 
+          {rankingProfesores.length > 0 && (
+            <section className="mt-5">
+              <div className="text-[16px] font-bold text-abla-blue">
+                Profesores mejor valorados
+              </div>
+              <div className="mt-1 text-[12px] text-slate-500">
+                Según las experiencias de otros estudiantes
+              </div>
+
+              <div className="mt-3 flex flex-col gap-3">
+                {rankingProfesores.map((prof, index) => (
+                  <motion.div
+                    key={prof.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.08 }}
+                    className="rounded-2xl bg-white p-4 shadow-sm"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="relative flex-shrink-0">
+                        <div className="h-12 w-12 overflow-hidden rounded-full bg-abla-bg">
+                          <img src={prof.avatar} alt="" className="h-full w-full object-cover" draggable="false" />
+                        </div>
+                        {index === 0 && (
+                          <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-yellow-400 text-[10px]">
+                            🥇
+                          </div>
+                        )}
+                        {index === 1 && (
+                          <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-slate-300 text-[10px]">
+                            🥈
+                          </div>
+                        )}
+                        {index === 2 && (
+                          <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-amber-600 text-[10px]">
+                            🥉
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="truncate text-[14px] font-bold text-abla-blue">{prof.nombre}</span>
+                          <div className="flex flex-shrink-0 items-center gap-1">
+                            <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
+                            <span className="text-[13px] font-bold text-slate-700">{prof.promedioGeneral}</span>
+                            <span className="text-[11px] text-slate-400">({prof.totalVotos})</span>
+                          </div>
+                        </div>
+
+                        <div className="mt-0.5 text-[12px] text-slate-500">{prof.rol}</div>
+
+                        {prof.top2Categorias.length > 0 && (
+                          <div className="mt-2 flex flex-wrap gap-1.5">
+                            {prof.top2Categorias.map((cat) => (
+                              <span
+                                key={cat.id}
+                                className="inline-flex items-center gap-1 rounded-full border border-green-200 bg-green-50 px-2 py-0.5 text-[11px] font-semibold text-green-700"
+                              >
+                                {cat.emoji} {cat.label}
+                                <span className="text-green-500">{cat.promedio}★</span>
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <motion.button
+                      type="button"
+                      whileTap={{ scale: 0.97 }}
+                      onClick={() => navigate('/ayuda/cita')}
+                      className="mt-3 h-9 w-full rounded-xl border border-abla-green text-[12px] font-bold text-abla-green"
+                    >
+                      Agendar cita
+                    </motion.button>
+                  </motion.div>
+                ))}
+              </div>
+            </section>
+          )}
           <section className="mt-5 rounded-2xl bg-white p-4 shadow-sm">
             <div className="text-[16px] font-bold text-abla-blue">Recursos y documentos</div>
 
@@ -172,19 +288,19 @@ export default function HomeApoderado() {
               {[
                 {
                   label: 'Reglamento interno',
-                  icon: '📋',
+                  icon: 'ðŸ“‹',
                   to: '/reglamento',
-                  sub: reglamentoLeido ? '✓ Leído' : 'Pendiente de lectura',
+                  sub: reglamentoLeido ? 'âœ“ LeÃ­do' : 'Pendiente de lectura',
                 },
-                { label: 'Preguntas frecuentes', icon: '❓', to: '/faqs', sub: 'Vinculadas al reglamento' },
-                { label: 'Protocolos de denuncia', icon: '🛡️', to: '/protocolos', sub: 'Bullying, violencia, cyberbullying' },
+                { label: 'Preguntas frecuentes', icon: 'â“', to: '/faqs', sub: 'Vinculadas al reglamento' },
+                { label: 'Protocolos de denuncia', icon: 'ðŸ›¡ï¸', to: '/protocolos', sub: 'Bullying, violencia, cyberbullying' },
                 {
                   label: 'Condiciones de mi hijo/a',
-                  icon: '🧠',
+                  icon: 'ðŸ§ ',
                   to: '/apoderado/nee',
                   sub:
                     certificadosNEE.length > 0
-                      ? `${certificadosNEE.length} condición(es) registrada(s)`
+                      ? `${certificadosNEE.length} condiciÃ³n(es) registrada(s)`
                       : 'Sin condiciones registradas',
                   badge: certificadosNEE.some((c) => NEE_TYPES.find((t) => t.id === c.tipo)?.urgente) ? 'ALERTA' : null,
                 },
@@ -239,3 +355,4 @@ export default function HomeApoderado() {
     </PageTransition>
   )
 }
+
