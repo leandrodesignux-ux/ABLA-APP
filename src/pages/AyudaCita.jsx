@@ -1,10 +1,24 @@
 import { motion } from 'framer-motion'
+import { Star } from 'lucide-react'
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header.jsx'
 import PageTransition from '../components/PageTransition.jsx'
+import { useAppContext } from '../context/AppContext.jsx'
+import { PROFESORES } from '../data/profesoresData.js'
 
-function ProCard({ name, role, avatarSrc, days, onSchedule }) {
+function calcularPromedio(profesorId, ratings) {
+  const profRatings = ratings?.[profesorId] || {}
+  let total = 0
+  let suma = 0
+  Object.values(profRatings).forEach((r) => {
+    total += r.total
+    suma += r.suma
+  })
+  return total > 0 ? { promedio: (suma / total).toFixed(1), total } : null
+}
+
+function ProCard({ name, role, avatarSrc, days, rating, onSchedule }) {
   return (
     <div className="rounded-2xl bg-white p-4 shadow-sm">
       <div className="flex items-start gap-3">
@@ -15,6 +29,13 @@ function ProCard({ name, role, avatarSrc, days, onSchedule }) {
         <div className="min-w-0 flex-1">
           <div className="truncate text-[16px] font-bold text-abla-blue">{name}</div>
           <div className="mt-0.5 text-[13px] text-slate-500">{role}</div>
+          {rating && (
+            <div className="mt-1 flex items-center gap-1">
+              <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+              <span className="text-[12px] font-bold text-slate-700">{rating.promedio}</span>
+              <span className="text-[11px] text-slate-400">({rating.total} valoraciones)</span>
+            </div>
+          )}
           <div className="mt-2 text-[12px] font-medium text-slate-500">{days}</div>
         </div>
 
@@ -36,30 +57,9 @@ function ProCard({ name, role, avatarSrc, days, onSchedule }) {
 
 export default function AyudaCita() {
   const navigate = useNavigate()
+  const { ratingsEncuesta } = useAppContext()
 
-  const pros = useMemo(
-    () => [
-      {
-        name: 'Ana García',
-        role: 'Psicopedagoga',
-        avatarSrc: '/Avatars/psi-1.svg',
-        days: 'Lun/Mié/Vie',
-      },
-      {
-        name: 'Luis Muñoz',
-        role: 'Psicólogo',
-        avatarSrc: '/Avatars/psi-2.svg',
-        days: 'Mar/Jue',
-      },
-      {
-        name: 'Carmen Silva',
-        role: 'Orientadora',
-        avatarSrc: '/Avatars/psi-3.svg',
-        days: 'Lun a Vie',
-      },
-    ],
-    [],
-  )
+  const pros = useMemo(() => PROFESORES, [])
 
   return (
     <PageTransition>
@@ -72,14 +72,15 @@ export default function AyudaCita() {
         <div className="mt-4 flex flex-col gap-3">
           {pros.map((p) => (
             <ProCard
-              key={p.name}
-              name={p.name}
-              role={p.role}
-              avatarSrc={p.avatarSrc}
-              days={p.days}
+              key={p.id}
+              name={p.nombre}
+              role={p.rol}
+              avatarSrc={p.avatar}
+              days={p.dias}
+              rating={calcularPromedio(p.id, ratingsEncuesta)}
               onSchedule={() =>
-                navigate(`/ayuda/cita/calendario?pro=${encodeURIComponent(p.name)}`, {
-                  state: { proName: p.name },
+                navigate(`/ayuda/cita/calendario?pro=${encodeURIComponent(p.nombre)}`, {
+                  state: { proName: p.nombre },
                 })
               }
             />
