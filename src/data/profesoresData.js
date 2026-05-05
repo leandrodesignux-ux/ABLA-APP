@@ -1,0 +1,1 @@
+export { PROFESORES, CATEGORIAS_SITUACION, RATINGS_INICIALES } from './profesores.js'

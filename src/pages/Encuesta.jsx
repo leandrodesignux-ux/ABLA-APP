@@ -1,374 +1,373 @@
-import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowLeft, Check, Paperclip, Smile, Image as ImageIcon } from 'lucide-react'
-import { useState } from 'react'
+﻿import { AnimatePresence, motion } from 'framer-motion'
+import { ArrowLeft, Check, ChevronRight, Star } from 'lucide-react'
+import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import BottomNav from '../components/BottomNav.jsx'
+import Header from '../components/Header.jsx'
 import PageTransition from '../components/PageTransition.jsx'
+import { useAppContext } from '../context/AppContext.jsx'
+import { PROFESORES, CATEGORIAS_SITUACION } from '../data/profesoresData.js'
 
-// Screen 1: Survey Selector
-function SurveySelector({ onSelectSurvey }) {
-  const navigate = useNavigate()
-
-  const surveys = [
-    { id: 'tutor', title: '¿Qué opinas sobre tu tutor?' },
-    { id: 'experiencia', title: '¿Cómo es tu experiencia en el instituto?' },
-    { id: 'mejora', title: 'Ayúdanos a mejorar' },
-  ]
+function StarRating({ value, onChange = () => {}, size = 'lg', readOnly = false }) {
+  const [hovered, setHovered] = useState(0)
+  const starSize = size === 'lg' ? 'h-10 w-10' : 'h-5 w-5'
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="min-h-screen bg-white"
-    >
-      {/* Header */}
-      <div className="h-14 bg-abla-green flex items-center justify-center relative px-4">
-        <button
-          onClick={() => navigate('/home')}
-          className="absolute left-4 text-white"
-          aria-label="Volver"
+    <div className="flex items-center gap-2">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <motion.button
+          key={star}
+          type="button"
+          whileTap={readOnly ? {} : { scale: 0.85 }}
+          onMouseEnter={() => !readOnly && setHovered(star)}
+          onMouseLeave={() => !readOnly && setHovered(0)}
+          onClick={() => !readOnly && onChange(star)}
+          aria-label={`${star} estrella${star > 1 ? 's' : ''}`}
+          className={readOnly ? 'pointer-events-none' : ''}
         >
-          <ArrowLeft className="h-6 w-6" />
-        </button>
-        <h1 className="text-lg font-semibold text-white">Encuestas</h1>
-      </div>
-
-      <div className="px-6 py-8">
-        {/* Circular illustration */}
-        <div className="flex justify-center mb-10">
-          <div className="w-[180px] h-[180px] rounded-full border-4 border-abla-green flex items-center justify-center bg-white overflow-hidden">
-            <img
-              src="/Illustrations/encuestas.svg"
-              alt=""
-              className="w-full h-full object-contain p-4"
-              draggable="false"
-            />
-          </div>
-        </div>
-
-        {/* Survey options */}
-        <div className="space-y-8">
-          {surveys.map((survey) => (
-            <div key={survey.id} className="text-center">
-              <p className="text-[16px] text-slate-700 mb-4">{survey.title}</p>
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.96 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-                onClick={() => onSelectSurvey(survey.id)}
-                className="w-[240px] h-11 bg-abla-blue text-white font-medium rounded-lg shadow-sm"
-              >
-                CONTESTAR
-              </motion.button>
-            </div>
-          ))}
-        </div>
-      </div>
-    </motion.div>
+          <Star
+            className={`${starSize} transition-colors duration-150 ${
+              star <= (hovered || value)
+                ? 'fill-yellow-400 text-yellow-400'
+                : 'fill-slate-200 text-slate-200'
+            }`}
+          />
+        </motion.button>
+      ))}
+    </div>
   )
 }
 
-// Screen 2: Tutor Survey
-function TutorSurvey({ onBack, onComplete }) {
-  const navigate = useNavigate()
-  const [answers, setAnswers] = useState({
-    q1: '',
-    q2: '',
-    q3: '',
-  })
-  const [comment, setComment] = useState('')
-
-  const questions = [
-    {
-      id: 'q1',
-      text: '¿Qué opinas del tutor?',
-      options: ['Es muy bueno', 'Podría mejorar', 'No me gusta'],
-    },
-    {
-      id: 'q2',
-      text: '¿Que tipo de afinidad tienes con el tutor?',
-      options: ['Muy buena', 'Podría mejorar', 'Ninguna'],
-    },
-    {
-      id: 'q3',
-      text: '¿Cómo podría mejorar?',
-      options: ['Más comunicación', 'Más apoyo emocional', 'Mayor disponibilidad'],
-    },
-  ]
-
-  const isAnswered = Object.values(answers).some((a) => a !== '')
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: 300 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -300 }}
-      className="min-h-screen bg-white"
-    >
-      {/* Header */}
-      <div className="h-14 bg-abla-green flex items-center justify-center relative px-4">
-        <button
-          onClick={onBack}
-          className="absolute left-4 text-white"
-          aria-label="Volver"
-        >
-          <ArrowLeft className="h-6 w-6" />
-        </button>
-        <h1 className="text-lg font-semibold text-white">Encuestas</h1>
-      </div>
-
-      <div className="px-6 py-6">
-        {/* Title */}
-        <div className="text-center mb-8">
-          <h2 className="text-[26px] font-bold text-abla-blue">Camila Lopez</h2>
-          <p className="text-[14px] text-slate-500 mt-1">¿Qué opinas del tutor?</p>
-        </div>
-
-        {/* Questions */}
-        <div className="space-y-8">
-          {questions.map((q) => (
-            <div key={q.id} className="border-b border-[#E6E6E6] pb-6">
-              <p className="text-[14px] text-abla-blue text-center mb-4">{q.text}</p>
-              <div className="space-y-3">
-                {q.options.map((opt) => (
-                  <motion.button
-                    key={opt}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => setAnswers((prev) => ({ ...prev, [q.id]: opt }))}
-                    animate={{
-                      backgroundColor: answers[q.id] === opt ? 'rgba(86, 160, 135, 0.1)' : 'transparent',
-                    }}
-                    transition={{ duration: 0.2 }}
-                    className={`w-full text-left py-3 px-3 rounded-lg border-b transition-colors ${
-                      answers[q.id] === opt
-                        ? 'text-abla-green border-abla-green font-medium'
-                        : 'text-slate-700 border-slate-300'
-                    }`}
-                  >
-                    {opt}
-                  </motion.button>
-                ))}
-              </div>
-            </div>
-          ))}
-
-          {/* Comment section */}
-          <div className="border-b border-[#E6E6E6] pb-6">
-            <p className="text-[14px] text-abla-blue text-center mb-4">¿Cómo podría mejorar?</p>
-            <div className="relative">
-              <textarea
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                placeholder="Escribe tu comentario..."
-                className="w-full h-28 p-4 bg-[#F5F7F9] rounded-lg resize-none text-[14px] text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-abla-green"
-              />
-              <div className="absolute bottom-3 right-3 flex items-center gap-3 text-slate-400">
-                <Paperclip className="h-5 w-5" />
-                <Smile className="h-5 w-5" />
-                <ImageIcon className="h-5 w-5" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Finalizar button */}
-        <AnimatePresence>
-          {isAnswered && (
-            <motion.button
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.96 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-              onClick={() => onComplete()}
-              className="mt-8 w-full h-12 bg-abla-blue text-white font-bold rounded-lg"
-            >
-              FINALIZAR
-            </motion.button>
-          )}
-        </AnimatePresence>
-      </div>
-    </motion.div>
-  )
+const stepMotion = {
+  initial: { opacity: 0, x: 30 },
+  animate: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: -30 },
+  transition: { duration: 0.22 },
 }
 
-// Screen 3: Experience Survey
-function ExperienceSurvey({ onBack, onComplete }) {
-  const [answers, setAnswers] = useState({
-    lugar: '',
-    escuela: '',
-    acosado: '',
-    molestado: '',
-  })
-  const [showSuccess, setShowSuccess] = useState(false)
-
-  const sections = [
-    {
-      title: '¿Dónde crees que ocurren más episodios violentos?',
-      key: 'lugar',
-      options: ['Pasillos', 'Baños', 'Gimnasio'],
-    },
-    {
-      title: '¿Qué puede hacer la escuela para detener el acoso escolar?',
-      key: 'escuela',
-      options: ['Hablar sobre el acoso escolar en clases', 'Hacer reglas contra el bullying', 'Supervisar mejor'],
-    },
-    {
-      title: '¿Cuántos niños te han acosado?',
-      key: 'acosado',
-      options: ['No me han acosado', '1-2', 'más de 4'],
-    },
-    {
-      title: '¿Puedes decirnos como te han molestado?',
-      key: 'molestado',
-      options: ['No me han molestado', 'Me han agredido físicamente', 'Me han molestado por redes sociales'],
-    },
-  ]
-
-  const isComplete = Object.values(answers).every((a) => a !== '')
-
-  const handleFinalize = () => {
-    setShowSuccess(true)
-    setTimeout(() => {
-      onComplete()
-    }, 1500)
-  }
-
-  if (showSuccess) {
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="min-h-screen bg-white flex items-center justify-center"
-      >
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-          className="flex flex-col items-center"
-        >
-          <div className="w-24 h-24 rounded-full bg-abla-green flex items-center justify-center mb-4">
-            <Check className="h-12 w-12 text-white" />
-          </div>
-          <p className="text-lg font-semibold text-abla-blue">¡Gracias!</p>
-          <p className="text-sm text-slate-500">Tu respuesta fue enviada</p>
-        </motion.div>
-      </motion.div>
-    )
-  }
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: 300 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -300 }}
-      className="min-h-screen bg-white"
-    >
-      {/* Header */}
-      <div className="h-14 bg-abla-green flex items-center justify-center relative px-4">
-        <button
-          onClick={onBack}
-          className="absolute left-4 text-white"
-          aria-label="Volver"
-        >
-          <ArrowLeft className="h-6 w-6" />
-        </button>
-        <h1 className="text-lg font-semibold text-white">Encuestas</h1>
-      </div>
-
-      <div className="px-6 py-6 pb-24">
-        {/* Questions */}
-        <div className="space-y-8">
-          {sections.map((section) => (
-            <div key={section.key} className="border-b border-[#E6E6E6] pb-6">
-              <p className="text-[14px] text-abla-blue text-center mb-4 px-4">{section.title}</p>
-              <div className="space-y-3">
-                {section.options.map((opt) => (
-                  <motion.button
-                    key={opt}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => setAnswers((prev) => ({ ...prev, [section.key]: opt }))}
-                    animate={{
-                      backgroundColor: answers[section.key] === opt ? 'rgba(86, 160, 135, 0.1)' : 'transparent',
-                    }}
-                    transition={{ duration: 0.2 }}
-                    className={`w-full text-left py-3 px-3 rounded-lg border-b transition-colors ${
-                      answers[section.key] === opt
-                        ? 'text-abla-green border-abla-green font-medium'
-                        : 'text-slate-700 border-slate-300'
-                    }`}
-                  >
-                    {opt}
-                  </motion.button>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Finalizar button */}
-        <AnimatePresence>
-          {isComplete && (
-            <motion.button
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.96 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-              onClick={handleFinalize}
-              className="mt-8 w-full h-12 bg-abla-blue text-white font-bold rounded-lg"
-            >
-              FINALIZAR
-            </motion.button>
-          )}
-        </AnimatePresence>
-      </div>
-    </motion.div>
-  )
+const textosEstrellas = {
+  1: '😔 Fue difícil, pero gracias por contarlo',
+  2: '🤔 Podría haber sido mejor',
+  3: '👍 Fue de ayuda',
+  4: '😊 Muy buena ayuda',
+  5: '🌟 ¡Excelente! Fue muy importante',
 }
 
 export default function Encuesta() {
   const navigate = useNavigate()
-  const [currentScreen, setCurrentScreen] = useState('selector') // selector, tutor, experiencia
+  const { addRating } = useAppContext()
+  const [step, setStep] = useState('inicio')
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null)
+  const [profesorSeleccionado, setProfesorSeleccionado] = useState(null)
+  const [estrellas, setEstrellas] = useState(0)
+  const [comentario, setComentario] = useState('')
 
-  const handleSurveySelect = (surveyId) => {
-    if (surveyId === 'tutor') {
-      setCurrentScreen('tutor')
-    } else if (surveyId === 'experiencia' || surveyId === 'mejora') {
-      setCurrentScreen('experiencia')
-    }
+  const resetAll = () => {
+    setCategoriaSeleccionada(null)
+    setProfesorSeleccionado(null)
+    setEstrellas(0)
+    setComentario('')
+    setStep('inicio')
   }
 
-  const handleComplete = () => {
-    navigate('/home')
+  const profesoresOrdenados = useMemo(() => {
+    if (!categoriaSeleccionada) return PROFESORES
+    return [...PROFESORES].sort((a, b) => {
+      const aMatch = a.especialidades.includes(categoriaSeleccionada.id) ? -1 : 1
+      const bMatch = b.especialidades.includes(categoriaSeleccionada.id) ? -1 : 1
+      return aMatch - bMatch
+    })
+  }, [categoriaSeleccionada])
+
+  const enviarValoracion = () => {
+    if (!profesorSeleccionado || !categoriaSeleccionada || estrellas === 0) return
+    addRating(profesorSeleccionado.id, categoriaSeleccionada.id, estrellas)
+    setStep('gracias')
   }
 
   return (
     <PageTransition>
-      <AnimatePresence mode="wait">
-        {currentScreen === 'selector' && (
-          <SurveySelector
-            key="selector"
-            onSelectSurvey={handleSurveySelect}
-          />
-        )}
-        {currentScreen === 'tutor' && (
-          <TutorSurvey
-            key="tutor"
-            onBack={() => setCurrentScreen('selector')}
-            onComplete={handleComplete}
-          />
-        )}
-        {currentScreen === 'experiencia' && (
-          <ExperienceSurvey
-            key="experiencia"
-            onBack={() => setCurrentScreen('selector')}
-            onComplete={handleComplete}
-          />
-        )}
-      </AnimatePresence>
+      <div className="min-h-screen bg-abla-bg pb-24">
+        <AnimatePresence mode="wait">
+          {step === 'inicio' ? (
+            <motion.div key="inicio" {...stepMotion} className="min-h-[calc(100vh-96px)]">
+              <Header title="Encuesta" showBack showIcons={false} />
+              <div className="mx-auto flex w-full max-w-[390px] flex-col items-center px-4 pt-8 text-center">
+                <div className="flex h-[180px] w-[180px] items-center justify-center overflow-hidden rounded-full border-4 border-abla-green bg-white">
+                  <img src="/Illustrations/encuestas.svg" alt="" className="h-full w-full object-contain p-4" draggable="false" />
+                </div>
+                <h1 className="mt-9 text-center text-[22px] font-bold text-abla-blue">¿Alguien te ayudó?</h1>
+                <p className="mt-3 px-6 text-center text-[14px] text-slate-500">
+                  Cuéntanos quién te acompañó y ayuda a otros a encontrar el apoyo que necesitan.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setStep('categoria')}
+                  className="mt-10 h-14 w-full rounded-2xl bg-abla-green text-[15px] font-bold text-white"
+                >
+                  Valorar un profesor
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigate(-1)}
+                  className="mt-4 text-center text-[13px] text-slate-400 underline"
+                >
+                  Saltar por ahora
+                </button>
+                <div className="mt-10 text-center text-[11px] text-slate-400">🔒 Tu valoración es anónima</div>
+              </div>
+            </motion.div>
+          ) : null}
+
+          {step === 'categoria' ? (
+            <motion.div key="categoria" {...stepMotion} className="min-h-[calc(100vh-96px)] pb-24">
+              <div className="relative">
+                <Header title="Encuesta" showIcons={false} />
+                <button
+                  type="button"
+                  onClick={() => setStep('inicio')}
+                  className="absolute left-4 top-4 z-50 text-white"
+                  aria-label="Volver"
+                >
+                  <ArrowLeft className="h-6 w-6" />
+                </button>
+              </div>
+              <div className="mx-auto w-full max-w-[390px]">
+                <h1 className="mt-6 px-4 text-[18px] font-bold text-abla-blue">¿Qué tipo de situación tuviste?</h1>
+                <p className="mt-1 px-4 text-[13px] text-slate-500">Selecciona la que más se acerca a lo que viviste.</p>
+                <div className="mt-5 grid grid-cols-2 gap-3 px-4">
+                  {CATEGORIAS_SITUACION.map((categoria) => (
+                    <motion.button
+                      key={categoria.id}
+                      type="button"
+                      whileTap={{ scale: 0.97 }}
+                      onClick={() => setCategoriaSeleccionada(categoria)}
+                      className={`flex h-[88px] flex-col items-center justify-center rounded-2xl border p-4 text-center shadow-sm ${
+                        categoriaSeleccionada?.id === categoria.id
+                          ? 'border-abla-green bg-green-50'
+                          : 'border-[#E6E6E6] bg-white'
+                      }`}
+                    >
+                      <div className="text-[28px]">{categoria.emoji}</div>
+                      <div className="mt-2 text-[13px] font-semibold text-abla-blue">{categoria.label}</div>
+                    </motion.button>
+                  ))}
+                </div>
+              </div>
+              <AnimatePresence>
+                {categoriaSeleccionada ? (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 20 }}
+                    className="fixed bottom-20 left-0 right-0 z-40 px-4"
+                  >
+                    <div className="mx-auto w-full max-w-[390px]">
+                      <button
+                        type="button"
+                        onClick={() => setStep('profesor')}
+                        className="h-14 w-full rounded-2xl bg-abla-blue font-bold text-white"
+                      >
+                        Continuar
+                      </button>
+                    </div>
+                  </motion.div>
+                ) : null}
+              </AnimatePresence>
+            </motion.div>
+          ) : null}
+
+          {step === 'profesor' ? (
+            <motion.div key="profesor" {...stepMotion} className="min-h-[calc(100vh-96px)] pb-24">
+              <div className="relative">
+                <Header title="Encuesta" showIcons={false} />
+                <button
+                  type="button"
+                  onClick={() => setStep('categoria')}
+                  className="absolute left-4 top-4 z-50 text-white"
+                  aria-label="Volver"
+                >
+                  <ArrowLeft className="h-6 w-6" />
+                </button>
+              </div>
+              <div className="mx-auto w-full max-w-[390px] px-4">
+                <h1 className="mt-6 text-[18px] font-bold text-abla-blue">¿Quién te ayudó?</h1>
+                <p className="mt-1 text-[13px] text-slate-500">
+                  ¿Cuál fue el profesor o profesional que te acompañó con tu situación de {categoriaSeleccionada?.label}?
+                </p>
+                <div className="mt-5 flex flex-col gap-3">
+                  {profesoresOrdenados.map((profesor) => {
+                    const isSelected = profesorSeleccionado?.id === profesor.id
+                    const isSpecialist = profesor.especialidades.includes(categoriaSeleccionada?.id)
+                    const matches = profesor.especialidades.filter((item) => item === categoriaSeleccionada?.id)
+
+                    return (
+                      <motion.button
+                        key={profesor.id}
+                        type="button"
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => setProfesorSeleccionado(profesor)}
+                        className={`rounded-2xl border-l-[3px] bg-white p-4 text-left shadow-sm ${
+                          isSelected ? 'border-l-abla-green bg-green-50/30' : 'border-l-slate-200'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <img src={profesor.avatar} alt="" className="h-12 w-12 rounded-full object-cover" draggable="false" />
+                          <div className="min-w-0 flex-1">
+                            <div className="text-[14px] font-bold text-abla-blue">{profesor.nombre}</div>
+                            <div className="text-[12px] text-slate-500">{profesor.rol}</div>
+                            <div className="mt-2 flex flex-wrap gap-1.5">
+                              {matches.map((match) => (
+                                <span key={match} className="rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-semibold text-green-700">
+                                  {CATEGORIAS_SITUACION.find((cat) => cat.id === match)?.label || match}
+                                </span>
+                              ))}
+                              {isSpecialist ? (
+                                <span className="rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-semibold text-green-700">
+                                  ✓ Especialista en esto
+                                </span>
+                              ) : null}
+                            </div>
+                          </div>
+                          <ChevronRight className="h-5 w-5 flex-shrink-0 text-slate-300" />
+                        </div>
+                      </motion.button>
+                    )
+                  })}
+                </div>
+              </div>
+              <AnimatePresence>
+                {profesorSeleccionado ? (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 20 }}
+                    className="fixed bottom-20 left-0 right-0 z-40 px-4"
+                  >
+                    <div className="mx-auto w-full max-w-[390px]">
+                      <button
+                        type="button"
+                        onClick={() => setStep('estrellas')}
+                        className="h-14 w-full rounded-2xl bg-abla-blue font-bold text-white"
+                      >
+                        Continuar
+                      </button>
+                    </div>
+                  </motion.div>
+                ) : null}
+              </AnimatePresence>
+            </motion.div>
+          ) : null}
+
+          {step === 'estrellas' ? (
+            <motion.div key="estrellas" {...stepMotion} className="min-h-[calc(100vh-96px)]">
+              <div className="relative">
+                <Header title="Encuesta" showIcons={false} />
+                <button
+                  type="button"
+                  onClick={() => setStep('profesor')}
+                  className="absolute left-4 top-4 z-50 text-white"
+                  aria-label="Volver"
+                >
+                  <ArrowLeft className="h-6 w-6" />
+                </button>
+              </div>
+              <div className="mx-auto flex w-full max-w-[390px] flex-col items-center px-4 pt-8">
+                <img
+                  src={profesorSeleccionado?.avatar}
+                  alt=""
+                  className="h-20 w-20 rounded-full border-4 border-abla-green object-cover"
+                  draggable="false"
+                />
+                <h1 className="mt-3 text-[20px] font-bold text-abla-blue">{profesorSeleccionado?.nombre}</h1>
+                <p className="text-[13px] text-slate-500">{profesorSeleccionado?.rol}</p>
+                <div className="mt-6 h-px w-full bg-[#E6E6E6]" />
+                <p className="mt-6 px-6 text-center text-[15px] font-semibold text-abla-blue">
+                  ¿Cómo fue la ayuda de {profesorSeleccionado?.nombre} con tu situación de {categoriaSeleccionada?.emoji} {categoriaSeleccionada?.label}?
+                </p>
+                <div className="mt-8">
+                  <StarRating value={estrellas} onChange={setEstrellas} size="lg" />
+                </div>
+                <AnimatePresence>
+                  {estrellas > 0 ? (
+                    <motion.p
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 8 }}
+                      className="mt-4 text-center text-[14px] text-slate-600"
+                    >
+                      {textosEstrellas[estrellas]}
+                    </motion.p>
+                  ) : null}
+                </AnimatePresence>
+                <textarea
+                  value={comentario}
+                  onChange={(e) => setComentario(e.target.value)}
+                  placeholder="¿Quieres agregar algo más? (opcional)"
+                  className="mt-6 h-24 w-full resize-none rounded-2xl border border-[#E6E6E6] bg-white p-4 text-[14px] text-slate-800 placeholder:text-slate-400 focus:border-abla-green focus:outline-none"
+                />
+                <AnimatePresence>
+                  {estrellas > 0 ? (
+                    <motion.button
+                      type="button"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 20 }}
+                      onClick={enviarValoracion}
+                      className="mt-6 h-14 w-full rounded-2xl bg-abla-green text-[15px] font-bold text-white"
+                    >
+                      Enviar valoración
+                    </motion.button>
+                  ) : null}
+                </AnimatePresence>
+              </div>
+            </motion.div>
+          ) : null}
+
+          {step === 'gracias' ? (
+            <motion.div key="gracias" {...stepMotion} className="flex min-h-[calc(100vh-96px)] items-center justify-center">
+              <div className="mx-auto flex w-full max-w-[390px] flex-col items-center px-4 text-center">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 260, damping: 18 }}
+                  className="flex h-24 w-24 items-center justify-center rounded-full bg-abla-green"
+                >
+                  <Check className="h-12 w-12 text-white" />
+                </motion.div>
+                <h1 className="mt-5 text-[22px] font-bold text-abla-blue">¡Gracias!</h1>
+                <p className="mt-2 px-8 text-center text-[14px] text-slate-500">
+                  Tu valoración ayuda a otros estudiantes a encontrar el apoyo que necesitan.
+                </p>
+                <div className="mx-4 mt-6 w-full rounded-2xl bg-white p-4 shadow-sm">
+                  <div className="flex items-center gap-3">
+                    <img src={profesorSeleccionado?.avatar} alt="" className="h-10 w-10 rounded-full object-cover" draggable="false" />
+                    <div className="min-w-0 flex-1 text-left">
+                      <div className="text-[13px] font-bold text-abla-blue">{profesorSeleccionado?.nombre}</div>
+                      <StarRating value={estrellas} size="sm" readOnly />
+                    </div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={resetAll}
+                  className="mx-4 mt-4 h-12 w-full rounded-2xl border border-abla-green text-[13px] font-bold text-abla-green"
+                >
+                  Valorar otro profesor
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigate(-1)}
+                  className="mt-3 text-center text-[13px] text-slate-400"
+                >
+                  Volver al inicio
+                </button>
+              </div>
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
+        <BottomNav />
+      </div>
     </PageTransition>
   )
 }

@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react'
+import { RATINGS_INICIALES } from '../data/profesoresData.js'
 
 const AppContext = createContext(null)
 
@@ -18,6 +19,8 @@ const initialState = {
   appOnbDone: SS.getItem('abla_app_onb') === '1',
   // Reglamento interno leído
   reglamentoLeido: SS.getItem('abla_reglamento') === '1',
+  ratingsEncuesta: JSON.parse(SS.getItem('abla_ratings') || 'null') || RATINGS_INICIALES,
+  encuestasRespondidas: JSON.parse(SS.getItem('abla_encuestas') || '[]'),
 }
 
 export function AppProvider({ children }) {
@@ -84,6 +87,34 @@ export function AppProvider({ children }) {
     SS.setItem('abla_reglamento', '1')
   }, [])
 
+  const addRating = useCallback((profesorId, categoriaId, estrellas) => {
+    setState((prev) => {
+      const ratings = JSON.parse(JSON.stringify(prev.ratingsEncuesta))
+      if (!ratings[profesorId]) ratings[profesorId] = {}
+      if (!ratings[profesorId][categoriaId]) ratings[profesorId][categoriaId] = { total: 0, suma: 0 }
+      ratings[profesorId][categoriaId].total += 1
+      ratings[profesorId][categoriaId].suma += estrellas
+
+      const encuestaId = `${profesorId}-${categoriaId}-${Date.now()}`
+      const encuestasActualizadas = [...prev.encuestasRespondidas, {
+        id: encuestaId,
+        profesorId,
+        categoriaId,
+        estrellas,
+        fecha: new Date().toISOString(),
+      }]
+
+      SS.setItem('abla_ratings', JSON.stringify(ratings))
+      SS.setItem('abla_encuestas', JSON.stringify(encuestasActualizadas))
+
+      return {
+        ...prev,
+        ratingsEncuesta: ratings,
+        encuestasRespondidas: encuestasActualizadas,
+      }
+    })
+  }, [])
+
   const clearSession = useCallback(() => {
     SS.clear()
     setState({
@@ -110,6 +141,9 @@ export function AppProvider({ children }) {
       addCertificadoNEE,
       removeCertificadoNEE,
       marcarReglamentoLeido,
+      addRating,
+      ratingsEncuesta: state.ratingsEncuesta,
+      encuestasRespondidas: state.encuestasRespondidas,
       clearSession,
     }),
     [
@@ -122,6 +156,9 @@ export function AppProvider({ children }) {
       addCertificadoNEE,
       removeCertificadoNEE,
       marcarReglamentoLeido,
+      addRating,
+      state.ratingsEncuesta,
+      state.encuestasRespondidas,
       clearSession,
     ],
   )
