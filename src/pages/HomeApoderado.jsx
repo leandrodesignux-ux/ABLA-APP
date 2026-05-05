@@ -12,8 +12,8 @@ import { LINEAS_EMERGENCIA } from '../data/recursosAyuda.js'
 
 const alertSigns = [
   'Cambios repentinos de humor o comportamiento',
-  'Evita ir al colegio sin razÃ³n aparente',
-  'Heridas inexplicables o ropa daÃ±ada',
+  'Evita ir al colegio sin razón aparente',
+  'Heridas inexplicables o ropa dañada',
   'Pierde objetos o dinero frecuentemente',
 ]
 
@@ -30,7 +30,7 @@ export default function HomeApoderado() {
   const directActions = [
     { label: 'Pedir cita', to: '/ayuda/cita', Icon: Calendar, color: 'text-abla-green' },
     { label: 'Hablar con tutor', to: '/chat/tutor', Icon: MessageCircle, color: 'text-abla-blue' },
-    { label: 'GuÃ­as para padres', to: '/ayuda/consejos', Icon: BookOpen, color: 'text-abla-green' },
+    { label: 'Guías para padres', to: '/ayuda/consejos', Icon: BookOpen, color: 'text-abla-green' },
     { label: 'Hacer reporte', to: '/reportar', Icon: AlertTriangle, color: 'text-red-500' },
   ]
 
@@ -132,14 +132,14 @@ export default function HomeApoderado() {
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <div className="text-[12px] font-bold text-red-700">ðŸ”´ Alerta activa</div>
-                    <div className="text-[14px] font-black text-red-800">REQUIERE ATENCIÃ“N</div>
+                    <div className="text-[12px] font-bold text-red-700">🔴 Alerta activa</div>
+                    <div className="text-[14px] font-black text-red-800">REQUIERE ATENCIÓN</div>
                   </div>
                 </div>
 
                 <div className="mt-2 text-[13px] text-red-900">
-                  Tu hijo/a tiene una condiciÃ³n que requiere seguimiento activo. Revisa las recomendaciones y el
-                  protocolo de actuaciÃ³n.
+                  Tu hijo/a tiene una condición que requiere seguimiento activo. Revisa las recomendaciones y el
+                  protocolo de actuación.
                 </div>
 
                 <button
@@ -147,7 +147,7 @@ export default function HomeApoderado() {
                   onClick={() => navigate('/apoderado/nee')}
                   className="mt-3 h-9 rounded-xl bg-red-600 px-4 text-[12px] font-bold text-white"
                 >
-                  Ver protocolos â†’
+                  Ver protocolos →
                 </button>
               </motion.section>
             )}
@@ -155,11 +155,11 @@ export default function HomeApoderado() {
 
           <section className="mt-5 rounded-2xl bg-white p-4 shadow-sm">
             <div className="text-[18px] font-bold text-abla-blue">Bienvenido/a</div>
-            <div className="mt-1 text-[14px] text-slate-500">AquÃ­ puedes apoyar a tu hijo/a</div>
+            <div className="mt-1 text-[14px] text-slate-500">Aquí puedes apoyar a tu hijo/a</div>
           </section>
 
           <section className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4">
-            <div className="text-[16px] font-bold text-amber-700">SeÃ±ales de alerta</div>
+            <div className="text-[16px] font-bold text-amber-700">Señales de alerta</div>
 
             <div className="mt-3 flex flex-col gap-3">
               {alertSigns.map((sign) => (
@@ -176,7 +176,7 @@ export default function HomeApoderado() {
               onClick={() => navigate('/ayuda/consejos')}
               className="mt-4 h-10 rounded-xl border border-amber-400 px-4 text-[13px] font-semibold text-amber-700"
             >
-              Leer guÃ­a completa â†’
+              Leer guía completa →
             </motion.button>
           </section>
 
@@ -288,19 +288,19 @@ export default function HomeApoderado() {
               {[
                 {
                   label: 'Reglamento interno',
-                  icon: 'ðŸ“‹',
+                  icon: '📋',
                   to: '/reglamento',
-                  sub: reglamentoLeido ? 'âœ“ LeÃ­do' : 'Pendiente de lectura',
+                  sub: reglamentoLeido ? '✓ Leído' : 'Pendiente de lectura',
                 },
-                { label: 'Preguntas frecuentes', icon: 'â“', to: '/faqs', sub: 'Vinculadas al reglamento' },
-                { label: 'Protocolos de denuncia', icon: 'ðŸ›¡ï¸', to: '/protocolos', sub: 'Bullying, violencia, cyberbullying' },
+                { label: 'Preguntas frecuentes', icon: '❓', to: '/faqs', sub: 'Vinculadas al reglamento' },
+                { label: 'Protocolos de denuncia', icon: '🛡️', to: '/protocolos', sub: 'Bullying, violencia, cyberbullying' },
                 {
                   label: 'Condiciones de mi hijo/a',
-                  icon: 'ðŸ§ ',
+                  icon: '🧠',
                   to: '/apoderado/nee',
                   sub:
                     certificadosNEE.length > 0
-                      ? `${certificadosNEE.length} condiciÃ³n(es) registrada(s)`
+                      ? `${certificadosNEE.length} condición(es) registrada(s)`
                       : 'Sin condiciones registradas',
                   badge: certificadosNEE.some((c) => NEE_TYPES.find((t) => t.id === c.tipo)?.urgente) ? 'ALERTA' : null,
                 },

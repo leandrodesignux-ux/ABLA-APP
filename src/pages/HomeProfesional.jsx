@@ -233,8 +233,8 @@ function DetailDrawer({ caso, onClose, onDerive, onChat }) {
               <button
                 type="button"
                 onClick={() => {
-                  navigate(`/protocolos/${neeType.protocoloId}`)
-                  setTimeout(() => onClose(), 50)
+                  onClose()
+                  setTimeout(() => navigate(`/protocolos/${neeType.protocoloId}`), 250)
                 }}
                 className="mt-2 text-[11px] font-semibold underline"
               >
@@ -259,8 +259,8 @@ function DetailDrawer({ caso, onClose, onDerive, onChat }) {
             type="button"
             whileTap={{ scale: 0.96 }}
             onClick={() => {
-              navigate(`/protocolos/${protocoloId}`)
-              setTimeout(() => onClose(), 50)
+              onClose()
+              setTimeout(() => navigate(`/protocolos/${protocoloId}`), 250)
             }}
             className="h-12 rounded-xl border border-amber-400 bg-amber-50 text-[13px] font-bold text-amber-700"
           >
