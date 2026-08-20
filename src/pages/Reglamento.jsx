@@ -28,7 +28,7 @@ export default function Reglamento() {
     <PageTransition>
       <div className="min-h-screen bg-abla-bg">
         <div className="bg-abla-blue px-4 pb-5 pt-4 text-white">
-          <div className="mx-auto flex w-full max-w-[390px] items-center gap-3">
+          <div className="mx-auto flex w-full max-w-[390px] md:max-w-2xl lg:max-w-3xl items-center gap-3">
             <button type="button" onClick={() => navigate(-1)} className="flex-shrink-0 text-white" aria-label="Volver">
               <ArrowLeft className="h-5 w-5" />
             </button>
@@ -39,7 +39,7 @@ export default function Reglamento() {
           </div>
         </div>
 
-        <div className="mx-auto w-full max-w-[390px] px-4 pb-24">
+        <div className="mx-auto w-full max-w-[390px] md:max-w-2xl lg:max-w-3xl px-4 pb-24">
           <div className="relative mt-4">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <input
@@ -101,8 +101,8 @@ export default function Reglamento() {
         </div>
 
         {!reglamentoLeido && (
-          <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white px-4 py-3">
-            <div className="mx-auto w-full max-w-[390px]">
+          <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white px-4 py-3 md:left-56 lg:left-64">
+            <div className="mx-auto w-full max-w-[390px] md:max-w-2xl lg:max-w-3xl">
               <button
                 type="button"
                 onClick={() => {

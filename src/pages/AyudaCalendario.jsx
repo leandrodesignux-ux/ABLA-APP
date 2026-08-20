@@ -103,7 +103,7 @@ export default function AyudaCalendario() {
     <div className="min-h-screen bg-abla-bg">
       <Header title="Agendar cita" showBack showIcons={false} />
 
-      <div className="mx-auto w-full max-w-[390px] px-4 pb-10">
+      <div className="mx-auto w-full max-w-[390px] md:max-w-2xl lg:max-w-3xl px-4 pb-10">
         <div className="mt-6 text-[16px] font-bold text-abla-blue">{proName}</div>
 
         <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm">

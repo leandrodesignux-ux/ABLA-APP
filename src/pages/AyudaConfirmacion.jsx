@@ -29,7 +29,7 @@ export default function AyudaConfirmacion() {
     <div className="min-h-screen bg-abla-bg">
       <Header title="Cita confirmada" showBack={false} showIcons={false} />
 
-      <div className="mx-auto flex min-h-[calc(100vh-56px)] w-full max-w-[390px] flex-col items-center px-4 pb-8 pt-10 text-center">
+      <div className="mx-auto flex min-h-[calc(100vh-56px)] w-full max-w-[390px] md:max-w-2xl lg:max-w-3xl flex-col items-center px-4 pb-8 pt-10 text-center">
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: [1.05, 1] }}

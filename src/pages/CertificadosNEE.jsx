@@ -13,7 +13,7 @@ function NeeTypePicker({ onSelect, onClose }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 20 }}
-        className="mx-auto mt-14 w-full max-w-[390px] rounded-3xl bg-white p-4"
+        className="mx-auto mt-14 w-full max-w-[390px] md:max-w-2xl lg:max-w-3xl rounded-3xl bg-white p-4"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-3 flex items-center justify-between">
@@ -91,7 +91,7 @@ function NeeDetail({ neeType, onClose }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 20 }}
-        className="mx-auto mt-10 w-full max-w-[390px] rounded-3xl bg-white p-4"
+        className="mx-auto mt-10 w-full max-w-[390px] md:max-w-2xl lg:max-w-3xl rounded-3xl bg-white p-4"
         onClick={(e) => e.stopPropagation()}
       >
         <button type="button" onClick={onClose} className="mb-3 flex items-center gap-1 text-[12px] font-semibold text-slate-600">
@@ -168,7 +168,7 @@ export default function CertificadosNEE() {
     <PageTransition>
       <div className="min-h-screen bg-abla-bg">
         <div className="bg-abla-blue px-4 pb-5 pt-4 text-white">
-          <div className="mx-auto w-full max-w-[390px]">
+          <div className="mx-auto w-full max-w-[390px] md:max-w-2xl lg:max-w-3xl">
             <button type="button" onClick={() => navigate(-1)} className="text-white" aria-label="Volver">
               <ArrowLeft className="h-5 w-5" />
             </button>
@@ -176,7 +176,7 @@ export default function CertificadosNEE() {
           </div>
         </div>
 
-        <div className="mx-auto w-full max-w-[390px] px-4 pb-10">
+        <div className="mx-auto w-full max-w-[390px] md:max-w-2xl lg:max-w-3xl px-4 pb-10">
           <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50 p-4 text-[12px] text-slate-600">
             Registra las condiciones de salud o NEE de tu hijo/a. Esta información solo es visible para ti y los
             profesionales autorizados.

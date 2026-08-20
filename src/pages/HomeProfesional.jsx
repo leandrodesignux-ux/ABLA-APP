@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { Bell, MessageCircle, X } from 'lucide-react'
+import { Bell, X } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BottomNav from '../components/BottomNav.jsx'
@@ -375,7 +375,7 @@ export default function HomeProfesional() {
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-[390px] px-4">
+        <main className="mx-auto w-full max-w-[390px] md:max-w-3xl lg:max-w-6xl px-4">
           <button
             type="button"
             onClick={() => navigate('/reglamento')}
@@ -459,7 +459,7 @@ export default function HomeProfesional() {
             ) : null}
           </AnimatePresence>
 
-          <motion.div layout className="mt-4 flex flex-col gap-3">
+          <motion.div layout className="mt-4 grid grid-cols-1 gap-3 lg:grid-cols-2">
             <AnimatePresence>
               {casosFiltrados.map((caso) => (
                 <CasoCard key={caso.id} caso={caso} onOpen={setSelectedCaso} />
@@ -470,7 +470,7 @@ export default function HomeProfesional() {
 
         {derivarModal && (
           <div
-            className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 px-4 pb-4"
+            className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 px-4 pb-4 md:items-center md:p-6"
             onClick={() => setDerivarModal(null)}
           >
             <motion.div
@@ -478,7 +478,7 @@ export default function HomeProfesional() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 24 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-[390px] rounded-3xl bg-white p-4 shadow-xl"
+              className="w-full max-w-[390px] rounded-3xl bg-white p-4 shadow-xl md:max-w-xl md:p-6"
             >
               <div className="flex items-center justify-between">
                 <div className="text-[18px] font-bold text-abla-blue">Derivar caso</div>

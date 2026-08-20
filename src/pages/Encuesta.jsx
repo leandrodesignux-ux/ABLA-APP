@@ -1,4 +1,4 @@
-﻿import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowLeft, Check, ChevronRight, Star } from 'lucide-react'
 import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -92,7 +92,7 @@ export default function Encuesta() {
           {step === 'inicio' ? (
             <motion.div key="inicio" {...stepMotion} className="min-h-[calc(100vh-96px)]">
               <Header title="Encuesta" showBack showIcons={false} />
-              <div className="mx-auto flex w-full max-w-[390px] flex-col items-center px-4 pt-8 text-center">
+              <div className="mx-auto flex w-full max-w-[390px] md:max-w-2xl flex-col items-center px-4 pt-8 text-center">
                 <div className="flex h-[180px] w-[180px] items-center justify-center overflow-hidden rounded-full border-4 border-abla-green bg-white">
                   <img src="/Illustrations/encuestas.svg" alt="" className="h-full w-full object-contain p-4" draggable="false" />
                 </div>
@@ -132,7 +132,7 @@ export default function Encuesta() {
                   <ArrowLeft className="h-6 w-6" />
                 </button>
               </div>
-              <div className="mx-auto w-full max-w-[390px]">
+              <div className="mx-auto w-full max-w-[390px] md:max-w-2xl">
                 <h1 className="mt-6 px-4 text-[18px] font-bold text-abla-blue">¿Qué tipo de situación tuviste?</h1>
                 <p className="mt-1 px-4 text-[13px] text-slate-500">Selecciona la que más se acerca a lo que viviste.</p>
                 <div className="mt-5 grid grid-cols-2 gap-3 px-4">
@@ -160,9 +160,9 @@ export default function Encuesta() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 20 }}
-                    className="fixed bottom-20 left-0 right-0 z-40 px-4"
+                    className="fixed bottom-20 left-0 right-0 z-40 px-4 md:bottom-6 md:left-56 lg:left-64"
                   >
-                    <div className="mx-auto w-full max-w-[390px]">
+                    <div className="mx-auto w-full max-w-[390px] md:max-w-2xl">
                       <button
                         type="button"
                         onClick={() => setStep('profesor')}
@@ -190,7 +190,7 @@ export default function Encuesta() {
                   <ArrowLeft className="h-6 w-6" />
                 </button>
               </div>
-              <div className="mx-auto w-full max-w-[390px] px-4">
+              <div className="mx-auto w-full max-w-[390px] md:max-w-2xl px-4">
                 <h1 className="mt-6 text-[18px] font-bold text-abla-blue">¿Quién te ayudó?</h1>
                 <p className="mt-1 text-[13px] text-slate-500">
                   ¿Cuál fue el profesor o profesional que te acompañó con tu situación de {categoriaSeleccionada?.label}?
@@ -242,9 +242,9 @@ export default function Encuesta() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 20 }}
-                    className="fixed bottom-20 left-0 right-0 z-40 px-4"
+                    className="fixed bottom-20 left-0 right-0 z-40 px-4 md:bottom-6 md:left-56 lg:left-64"
                   >
-                    <div className="mx-auto w-full max-w-[390px]">
+                    <div className="mx-auto w-full max-w-[390px] md:max-w-2xl">
                       <button
                         type="button"
                         onClick={() => setStep('estrellas')}
@@ -272,7 +272,7 @@ export default function Encuesta() {
                   <ArrowLeft className="h-6 w-6" />
                 </button>
               </div>
-              <div className="mx-auto flex w-full max-w-[390px] flex-col items-center px-4 pt-8">
+              <div className="mx-auto flex w-full max-w-[390px] md:max-w-2xl flex-col items-center px-4 pt-8">
                 <img
                   src={profesorSeleccionado?.avatar}
                   alt=""
@@ -326,7 +326,7 @@ export default function Encuesta() {
 
           {step === 'gracias' ? (
             <motion.div key="gracias" {...stepMotion} className="flex min-h-[calc(100vh-96px)] items-center justify-center">
-              <div className="mx-auto flex w-full max-w-[390px] flex-col items-center px-4 text-center">
+              <div className="mx-auto flex w-full max-w-[390px] md:max-w-2xl flex-col items-center px-4 text-center">
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}

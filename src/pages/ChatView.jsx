@@ -296,7 +296,7 @@ export default function ChatView() {
         ) : null}
       </div>
 
-      <div className="mx-auto flex min-h-[calc(100vh-56px-96px)] w-full max-w-[390px] flex-col">
+      <div className="mx-auto flex min-h-[calc(100vh-56px-96px)] w-full max-w-[390px] md:max-w-3xl lg:max-w-4xl flex-col">
         <div ref={listRef} className="flex-1 overflow-y-auto px-4 py-4">
           <div className="flex flex-col gap-3">
             {messages.map((m, index) => {
@@ -330,8 +330,8 @@ export default function ChatView() {
           </div>
         </div>
 
-        <div className="fixed bottom-16 left-0 right-0 z-40">
-          <div className="mx-auto w-full max-w-[390px] bg-white px-4 py-3">
+        <div className="fixed bottom-16 left-0 right-0 z-40 md:bottom-0 md:left-56 lg:left-64">
+          <div className="mx-auto w-full max-w-[390px] md:max-w-3xl lg:max-w-4xl bg-white px-4 py-3">
             {chatType === 'anonimo' ? (
               <div className="mb-2 text-[11px] text-slate-500">🔒 Esta conversación es completamente confidencial</div>
             ) : null}
@@ -420,7 +420,7 @@ export default function ChatView() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-end bg-black/40"
+            className="fixed inset-0 z-50 flex items-end bg-black/40 md:items-center md:justify-center md:p-6"
             onClick={() => setTemplatesOpen(false)}
           >
             <motion.div
@@ -428,7 +428,7 @@ export default function ChatView() {
               animate={{ y: 0 }}
               exit={{ y: 100 }}
               transition={{ duration: 0.22 }}
-              className="max-h-[70vh] w-full overflow-y-auto rounded-t-3xl bg-white p-4"
+              className="max-h-[70vh] w-full overflow-y-auto rounded-t-3xl bg-white p-4 md:max-w-lg md:rounded-3xl md:p-6"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="mx-auto mb-4 h-1 w-12 rounded-full bg-slate-200" />

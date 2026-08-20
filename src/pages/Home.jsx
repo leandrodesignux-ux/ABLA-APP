@@ -181,7 +181,7 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="mx-auto w-full max-w-[390px] px-4">
+      <div className="mx-auto w-full max-w-[390px] md:max-w-3xl lg:max-w-6xl px-4">
         <section className="mt-5 text-center">
           <div className="mx-auto flex h-[90px] w-[90px] items-center justify-center overflow-hidden rounded-full border-[3px] border-abla-green bg-white" style={{ willChange: 'transform' }}>
             <SvgImage src={user.avatar} alt="" className="h-full w-full object-cover" eager />
@@ -190,7 +190,7 @@ export default function Home() {
           <div className="mt-1 text-[14px] text-[#64748B]">¿Cómo te sientes?</div>
         </section>
 
-        <section className="mt-5">
+        <section className="mx-auto mt-5 max-w-3xl">
           <div className="grid grid-cols-3 gap-3">
             <MoodButton imageSrc="/Emogis/Bien.svg" label="BIEN" mood="BIEN" active={moodHoy === 'BIEN'} onClick={() => setMood('BIEN')} />
             <MoodButton
@@ -254,7 +254,7 @@ export default function Home() {
         </AnimatePresence>
 
         <section className="mt-6">
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-4 md:gap-6">
             {navTiles.map((t) => (
               <NavTile key={t.label} label={t.label} imageSrc={t.imageSrc} to={t.to} />
             ))}
@@ -267,7 +267,7 @@ export default function Home() {
         onClick={() => navigate('/chat')}
         animate={{ scale: [1, 1.03, 1] }}
         transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-        className="fixed bottom-20 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full bg-abla-green px-8 py-3 font-semibold text-white shadow-xl"
+        className="fixed bottom-20 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full bg-abla-green px-8 py-3 font-semibold text-white shadow-xl md:bottom-6 md:left-[calc(50%+7rem)] lg:left-[calc(50%+8rem)]"
         aria-label="Chatear"
         style={{ willChange: 'transform' }}
       >

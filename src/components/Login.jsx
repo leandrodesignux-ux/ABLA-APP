@@ -9,12 +9,12 @@ export default function Login({ onLogin }) {
   return (
     <PageTransition>
       <div className="min-h-screen bg-abla-bg px-4 text-slate-800">
-        <div className="mx-auto flex min-h-screen w-full max-w-[390px] flex-col justify-between py-10">
+        <div className="mx-auto grid min-h-dvh w-full max-w-[390px] items-center gap-6 py-10 md:max-w-5xl md:grid-cols-2 md:gap-12 lg:py-16">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45 }}
-            className="flex flex-col items-center text-center"
+            className="flex flex-col items-center text-center md:items-start md:text-left"
           >
             <SvgImage src="/Logo/abla-logo.svg" alt="ABLA" className="h-[96px] w-[96px] select-none" eager />
             <div className="mt-4 text-[34px] font-black tracking-tight text-abla-blue">ABLA</div>
@@ -28,7 +28,7 @@ export default function Login({ onLogin }) {
             initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.15, duration: 0.45 }}
-            className="relative mx-auto flex h-[240px] w-[240px] items-center justify-center"
+            className="relative mx-auto flex h-[240px] w-[240px] items-center justify-center md:h-[320px] md:w-[320px]"
           >
             {[1, 2, 3].map((i) => (
               <motion.div
@@ -55,7 +55,7 @@ export default function Login({ onLogin }) {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25, duration: 0.45 }}
-            className="flex flex-col items-center"
+            className="flex flex-col items-center md:col-span-2 md:mx-auto md:w-full md:max-w-md"
           >
             <motion.button
               type="button"

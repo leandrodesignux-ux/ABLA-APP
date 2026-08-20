@@ -39,7 +39,7 @@ export default function Consejos() {
       <div className="min-h-screen bg-abla-bg pb-24">
         <Header title="Consejos" showBack showIcons={false} />
 
-        <div className="mx-auto w-full max-w-[390px] px-4">
+        <div className="mx-auto w-full max-w-[390px] md:max-w-3xl lg:max-w-6xl px-4">
           <div className="mt-5 flex gap-2 overflow-x-auto pb-1">
             {tabs.map((tab) => (
               <button

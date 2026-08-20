@@ -116,7 +116,7 @@ export default function ChatSelect() {
     <div className="min-h-screen bg-abla-bg pb-24">
       <Header title="Chat" showBack showIcons={false} />
 
-      <div className="mx-auto w-full max-w-[390px] px-4">
+      <div className="mx-auto w-full max-w-[390px] md:max-w-3xl lg:max-w-6xl px-4">
         <div className="mt-4 text-[14px] text-[#64748B]">{sectionTitle}</div>
 
         <div className="mt-4 flex flex-col gap-3">

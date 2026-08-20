@@ -40,7 +40,7 @@ export default function Reportar() {
     <div className="min-h-screen bg-abla-bg">
       <Header title="Reportar" showBack showIcons={false} />
 
-      <div className="mx-auto w-full max-w-[390px] px-4 pb-24">
+      <div className="mx-auto w-full max-w-[390px] md:max-w-3xl lg:max-w-6xl px-4 pb-24">
         <div className="mt-6 text-[16px] font-bold text-abla-blue">¿Qué situación quieres reportar?</div>
 
         <div className="mt-4 flex flex-col gap-3">

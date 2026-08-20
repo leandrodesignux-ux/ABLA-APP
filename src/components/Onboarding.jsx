@@ -69,7 +69,7 @@ export default function Onboarding({ onDone }) {
   return (
     <PageTransition>
     <div className="min-h-screen w-full bg-white px-4 pt-8 pb-24">
-      <div className="mx-auto w-full max-w-[390px]">
+      <div className="mx-auto w-full max-w-[390px] md:max-w-3xl">
         <div className="flex justify-center">
           <SvgImage src="/Logo/abla-logo.svg" alt="ABLA" className="h-20 w-20 select-none" eager />
         </div>

@@ -70,7 +70,7 @@ export default function OnboardingApp({ onDone }) {
   return (
     <PageTransition>
       <div className="min-h-screen w-full bg-white px-4 pb-24 pt-10">
-        <div className="mx-auto flex min-h-[calc(100vh-136px)] w-full max-w-[390px] flex-col items-center">
+        <div className="mx-auto flex min-h-[calc(100vh-136px)] w-full max-w-[390px] flex-col items-center md:max-w-2xl">
           <div className="mt-8 flex h-[160px] w-[160px] items-center justify-center overflow-hidden rounded-full border-4 border-abla-green bg-white">
             <AnimatePresence mode="wait" custom={direction}>
               <motion.div

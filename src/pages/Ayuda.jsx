@@ -51,7 +51,7 @@ export default function Ayuda() {
     <div className="min-h-screen bg-abla-bg pb-24">
       <Header title="Ayuda" showBack showIcons={false} />
 
-      <div className="mx-auto w-full max-w-[390px] px-4">
+      <div className="mx-auto w-full max-w-[390px] md:max-w-3xl lg:max-w-6xl px-4">
         <div className="mt-6 text-[18px] font-bold text-abla-blue">Selecciona la ayuda que necesitas</div>
 
         <div className="mt-4 flex justify-center">

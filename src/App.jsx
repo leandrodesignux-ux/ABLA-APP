@@ -1,6 +1,7 @@
 import { Suspense, lazy, useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
+import DesktopSidebar from './components/DesktopSidebar.jsx'
 
 // Lazy load pages for code splitting
 const Login = lazy(() => import('./components/Login.jsx'))
@@ -132,17 +133,6 @@ function RootFlow() {
   return null
 }
 
-function PlaceholderPage({ title }) {
-  return (
-    <div className="min-h-screen bg-abla-bg px-4 py-10 text-slate-800">
-      <div className="mx-auto w-full max-w-md rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <div className="text-lg font-semibold text-abla-blue">{title}</div>
-        <div className="mt-2 text-sm text-slate-600">Placeholder</div>
-      </div>
-    </div>
-  )
-}
-
 function AnimatedRoutes() {
   const location = useLocation()
 
@@ -181,59 +171,16 @@ function AnimatedRoutes() {
 }
 
 function AppContent() {
+  const { pathname } = useLocation()
+  const showAppShell = pathname !== '/' && pathname !== '/login' && pathname !== '/sobreti'
   return (
-    <div className="min-h-screen w-full bg-white">
+    <div className="min-h-dvh w-full overflow-x-hidden bg-white">
+      {showAppShell && <DesktopSidebar />}
+      <main className={showAppShell ? 'min-h-dvh md:pl-56 lg:pl-64' : 'min-h-dvh'}>
       <Suspense fallback={<PageLoader />}>
         <AnimatedRoutes />
       </Suspense>
-    </div>
-  )
-}
-
-const bullets = [
-  'Reporta de forma anónima',
-  'Habla con tu tutor',
-  'Recursos de ayuda',
-  '100% confidencial',
-]
-
-function DesktopShowcase({ children }) {
-  return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-[#1a2744] to-[#2d5a4a] flex items-center justify-center gap-16 p-8">
-      {/* Left panel */}
-      <div className="hidden md:block text-white max-w-md">
-        <h1 className="text-[48px] font-bold text-white tracking-tight">ABLA</h1>
-        <p className="text-[16px] text-abla-green font-medium mt-1">App anti-bullying escolar</p>
-
-        <div className="mt-8 space-y-3">
-          {bullets.map((text) => (
-            <div key={text} className="flex items-center gap-3">
-              <svg className="w-5 h-5 text-abla-green flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-              </svg>
-              <span className="text-[14px] text-white leading-[1.8]">{text}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Phone frame with animation */}
-      <motion.div
-        initial={{ y: 60, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className="rounded-[48px] bg-[#0a0a0a] p-3"
-        style={{ boxShadow: '0 60px 120px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.1)' }}
-      >
-        {/* Notch */}
-        <div className="flex justify-center">
-          <div className="w-[120px] h-[30px] bg-[#0a0a0a] rounded-b-[20px]" />
-        </div>
-        {/* Screen */}
-        <div className="w-[390px] h-[844px] overflow-y-auto overflow-x-hidden rounded-[36px] bg-white relative">
-          {children}
-        </div>
-      </motion.div>
+      </main>
     </div>
   )
 }
@@ -241,17 +188,7 @@ function DesktopShowcase({ children }) {
 function App() {
   return (
     <BrowserRouter>
-      {/* Mobile: native app without frame */}
-      <div className="md:hidden">
-        <AppContent />
-      </div>
-
-      {/* Desktop: showcase with phone frame */}
-      <div className="hidden md:block">
-        <DesktopShowcase>
-          <AppContent />
-        </DesktopShowcase>
-      </div>
+      <AppContent />
     </BrowserRouter>
   )
 }

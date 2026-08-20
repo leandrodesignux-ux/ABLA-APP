@@ -73,7 +73,7 @@ export default function Perfil() {
     <div className="min-h-screen bg-abla-bg pb-24">
       <Header title="Perfil" showBack={false} showIcons={false} />
 
-      <div className="mx-auto w-full max-w-[390px]">
+      <div className="mx-auto w-full max-w-[390px] md:max-w-3xl lg:max-w-6xl">
         <div className="relative">
           <div className="h-[160px] w-full bg-abla-green" />
 

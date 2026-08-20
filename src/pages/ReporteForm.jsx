@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { CheckCircle, MapPin, Upload, User } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import Header from '../components/Header.jsx'
 import PageTransition from '../components/PageTransition.jsx'
@@ -93,7 +93,7 @@ export default function ReporteForm() {
     <div className="min-h-screen bg-abla-bg">
       <Header title={title} showBack showIcons={false} />
 
-      <div className="mx-auto w-full max-w-[390px] px-4 pb-10">
+      <div className="mx-auto w-full max-w-[390px] md:max-w-2xl lg:max-w-3xl px-4 pb-10">
         <div className="mt-6">
           <FieldLabel>Describe lo que ocurrió</FieldLabel>
           <textarea

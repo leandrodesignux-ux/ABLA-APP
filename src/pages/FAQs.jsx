@@ -38,7 +38,7 @@ export default function FAQs() {
     <PageTransition>
       <div className="min-h-screen bg-abla-bg">
         <div className="bg-abla-blue px-4 pb-5 pt-4 text-white">
-          <div className="mx-auto flex w-full max-w-[390px] items-center gap-3">
+          <div className="mx-auto flex w-full max-w-[390px] md:max-w-3xl lg:max-w-6xl items-center gap-3">
             <button type="button" onClick={() => navigate(-1)} className="text-white" aria-label="Volver">
               <ArrowLeft className="h-5 w-5" />
             </button>
@@ -46,7 +46,7 @@ export default function FAQs() {
           </div>
         </div>
 
-        <div className="mx-auto w-full max-w-[390px] px-4 pb-10">
+        <div className="mx-auto w-full max-w-[390px] md:max-w-3xl lg:max-w-6xl px-4 pb-10">
           <div className="mt-4 flex gap-2 overflow-x-auto pb-1">
             <button
               type="button"

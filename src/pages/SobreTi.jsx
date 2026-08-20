@@ -75,7 +75,7 @@ function OptionCard({ option, isSelected, onSelect }) {
         backgroundColor: isSelected ? 'rgba(86, 160, 135, 0.1)' : 'rgba(255, 255, 255, 1)',
       }}
       onClick={handleClick}
-      className={`w-full flex items-center gap-4 p-4 rounded-2xl border-2 transition-all duration-200 ${
+      className={`w-full flex items-center gap-4 p-4 rounded-2xl border-2 transition-all duration-200 md:min-h-56 md:flex-col md:justify-center md:p-6 md:text-center ${
         isSelected
           ? 'border-abla-green shadow-md'
           : 'border-[#E6E6E6] hover:border-abla-green/50'
@@ -90,7 +90,7 @@ function OptionCard({ option, isSelected, onSelect }) {
           draggable="false"
         />
       </div>
-      <div className="flex-1 text-left">
+      <div className="flex-1 text-left md:flex-none md:text-center">
         <div className="text-[16px] font-medium text-abla-blue">{option.label}</div>
         <div className="text-[14px] text-slate-500">{option.description}</div>
       </div>
@@ -118,13 +118,13 @@ export default function SobreTi() {
 
   return (
     <PageTransition>
-      <div className="h-[844px] w-[390px] bg-abla-bg flex flex-col px-6 overflow-hidden">
+      <div className="flex min-h-dvh w-full flex-col bg-abla-bg px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="pt-8 pb-4"
+          className="mx-auto w-full max-w-6xl pb-4 pt-8 md:pt-16"
         >
           <h1 className="text-[22px] font-bold text-abla-blue text-center">
             Cuéntanos sobre ti
@@ -139,7 +139,7 @@ export default function SobreTi() {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="flex-1 flex flex-col justify-center gap-4 py-4"
+          className="mx-auto grid w-full max-w-6xl flex-1 grid-cols-1 content-center gap-4 py-4 md:grid-cols-3 md:gap-6"
         >
           {options.map((option) => (
             <OptionCard

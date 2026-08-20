@@ -1,4 +1,4 @@
-﻿import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { AlertTriangle, Bell, BookOpen, Calendar, ChevronRight, MessageCircle, Star } from 'lucide-react'
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -121,7 +121,7 @@ export default function HomeApoderado() {
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-[390px] px-4">
+        <main className="mx-auto w-full max-w-[390px] md:max-w-3xl lg:max-w-6xl px-4">
           <AnimatePresence>
             {tieneNEEUrgente && (
               <motion.section
@@ -182,7 +182,7 @@ export default function HomeApoderado() {
 
           <section className="mt-5">
             <div className="text-[16px] font-bold text-abla-blue">Acciones directas</div>
-            <div className="mt-3 grid grid-cols-2 gap-3">
+            <div className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
               {directActions.map((action) => (
                 <motion.button
                   key={action.label}
@@ -209,7 +209,7 @@ export default function HomeApoderado() {
                 Según las experiencias de otros estudiantes
               </div>
 
-              <div className="mt-3 flex flex-col gap-3">
+              <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-2">
                 {rankingProfesores.map((prof, index) => (
                   <motion.div
                     key={prof.id}
@@ -355,4 +355,3 @@ export default function HomeApoderado() {
     </PageTransition>
   )
 }
-

@@ -163,7 +163,7 @@ export default function Bitacora() {
     <div className="min-h-screen bg-abla-bg pb-24">
       <Header title="Bitácora" showBack showIcons={false} />
 
-      <div className="mx-auto w-full max-w-[390px] px-4">
+      <div className="mx-auto w-full max-w-[390px] md:max-w-3xl lg:max-w-6xl px-4">
         <div className="mt-4 grid grid-cols-3 gap-2">
           {[
             { label: 'Total', value: reportes.length, color: 'text-abla-blue' },

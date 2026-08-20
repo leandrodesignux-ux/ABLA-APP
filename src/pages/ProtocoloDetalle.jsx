@@ -13,7 +13,7 @@ export default function ProtocoloDetalle() {
     return (
       <PageTransition>
         <div className="min-h-screen bg-abla-bg p-4">
-          <div className="mx-auto mt-10 w-full max-w-[390px] rounded-2xl bg-white p-5 text-center shadow-sm">
+          <div className="mx-auto mt-10 w-full max-w-[390px] md:max-w-2xl lg:max-w-3xl rounded-2xl bg-white p-5 text-center shadow-sm">
             <div className="text-[14px] text-slate-600">No se encontró el protocolo solicitado.</div>
             <button type="button" onClick={() => navigate(-1)} className="mt-4 font-semibold text-abla-blue">
               ← Volver
@@ -30,7 +30,7 @@ export default function ProtocoloDetalle() {
     <PageTransition>
       <div className="min-h-screen bg-abla-bg">
         <div className="bg-abla-blue px-4 pb-5 pt-4 text-white">
-          <div className="mx-auto flex w-full max-w-[390px] items-center gap-3">
+          <div className="mx-auto flex w-full max-w-[390px] md:max-w-2xl lg:max-w-3xl items-center gap-3">
             <button type="button" onClick={() => navigate(-1)} className="text-white" aria-label="Volver">
               <ArrowLeft className="h-5 w-5" />
             </button>
@@ -41,7 +41,7 @@ export default function ProtocoloDetalle() {
           </div>
         </div>
 
-        <div className="mx-auto w-full max-w-[390px] px-4 pb-10">
+        <div className="mx-auto w-full max-w-[390px] md:max-w-2xl lg:max-w-3xl px-4 pb-10">
           {isUrgente && (
             <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 p-4 text-[13px] font-semibold text-red-800">
               🔴 Este protocolo requiere acción inmediata. Sigue los pasos en orden.

@@ -66,7 +66,7 @@ export default function AyudaCita() {
     <div className="min-h-screen bg-abla-bg">
       <Header title="Ayuda profesional" showBack showIcons={false} />
 
-      <div className="mx-auto w-full max-w-[390px] px-4 pb-10">
+      <div className="mx-auto w-full max-w-[390px] md:max-w-2xl lg:max-w-3xl px-4 pb-10">
         <div className="mt-6 text-[16px] font-bold text-abla-blue">Psicopedagogos disponibles</div>
 
         <div className="mt-4 flex flex-col gap-3">
