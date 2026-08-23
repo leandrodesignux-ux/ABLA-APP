@@ -44,7 +44,7 @@ const options = [
     id: 'profesional',
     label: 'Profesional',
     description: 'Psicólogo, docente, etc.',
-    icon: '/Illustrations/profesional.svg',
+    icon: '/Illustrations/Profesional.svg',
   },
 ]
 

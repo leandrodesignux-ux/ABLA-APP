@@ -1,19 +1,23 @@
-import { motion, AnimatePresence } from 'framer-motion'
-import { CheckCircle, MapPin, Upload, User } from 'lucide-react'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import { FileImage, MapPin, Upload, User } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import Header from '../components/Header.jsx'
 import PageTransition from '../components/PageTransition.jsx'
 import { useAppContext } from '../context/AppContext.jsx'
+import AblaCharacter from '../components/AblaCharacter.jsx'
+import AblaButton from '../components/AblaButton.jsx'
+import { ablaMotion, motionIfAllowed } from '../design/motion.js'
 
 function Chip({ active, label, onClick, className = '', activeClassName = '' }) {
+  const reducedMotion = useReducedMotion()
   return (
     <motion.button
       type="button"
-      whileTap={{ scale: 0.97 }}
+      whileTap={motionIfAllowed(reducedMotion, ablaMotion.press)}
       onClick={onClick}
-      className={`h-10 rounded-full px-4 text-[13px] font-bold transition-colors ${
-        active ? activeClassName || 'bg-abla-green text-white' : `bg-white text-abla-blue border border-[#E6E6E6] ${className}`
+      className={`min-h-11 rounded-full px-4 text-[13px] font-bold transition-colors focus-visible:ring-3 focus-visible:ring-abla-green/30 ${
+        active ? activeClassName || 'bg-abla-green text-white shadow-abla-green' : `bg-white text-abla-blue border border-abla-border ${className}`
       }`}
       aria-label={label}
     >
@@ -23,12 +27,12 @@ function Chip({ active, label, onClick, className = '', activeClassName = '' }) 
 }
 
 function FieldLabel({ children }) {
-  return <div className="text-[13px] font-semibold text-abla-blue">{children}</div>
+  return <div className="text-sm font-extrabold text-abla-blue">{children}</div>
 }
 
 function TextInput({ icon, placeholder, value, onChange }) {
   return (
-    <div className="flex h-12 w-full items-center gap-2 rounded-xl border border-[#E6E6E6] bg-white px-3 focus-within:border-abla-green">
+    <div className="flex h-12 w-full items-center gap-2 rounded-abla-control border border-abla-border bg-white px-3 focus-within:border-abla-green focus-within:ring-3 focus-within:ring-abla-green/15">
       <div className="text-slate-400" aria-hidden="true">
         {icon}
       </div>
@@ -43,6 +47,7 @@ function TextInput({ icon, placeholder, value, onChange }) {
 }
 
 export default function ReporteForm() {
+  const reducedMotion = useReducedMotion()
   const { tipo } = useParams()
   const navigate = useNavigate()
   const { addReporte } = useAppContext()
@@ -90,22 +95,24 @@ export default function ReporteForm() {
 
   return (
     <PageTransition>
-    <div className="min-h-screen bg-abla-bg">
+    <div className="min-h-dvh bg-abla-bg">
       <Header title={title} showBack showIcons={false} />
 
-      <div className="mx-auto w-full max-w-[390px] md:max-w-2xl lg:max-w-3xl px-4 pb-10">
-        <div className="mt-6">
+      <div className="mx-auto w-full max-w-3xl px-4 pb-10 md:px-6">
+        <div className="mt-6 rounded-abla-card bg-abla-blue-soft p-5 md:flex md:items-center md:gap-5"><AblaCharacter emotion="safe" shape="pill" size="sm" /><div><p className="text-xs font-extrabold uppercase tracking-[.14em] text-abla-green">Paso a paso</p><h1 className="mt-1 text-xl font-black text-abla-blue md:text-2xl">Cuéntanos lo que ocurrió</h1><p className="mt-1 text-sm leading-5 text-slate-500">Completa solo lo que recuerdes. Puedes mantener tu identidad anónima.</p></div><div className="ml-auto mt-4 flex items-center gap-2 md:mt-0" aria-label="Progreso del reporte"><span className="h-3 w-8 rounded-full bg-abla-green" /><span className="h-3 w-3 rounded-abla-blob bg-abla-green/40" /><span className="h-3 w-3 rounded-full bg-abla-blue/15" /></div></div>
+
+        <div className="mt-5 rounded-abla-card bg-white p-5 shadow-abla-card md:p-6">
           <FieldLabel>Describe lo que ocurrió</FieldLabel>
           <textarea
             rows={4}
             value={desc}
             onChange={(e) => setDesc(e.target.value)}
             placeholder="Escribe aquí lo que pasó..."
-            className="mt-2 w-full resize-none rounded-xl border border-[#E6E6E6] bg-white p-3 text-[14px] text-slate-800 outline-none placeholder:text-slate-400 focus:border-abla-green"
+            className="mt-2 w-full resize-none rounded-abla-control border border-abla-border bg-abla-bg p-4 text-[14px] text-slate-800 outline-none placeholder:text-slate-400 focus:border-abla-green focus:bg-white focus:ring-3 focus:ring-abla-green/15"
           />
         </div>
 
-        <div className="mt-5">
+        <div className="mt-5 rounded-abla-card bg-white p-5 shadow-abla-card md:p-6">
           <FieldLabel>Nivel de gravedad</FieldLabel>
           <div className="mt-2 flex flex-wrap gap-2">
             {['leve', 'medio', 'grave', 'urgente'].map((option) => (
@@ -121,7 +128,7 @@ export default function ReporteForm() {
           </div>
         </div>
 
-        <div className="mt-5">
+        <div className="mt-5 rounded-abla-card bg-white p-5 shadow-abla-card md:p-6">
           <FieldLabel>¿Con qué frecuencia ocurre?</FieldLabel>
           <div className="mt-2 flex flex-wrap gap-2">
             {[
@@ -140,7 +147,7 @@ export default function ReporteForm() {
           </div>
         </div>
 
-        <div className="mt-5">
+        <div className="mt-5 rounded-abla-card bg-white p-5 shadow-abla-card md:p-6">
           <FieldLabel>¿Tienes evidencia?</FieldLabel>
           <button
             type="button"
@@ -171,7 +178,7 @@ export default function ReporteForm() {
           ) : null}
         </div>
 
-        <div className="mt-5">
+        <div className="mt-5 rounded-abla-card bg-white p-5 shadow-abla-card md:p-6">
           <FieldLabel>¿Cuándo ocurrió?</FieldLabel>
           <div className="mt-2 flex gap-2">
             {['Hoy', 'Esta semana', 'Antes'].map((o) => (
@@ -180,7 +187,7 @@ export default function ReporteForm() {
           </div>
         </div>
 
-        <div className="mt-5">
+        <div className="mt-5 rounded-abla-card bg-white p-5 shadow-abla-card md:p-6">
           <FieldLabel>¿Dónde ocurrió?</FieldLabel>
           <div className="mt-2">
             <TextInput
@@ -192,21 +199,20 @@ export default function ReporteForm() {
           </div>
         </div>
 
-        <div className="mt-5">
+        <div className="mt-5 rounded-abla-card bg-white p-5 shadow-abla-card md:p-6">
           <FieldLabel>Adjuntar evidencia</FieldLabel>
           <motion.button
             type="button"
-            whileTap={{ scale: 0.99 }}
-            className="mt-2 flex w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#CBD5E1] bg-white px-4 py-6 text-center"
+            whileTap={motionIfAllowed(reducedMotion, ablaMotion.press)}
+            className="mt-2 flex w-full items-center justify-center gap-4 rounded-abla-card border-2 border-dashed border-abla-green/35 bg-abla-green-soft px-5 py-6 text-left transition-colors hover:bg-abla-green-mist"
             aria-label="Adjuntar evidencia"
           >
-            <Upload className="h-6 w-6 text-abla-blue" aria-hidden="true" />
-            <div className="text-[13px] font-semibold text-slate-700">Toca para adjuntar foto o video</div>
-            <div className="text-[12px] text-slate-500">(Solo demostración)</div>
+            <div className="relative"><AblaCharacter emotion="help" shape="stack" size="sm" /><FileImage className="absolute -right-2 -top-1 h-7 w-7 rounded-md bg-white p-1 text-abla-blue shadow-abla-card" /></div>
+            <div><div className="text-[13px] font-bold text-abla-blue">Adjunta una foto, captura o video</div><div className="mt-1 text-[12px] text-slate-500">La evidencia puede ayudar a comprender lo ocurrido · Demostración</div></div><Upload className="ml-auto h-5 w-5 shrink-0 text-abla-green" />
           </motion.button>
         </div>
 
-        <div className="mt-5">
+        <div className="mt-5 rounded-abla-card bg-white p-5 shadow-abla-card md:p-6">
           <FieldLabel>¿Quién es el responsable? (opcional)</FieldLabel>
           <div className="mt-2">
             <TextInput
@@ -218,7 +224,7 @@ export default function ReporteForm() {
           </div>
         </div>
 
-        <label className="mt-5 flex items-center gap-3 rounded-xl bg-white p-4 shadow-sm">
+        <label className="mt-5 flex items-center gap-3 rounded-abla-card bg-abla-green-soft p-5 shadow-abla-card">
           <input
             type="checkbox"
             checked={anon}
@@ -231,20 +237,15 @@ export default function ReporteForm() {
           </div>
         </label>
 
-        <motion.button
+        <AblaButton
           type="button"
-          whileHover={!submitted ? { scale: 1.02 } : {}}
-          whileTap={!submitted ? { scale: 0.96 } : {}}
-          transition={{ type: 'spring', stiffness: 400, damping: 17 }}
           disabled={submitted}
           onClick={submitReporte}
-          className={`mt-6 h-12 w-full rounded-xl font-bold text-white ${
-            submitted ? 'bg-slate-300' : 'bg-abla-green'
-          }`}
+          className="mt-6 w-full"
           aria-label="Enviar reporte"
         >
           ENVIAR REPORTE
-        </motion.button>
+        </AblaButton>
       </div>
 
       <AnimatePresence>
@@ -259,18 +260,18 @@ export default function ReporteForm() {
               initial={{ scale: 0.92, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: 'spring', stiffness: 420, damping: 26 }}
-              className="w-full max-w-[340px] rounded-2xl bg-white p-6 text-center shadow-xl"
+              className="w-full max-w-md rounded-abla-panel bg-white p-6 text-center shadow-abla-float md:p-8"
             >
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring', stiffness: 520, damping: 24, delay: 0.05 }}
-                className="mx-auto flex h-20 w-20 items-center justify-center"
+                className="mx-auto flex h-32 w-32 items-center justify-center rounded-abla-blob bg-abla-green-soft"
                 aria-hidden="true"
               >
-                <CheckCircle className="h-16 w-16 text-abla-green" />
+                <AblaCharacter emotion="success" shape="blob" size="lg" decoration />
               </motion.div>
-              <div className="mt-2 text-[16px] font-bold text-abla-blue">Reporte enviado</div>
+              <div className="mt-4 text-xl font-black text-abla-blue">Reporte enviado</div>
               <div className="mt-1 text-[13px] text-slate-600">Gracias por contarlo.</div>
               <div className="mt-5 flex flex-col gap-3">
                 <button

@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
+import { useEffect } from 'react'
 
 // Forward navigation variants (default)
 const forwardVariants = {
@@ -15,11 +16,16 @@ const backVariants = {
 }
 
 export default function PageTransition({ children, direction = 'forward' }) {
+  const reducedMotion = useReducedMotion()
   const variants = direction === 'back' ? backVariants : forwardVariants
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+  }, [])
 
   return (
     <motion.div
-      variants={variants}
+      variants={reducedMotion ? { initial: { opacity: 1 }, animate: { opacity: 1 }, exit: { opacity: 1 } } : variants}
       initial="initial"
       animate="animate"
       exit="exit"

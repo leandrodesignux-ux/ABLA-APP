@@ -1,5 +1,5 @@
-import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowLeft, Check, ChevronRight, Star } from 'lucide-react'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { ArrowLeft, ChevronRight, Star } from 'lucide-react'
 import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BottomNav from '../components/BottomNav.jsx'
@@ -7,8 +7,21 @@ import Header from '../components/Header.jsx'
 import PageTransition from '../components/PageTransition.jsx'
 import { useAppContext } from '../context/AppContext.jsx'
 import { PROFESORES, CATEGORIAS_SITUACION } from '../data/profesoresData.js'
+import AblaCharacter from '../components/AblaCharacter.jsx'
+import AblaButton from '../components/AblaButton.jsx'
+import { ablaMotion, motionIfAllowed } from '../design/motion.js'
+
+const categoryVisuals = [
+  { emotion: 'worried', shape: 'blob', tone: 'bg-abla-blue-soft' },
+  { emotion: 'anxious', shape: 'wave', tone: 'bg-abla-green-soft' },
+  { emotion: 'sad', shape: 'stack', tone: 'bg-[#F1EDF6]' },
+  { emotion: 'neutral', shape: 'pill', tone: 'bg-[#EEF1F6]' },
+  { emotion: 'report', shape: 'soft-star', tone: 'bg-[#FDEDEC]' },
+  { emotion: 'help', shape: 'circle', tone: 'bg-[#E9F3F5]' },
+]
 
 function StarRating({ value, onChange = () => {}, size = 'lg', readOnly = false }) {
+  const reducedMotion = useReducedMotion()
   const [hovered, setHovered] = useState(0)
   const starSize = size === 'lg' ? 'h-10 w-10' : 'h-5 w-5'
 
@@ -18,7 +31,7 @@ function StarRating({ value, onChange = () => {}, size = 'lg', readOnly = false 
         <motion.button
           key={star}
           type="button"
-          whileTap={readOnly ? {} : { scale: 0.85 }}
+          whileTap={readOnly ? {} : motionIfAllowed(reducedMotion, ablaMotion.press)}
           onMouseEnter={() => !readOnly && setHovered(star)}
           onMouseLeave={() => !readOnly && setHovered(0)}
           onClick={() => !readOnly && onChange(star)}
@@ -54,6 +67,7 @@ const textosEstrellas = {
 }
 
 export default function Encuesta() {
+  const reducedMotion = useReducedMotion()
   const navigate = useNavigate()
   const { addRating } = useAppContext()
   const [step, setStep] = useState('inicio')
@@ -92,21 +106,19 @@ export default function Encuesta() {
           {step === 'inicio' ? (
             <motion.div key="inicio" {...stepMotion} className="min-h-[calc(100vh-96px)]">
               <Header title="Encuesta" showBack showIcons={false} />
-              <div className="mx-auto flex w-full max-w-[390px] md:max-w-2xl flex-col items-center px-4 pt-8 text-center">
-                <div className="flex h-[180px] w-[180px] items-center justify-center overflow-hidden rounded-full border-4 border-abla-green bg-white">
-                  <img src="/Illustrations/encuestas.svg" alt="" className="h-full w-full object-contain p-4" draggable="false" />
-                </div>
-                <h1 className="mt-9 text-center text-[22px] font-bold text-abla-blue">¿Alguien te ayudó?</h1>
+              <div className="mx-auto flex w-full max-w-2xl flex-col items-center px-4 pt-8 text-center">
+                <div className="grid h-52 w-52 place-items-center rounded-abla-blob bg-abla-green-soft"><AblaCharacter emotion="happy" shape="stack" size="xl" animate="float" decoration /></div>
+                <h1 className="mt-8 text-center text-3xl font-black text-abla-blue md:text-4xl">¿Alguien te ayudó?</h1>
                 <p className="mt-3 px-6 text-center text-[14px] text-slate-500">
                   Cuéntanos quién te acompañó y ayuda a otros a encontrar el apoyo que necesitan.
                 </p>
-                <button
+                <AblaButton
                   type="button"
                   onClick={() => setStep('categoria')}
-                  className="mt-10 h-14 w-full rounded-2xl bg-abla-green text-[15px] font-bold text-white"
+                  className="mt-9 w-full md:max-w-md"
                 >
                   Valorar un profesor
-                </button>
+                </AblaButton>
                 <button
                   type="button"
                   onClick={() => navigate(-1)}
@@ -132,26 +144,28 @@ export default function Encuesta() {
                   <ArrowLeft className="h-6 w-6" />
                 </button>
               </div>
-              <div className="mx-auto w-full max-w-[390px] md:max-w-2xl">
-                <h1 className="mt-6 px-4 text-[18px] font-bold text-abla-blue">¿Qué tipo de situación tuviste?</h1>
+              <div className="mx-auto w-full max-w-5xl px-4 md:px-6">
+                <h1 className="abla-page-title mt-6">¿Qué tipo de situación tuviste?</h1>
                 <p className="mt-1 px-4 text-[13px] text-slate-500">Selecciona la que más se acerca a lo que viviste.</p>
-                <div className="mt-5 grid grid-cols-2 gap-3 px-4">
-                  {CATEGORIAS_SITUACION.map((categoria) => (
+                <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+                  {CATEGORIAS_SITUACION.map((categoria, index) => {
+                    const visual = categoryVisuals[index % categoryVisuals.length]
+                    return (
                     <motion.button
                       key={categoria.id}
                       type="button"
-                      whileTap={{ scale: 0.97 }}
+                      whileTap={motionIfAllowed(reducedMotion, ablaMotion.press)}
                       onClick={() => setCategoriaSeleccionada(categoria)}
-                      className={`flex h-[88px] flex-col items-center justify-center rounded-2xl border p-4 text-center shadow-sm ${
+                      className={`relative flex min-h-40 flex-col items-center justify-center overflow-hidden rounded-abla-card border-2 p-4 text-center transition-all ${
                         categoriaSeleccionada?.id === categoria.id
-                          ? 'border-abla-green bg-green-50'
-                          : 'border-[#E6E6E6] bg-white'
+                          ? 'border-abla-green bg-abla-green-soft shadow-abla-float'
+                          : 'border-transparent bg-white shadow-abla-card'
                       }`}
                     >
-                      <div className="text-[28px]">{categoria.emoji}</div>
-                      <div className="mt-2 text-[13px] font-semibold text-abla-blue">{categoria.label}</div>
+                      <div className={`grid h-24 w-full place-items-center rounded-abla-blob ${visual.tone}`}><AblaCharacter emotion={visual.emotion} shape={visual.shape} size="sm" /></div>
+                      <div className="mt-3 text-[13px] font-extrabold text-abla-blue">{categoria.label}</div>
                     </motion.button>
-                  ))}
+                  )})}
                 </div>
               </div>
               <AnimatePresence>
@@ -331,11 +345,11 @@ export default function Encuesta() {
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: 'spring', stiffness: 260, damping: 18 }}
-                  className="flex h-24 w-24 items-center justify-center rounded-full bg-abla-green"
+                  className="flex h-40 w-40 items-center justify-center rounded-abla-blob bg-abla-green-soft"
                 >
-                  <Check className="h-12 w-12 text-white" />
+                  <AblaCharacter emotion="success" shape="soft-star" size="xl" decoration />
                 </motion.div>
-                <h1 className="mt-5 text-[22px] font-bold text-abla-blue">¡Gracias!</h1>
+                <h1 className="mt-5 text-3xl font-black text-abla-blue">¡Gracias!</h1>
                 <p className="mt-2 px-8 text-center text-[14px] text-slate-500">
                   Tu valoración ayuda a otros estudiantes a encontrar el apoyo que necesitan.
                 </p>

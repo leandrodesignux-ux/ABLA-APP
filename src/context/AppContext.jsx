@@ -157,8 +157,6 @@ export function AppProvider({ children }) {
       removeCertificadoNEE,
       marcarReglamentoLeido,
       addRating,
-      state.ratingsEncuesta,
-      state.encuestasRespondidas,
       clearSession,
     ],
   )
@@ -166,6 +164,8 @@ export function AppProvider({ children }) {
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }
 
+// Provider and its colocated hook intentionally share this module.
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAppContext() {
   const ctx = useContext(AppContext)
   if (!ctx) throw new Error('useAppContext must be inside AppProvider')

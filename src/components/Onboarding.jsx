@@ -26,15 +26,15 @@ export default function Onboarding({ onDone }) {
   const slides = useMemo(
     () => [
       {
-        imageSrc: '/onboarding-1.svg',
+        imageSrc: '/Illustrations/onboarding-1.svg',
         text: 'El acoso escolar es un problema grave y silencioso, por eso queremos ayudarte en esos momentos difíciles',
       },
       {
-        imageSrc: '/onboarding-2.svg',
+        imageSrc: '/Illustrations/onboarding-2.svg',
         text: 'Lo mas importante es que lo cuentes, puedes chatear con un tutor, en grupo o con alguien anónimo',
       },
       {
-        imageSrc: '/onboarding-3.svg',
+        imageSrc: '/Illustrations/onboarding-21.svg',
         text: 'También puedes realizar encuestas, recibir consejos y agendar una cita con un psicopedagogo',
       },
     ],

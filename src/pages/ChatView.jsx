@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { FileText, Paperclip, Phone, Send } from 'lucide-react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
@@ -8,6 +8,8 @@ import PageTransition from '../components/PageTransition.jsx'
 import { useAppContext } from '../context/AppContext.jsx'
 import { anonimoBotFlows, tutorBotFlows, apoderadoBotFlows, profesionalBotFlows, CHAT_END_ACTIONS } from '../data/chatFlows.js'
 import { MENSAJES_RAPIDOS_APODERADO } from '../data/recursosAyuda.js'
+import AblaCharacter from '../components/AblaCharacter.jsx'
+import { ablaMotion, motionIfAllowed } from '../design/motion.js'
 
 function formatTime(date) {
   try {
@@ -15,6 +17,11 @@ function formatTime(date) {
   } catch {
     return ''
   }
+}
+
+function createMessageStamp() {
+  const timestamp = Date.now()
+  return { id: `m-${timestamp}`, createdAt: timestamp }
 }
 
 function parseMessageWithLinks(text) {
@@ -38,24 +45,24 @@ function parseMessageWithLinks(text) {
   return parts
 }
 
-// Typing indicator with 3 animated dots
 function TypingIndicator() {
+  const reducedMotion = useReducedMotion()
   return (
     <div className="flex w-full justify-start">
       <div className="max-w-[75%]">
-        <div className="px-4 py-3 rounded-[18px_18px_18px_4px] bg-white border border-[#E6E6E6]">
-          <div className="flex items-center gap-1 h-5">
+        <div className="rounded-[20px_20px_20px_6px] border border-abla-border bg-white px-4 py-3 shadow-abla-card">
+          <div className="flex h-5 items-end gap-1.5" aria-label="Escribiendo">
             {[0, 1, 2].map((i) => (
               <motion.div
                 key={i}
-                animate={{ y: [0, -6, 0] }}
+                animate={reducedMotion ? {} : { scaleY: [0.7, 1.15, 0.7], y: [0, -2, 0] }}
                 transition={{
                   duration: 0.6,
                   repeat: Infinity,
                   delay: i * 0.15,
                   ease: 'easeInOut',
                 }}
-                className="w-2 h-2 rounded-full bg-abla-green opacity-60"
+                className={`h-3 w-3 bg-abla-green/70 ${i === 1 ? 'rounded-abla-blob' : i === 2 ? 'rounded-sm' : 'rounded-full'}`}
               />
             ))}
           </div>
@@ -71,18 +78,18 @@ function Bubble({ mine, text, time, urgent }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8 }}
+      initial={{ opacity: 0, y: 12, x: mine ? 14 : -8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2 }}
+      transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
       className={`flex w-full ${mine ? 'justify-end' : 'justify-start'}`}
     >
-      <div className="max-w-[75%]">
+      <div className="max-w-[82%] md:max-w-[68%]">
         <div
           className={`px-4 py-3 text-[14px] leading-5 ${
             mine
-              ? 'rounded-[18px_18px_4px_18px] bg-abla-blue text-white'
-              : `rounded-[18px_18px_18px_4px] border text-abla-blue ${
-                isUrgent ? 'border-[#E6E6E6] border-l-4 border-l-red-400 bg-red-50' : 'border-[#E6E6E6] bg-white'
+              ? 'rounded-[20px_20px_6px_20px] bg-abla-blue text-white shadow-abla-blue'
+              : `rounded-[20px_20px_20px_6px] border text-abla-blue shadow-abla-card ${
+                isUrgent ? 'border-red-200 border-l-4 border-l-red-500 bg-red-50' : 'border-white/80 bg-white'
               }`
           }`}
         >
@@ -108,6 +115,7 @@ function Bubble({ mine, text, time, urgent }) {
 }
 
 export default function ChatView() {
+  const reducedMotion = useReducedMotion()
   const { type } = useParams()
   const location = useLocation()
   const { perfil } = useAppContext()
@@ -155,11 +163,6 @@ export default function ChatView() {
   const [flowNode, setFlowNode] = useState('initial')
   const [quickReplies, setQuickReplies] = useState(flow?.initial?.quickReplies || [])
 
-  useEffect(() => {
-    setFlowNode('initial')
-    setQuickReplies(flow?.initial?.quickReplies || [])
-  }, [flow])
-
   const initialMsg = flow?.initial?.botMessage || chatMeta.initialMessage || 'Hola, estoy aquí para escucharte.'
   const [messages, setMessages] = useState(() => [
     {
@@ -169,17 +172,6 @@ export default function ChatView() {
       createdAt: Date.now(),
     },
   ])
-
-  useEffect(() => {
-    setMessages([
-      {
-        id: `m-${Date.now()}`,
-        mine: false,
-        text: initialMsg,
-        createdAt: Date.now(),
-      },
-    ])
-  }, [initialMsg])
 
   const [draft, setDraft] = useState('')
   const [isTyping, setIsTyping] = useState(false)
@@ -192,10 +184,9 @@ export default function ChatView() {
 
   const handleQuickReply = (reply) => {
     const userMsg = {
-      id: `m-${Date.now()}`,
+      ...createMessageStamp(),
       mine: true,
       text: reply.label,
-      createdAt: Date.now(),
     }
     setMessages((prev) => [...prev, userMsg])
     setHasUserSent(true)
@@ -214,10 +205,9 @@ export default function ChatView() {
       setMessages((prev) => [
         ...prev,
         {
-          id: `m-${Date.now()}-r`,
+          ...createMessageStamp(),
           mine: false,
           text: nextNode?.botMessage || flow?.libre?.botMessage || 'Cuéntame más. Estoy escuchando.',
-          createdAt: Date.now(),
         },
       ])
       setIsTyping(false)
@@ -249,10 +239,9 @@ export default function ChatView() {
     }
 
     const myMsg = {
-      id: `m-${Date.now()}`,
+      ...createMessageStamp(),
       mine: true,
       text,
-      createdAt: Date.now(),
     }
 
     setMessages((prev) => [...prev, myMsg])
@@ -263,10 +252,9 @@ export default function ChatView() {
     window.setTimeout(() => {
       const freeNode = flow?.libre
       const reply = {
-        id: `m-${Date.now()}-r`,
+        ...createMessageStamp(),
         mine: false,
         text: freeNode?.botMessage || 'Gracias por contarme. ¿Puedes contarme más sobre lo que está pasando?',
-        createdAt: Date.now(),
       }
       setMessages((prev) => [...prev, reply])
       setIsTyping(false)
@@ -279,12 +267,12 @@ export default function ChatView() {
 
   return (
     <PageTransition>
-    <div className="min-h-screen bg-abla-bg pb-24">
+    <div className="min-h-dvh bg-abla-bg pb-24 md:pb-0">
       <div className="relative">
         <Header title={chatMeta.title} showBack showIcons={false} />
         {chatType === 'anonimo' ? (
-          <div className="pointer-events-none absolute left-1/2 top-[36px] -translate-x-1/2 text-[11px] font-medium text-slate-500">
-            Confidencial 🔒
+          <div className="pointer-events-none absolute left-1/2 top-[35px] flex -translate-x-1/2 items-center gap-1 text-[10px] font-bold text-white/75">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-200" /> Confidencial
           </div>
         ) : null}
         {chatMeta.avatarSrc ? (
@@ -296,8 +284,12 @@ export default function ChatView() {
         ) : null}
       </div>
 
-      <div className="mx-auto flex min-h-[calc(100vh-56px-96px)] w-full max-w-[390px] md:max-w-3xl lg:max-w-4xl flex-col">
-        <div ref={listRef} className="flex-1 overflow-y-auto px-4 py-4">
+      <div className="mx-auto flex min-h-[calc(100dvh-56px-96px)] w-full max-w-[390px] flex-col md:min-h-[calc(100dvh-56px)] md:max-w-3xl lg:max-w-4xl">
+        <div className="mx-4 mt-4 flex items-center gap-3 rounded-full border border-white bg-abla-green-soft px-4 py-2.5 text-xs font-semibold text-abla-blue shadow-abla-card">
+          <AblaCharacter emotion="safe" shape="pill" size="xs" />
+          <div><span className="font-extrabold">En línea</span><span className="text-slate-500"> · Estamos aquí para escucharte</span></div>
+        </div>
+        <div ref={listRef} className="flex-1 overflow-y-auto px-4 py-5">
           <div className="flex flex-col gap-3">
             {messages.map((m, index) => {
               const isLastUserMessage = m.mine && index === messages.length - 1
@@ -330,10 +322,10 @@ export default function ChatView() {
           </div>
         </div>
 
-        <div className="fixed bottom-16 left-0 right-0 z-40 md:bottom-0 md:left-56 lg:left-64">
-          <div className="mx-auto w-full max-w-[390px] md:max-w-3xl lg:max-w-4xl bg-white px-4 py-3">
+        <div className="fixed bottom-[72px] left-0 right-0 z-40 md:bottom-0 md:left-56 lg:left-64">
+          <div className="mx-auto w-full max-w-[390px] border-t border-white/80 bg-white/95 px-4 py-3 shadow-[0_-14px_40px_rgba(63,85,119,.08)] backdrop-blur-xl md:max-w-3xl lg:max-w-4xl">
             {chatType === 'anonimo' ? (
-              <div className="mb-2 text-[11px] text-slate-500">🔒 Esta conversación es completamente confidencial</div>
+              <div className="mb-3 inline-flex items-center rounded-full bg-abla-blue-soft px-3 py-1.5 text-[11px] font-semibold text-abla-blue">Esta conversación es completamente confidencial</div>
             ) : null}
             {quickReplies.length > 0 ? (
               <div className="relative mb-3">
@@ -343,7 +335,7 @@ export default function ChatView() {
                       key={`${flowNode}-${qr.label}`}
                       type="button"
                       onClick={() => handleQuickReply(qr)}
-                      className="shrink-0 rounded-full border border-abla-blue bg-white px-3 py-2 text-[12px] font-medium text-abla-blue"
+                      className="shrink-0 rounded-full border border-abla-green/35 bg-abla-green-soft px-3 py-2 text-[12px] font-semibold text-abla-blue transition-colors hover:bg-abla-green-mist focus-visible:ring-2 focus-visible:ring-abla-green/30"
                     >
                       {qr.label}
                     </button>
@@ -353,7 +345,7 @@ export default function ChatView() {
               </div>
             ) : null}
             <motion.div
-              animate={shake ? { x: [-4, 4, -4, 4, 0] } : { x: 0 }}
+              animate={!reducedMotion && shake ? { x: [-4, 4, -4, 4, 0] } : { x: 0 }}
               transition={{ duration: 0.3 }}
               className="flex items-center gap-2"
             >
@@ -385,7 +377,7 @@ export default function ChatView() {
                     if (e.key === 'Enter') send()
                   }}
                   placeholder={inputPlaceholder}
-                  className="h-10 w-full rounded-full border bg-white px-4 pr-14 text-sm text-slate-800 placeholder:text-slate-400 focus:border-abla-green focus:outline-none transition-colors duration-200"
+                  className="h-12 w-full rounded-abla-control border bg-abla-bg px-4 pr-14 text-sm text-slate-800 placeholder:text-slate-400 focus:border-abla-green focus:bg-white focus:outline-none transition-colors duration-200"
                   style={{ borderColor: draft.trim() ? '#56A087' : '#E6E6E6' }}
                   aria-label="Mensaje"
                 />
@@ -396,11 +388,12 @@ export default function ChatView() {
                 ) : null}
               </div>
 
-              <button
+              <motion.button
                 type="button"
                 onClick={send}
                 disabled={!draft.trim()}
-                className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors duration-200 ${
+                whileTap={motionIfAllowed(reducedMotion, ablaMotion.press)}
+                className={`flex h-12 w-12 items-center justify-center rounded-abla-control transition-colors duration-200 ${
                   draft.trim()
                     ? 'bg-abla-green text-white'
                     : 'bg-slate-200 text-slate-400'
@@ -408,7 +401,7 @@ export default function ChatView() {
                 aria-label="Enviar"
               >
                 <Send className="h-5 w-5" />
-              </button>
+              </motion.button>
             </motion.div>
           </div>
         </div>

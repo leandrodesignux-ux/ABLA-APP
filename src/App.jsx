@@ -2,6 +2,7 @@ import { Suspense, lazy, useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import DesktopSidebar from './components/DesktopSidebar.jsx'
+import AblaLoader from './components/AblaLoader.jsx'
 
 // Lazy load pages for code splitting
 const Login = lazy(() => import('./components/Login.jsx'))
@@ -35,11 +36,7 @@ const SobreTi = lazy(() => import('./pages/SobreTi.jsx'))
 function PageLoader() {
   return (
     <div className="flex h-screen w-full items-center justify-center bg-abla-bg">
-      <motion.div
-        animate={{ scale: [1, 1.2, 1] }}
-        transition={{ duration: 1, repeat: Infinity }}
-        className="h-8 w-8 rounded-full bg-abla-green"
-      />
+      <AblaLoader />
     </div>
   )
 }

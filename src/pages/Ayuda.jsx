@@ -1,46 +1,27 @@
-import { motion } from 'framer-motion'
-import { AlertCircle, BookOpen, Calendar, ExternalLink, Phone } from 'lucide-react'
+import { motion, useReducedMotion } from 'framer-motion'
+import { ExternalLink, Phone } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import AblaCharacter from '../components/AblaCharacter.jsx'
 import BottomNav from '../components/BottomNav.jsx'
 import Header from '../components/Header.jsx'
 import PageTransition from '../components/PageTransition.jsx'
 import { useAppContext } from '../context/AppContext.jsx'
 import { LINEAS_EMERGENCIA, RECURSOS_WEB } from '../data/recursosAyuda.js'
+import { ablaMotion, motionIfAllowed } from '../design/motion.js'
 
-function HelpCard({ icon, title, description, buttonLabel, buttonVariant, onClick }) {
-  return (
-    <motion.button
-      type="button"
-      whileTap={{ scale: 0.98 }}
-      onClick={onClick}
-      className="w-full rounded-2xl bg-white p-4 text-left shadow-sm"
-      aria-label={title}
-    >
-      <div className="flex items-start gap-3">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-abla-bg">{icon}</div>
-        <div className="min-w-0 flex-1">
-          <div className="text-[16px] font-bold text-abla-blue">{title}</div>
-          <div className="mt-1 text-[13px] text-slate-500">{description}</div>
-        </div>
-      </div>
+const intentions = [
+  { title: 'Necesito hablar', description: 'Conversa de forma confidencial.', to: '/chat/anonimo', emotion: 'chat', shape: 'pill' },
+  { title: 'Necesito orientación', description: 'Encuentra consejos para lo que estás viviendo.', to: '/ayuda/consejos', emotion: 'help', shape: 'blob' },
+  { title: 'Quiero pedir una cita', description: 'Agenda apoyo con un profesional.', to: '/ayuda/cita', emotion: 'calm', shape: 'circle' },
+]
 
-      <div className="mt-4">
-        <div
-          className={`flex h-12 w-full items-center justify-center rounded-xl px-4 text-center text-[13px] font-bold tracking-wide ${
-            buttonVariant === 'filled'
-              ? 'bg-abla-green text-white'
-              : 'border border-abla-green bg-white text-abla-green'
-          }`}
-        >
-          {buttonLabel}
-        </div>
-      </div>
-    </motion.button>
-  )
+function IntentionCard({ title, description, to, emotion, shape }) {
+  const navigate = useNavigate()
+  const reducedMotion = useReducedMotion()
+  return <motion.button type="button" onClick={() => navigate(to)} whileHover={motionIfAllowed(reducedMotion, { y: -4 })} whileTap={motionIfAllowed(reducedMotion, ablaMotion.press)} className="flex min-h-44 items-center gap-4 rounded-abla-card bg-white p-5 text-left shadow-abla-card transition-shadow hover:shadow-abla-float md:flex-col md:items-start"><div className="grid h-28 w-28 shrink-0 place-items-center rounded-abla-blob bg-abla-green-soft md:h-36 md:w-full"><AblaCharacter emotion={emotion} shape={shape} size="md" /></div><div><h2 className="text-lg font-black text-abla-blue">{title}</h2><p className="mt-1 text-sm leading-5 text-slate-500">{description}</p></div></motion.button>
 }
 
 export default function Ayuda() {
-  const navigate = useNavigate()
   const { perfil } = useAppContext()
   const perfilActivo = perfil || 'estudiante'
   const lineasUrgentes = LINEAS_EMERGENCIA.filter((linea) => linea.urgente)
@@ -48,112 +29,18 @@ export default function Ayuda() {
 
   return (
     <PageTransition>
-    <div className="min-h-screen bg-abla-bg pb-24">
-      <Header title="Ayuda" showBack showIcons={false} />
+      <div className="min-h-dvh bg-abla-bg pb-24 md:pb-12">
+        <Header title="Ayuda" showBack />
+        <main className="mx-auto w-full max-w-6xl px-4 py-6 md:px-6 md:py-10 lg:px-8">
+          <section className="grid items-center gap-6 overflow-hidden rounded-abla-panel bg-abla-blue p-6 text-white md:grid-cols-[1fr_240px] md:p-9"><div><p className="text-sm font-bold uppercase tracking-[.16em] text-white/65">Estamos contigo</p><h1 className="mt-2 text-3xl font-black leading-tight md:text-4xl">¿Qué necesitas ahora?</h1><p className="mt-3 max-w-xl text-sm leading-6 text-white/75 md:text-base">Puedes hablar, buscar orientación o pedir apoyo profesional. Elige por dónde quieres empezar.</p></div><div className="mx-auto"><AblaCharacter emotion="safe" shape="soft-star" size="xl" animate="float" decoration label="Personaje de apoyo ABLA" /></div></section>
+          <section className="mt-7 grid grid-cols-1 gap-4 md:grid-cols-3">{intentions.map((item) => <IntentionCard key={item.to} {...item} />)}</section>
 
-      <div className="mx-auto w-full max-w-[390px] md:max-w-3xl lg:max-w-6xl px-4">
-        <div className="mt-6 text-[18px] font-bold text-abla-blue">Selecciona la ayuda que necesitas</div>
+          <section className="mt-8 rounded-abla-panel border-2 border-red-200 bg-red-50 p-5 md:p-7" aria-labelledby="emergency-title"><div><p className="text-xs font-extrabold uppercase tracking-[.15em] text-red-600">Ayuda urgente</p><h2 id="emergency-title" className="mt-1 text-xl font-black text-red-900">Si estás en riesgo, llama ahora</h2><p className="mt-1 text-sm text-red-800">Estas líneas son gratuitas y están preparadas para ayudarte.</p></div><div className="mt-5 grid gap-3 lg:grid-cols-2">{lineasUrgentes.map((linea) => <div key={linea.id} className="rounded-abla-card border border-red-100 bg-white p-4"><div className="flex items-center gap-3"><div className="grid h-12 w-12 place-items-center rounded-abla-control bg-red-50 text-2xl">{linea.icono}</div><div className="min-w-0 flex-1"><h3 className="text-sm font-black text-abla-blue">{linea.nombre}</h3><div className="text-xl font-black text-red-600">{linea.numero}</div><div className="text-[11px] font-semibold text-slate-500">{linea.disponibilidad}</div></div><a href={`tel:${linea.numero}`} className="flex min-h-11 items-center gap-2 rounded-abla-control bg-red-600 px-4 text-xs font-bold text-white" aria-label={`Llamar a ${linea.nombre}`}><Phone className="h-4 w-4" />Llamar</a></div><p className="mt-3 text-xs leading-5 text-slate-600">{linea.descripcion}</p></div>)}</div></section>
 
-        <div className="mt-4 flex justify-center">
-          <img
-            src="/Illustrations/ayuda-hero.svg"
-            alt=""
-            className="h-40 w-40 select-none"
-            draggable="false"
-          />
-        </div>
-
-        <div className="mt-6 flex flex-col gap-4">
-          <HelpCard
-            title="Cita con Profesional"
-            description="Agenda una cita con un psicopedagogo o psicólogo"
-            buttonLabel="SOLICITAR CITA CON PROFESIONAL"
-            buttonVariant="filled"
-            icon={<Calendar className="h-7 w-7 text-abla-green" aria-hidden="true" />}
-            onClick={() => navigate('/ayuda/cita')}
-          />
-
-          <HelpCard
-            title="Consejos Prácticos"
-            description="Recibe orientación sobre situaciones difíciles"
-            buttonLabel="VER CONSEJOS"
-            buttonVariant="outlined"
-            icon={<BookOpen className="h-7 w-7 text-abla-blue" aria-hidden="true" />}
-            onClick={() => navigate('/ayuda/consejos')}
-          />
-        </div>
-
-        <section className="mt-8">
-          <div className="flex items-center gap-2">
-            <AlertCircle className="h-5 w-5 text-red-500" aria-hidden="true" />
-            <div className="text-[18px] font-bold text-abla-blue">Líneas de Ayuda</div>
-          </div>
-
-          <div className="mt-4 flex flex-col gap-3">
-            {lineasUrgentes.map((linea) => (
-              <div
-                key={linea.id}
-                className={`rounded-2xl p-4 shadow-sm ${
-                  linea.urgente ? 'border border-red-200 bg-red-50' : 'bg-slate-50'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-2xl">
-                    {linea.icono}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="text-[14px] font-bold text-abla-blue">{linea.nombre}</div>
-                    <div className="mt-0.5 text-[22px] font-black leading-none text-red-600">{linea.numero}</div>
-                    <div className="mt-1 text-[11px] font-medium text-slate-500">{linea.disponibilidad}</div>
-                  </div>
-                  <a
-                    href={`tel:${linea.numero}`}
-                    className="flex h-10 items-center gap-1 rounded-xl bg-red-500 px-3 text-[12px] font-bold text-white"
-                    aria-label={`Llamar a ${linea.nombre}`}
-                  >
-                    <Phone className="h-4 w-4" aria-hidden="true" />
-                    Llamar
-                  </a>
-                </div>
-                <div className="mt-3 text-[12px] leading-5 text-slate-600">{linea.descripcion}</div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="mt-8">
-          <div className="text-[18px] font-bold text-abla-blue">Recursos según tu perfil</div>
-
-          <div className="mt-4 flex flex-col gap-3">
-            {recursosPerfil.map((recurso) => (
-              <div key={recurso.id} className="rounded-2xl bg-white p-4 shadow-sm">
-                <div className="flex items-start gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-abla-bg text-2xl">
-                    {recurso.icono}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="text-[14px] font-bold text-abla-blue">{recurso.nombre}</div>
-                    <div className="mt-1 text-[12px] leading-5 text-slate-500">{recurso.descripcion}</div>
-                  </div>
-                  <a
-                    href={recurso.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex h-9 items-center gap-1 rounded-xl border border-abla-green bg-white px-3 text-[12px] font-bold text-abla-green"
-                    aria-label={`Ver ${recurso.nombre}`}
-                  >
-                    Ver
-                    <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-                  </a>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+          <section className="mt-10"><h2 className="abla-section-title">Recursos para ti</h2><div className="mt-4 grid gap-3 md:grid-cols-2">{recursosPerfil.map((recurso) => <article key={recurso.id} className="flex items-start gap-3 rounded-abla-card bg-white p-5 shadow-abla-card"><div className="grid h-12 w-12 shrink-0 place-items-center rounded-abla-control bg-abla-blue-soft text-2xl">{recurso.icono}</div><div className="min-w-0 flex-1"><h3 className="text-sm font-black text-abla-blue">{recurso.nombre}</h3><p className="mt-1 text-xs leading-5 text-slate-500">{recurso.descripcion}</p></div><a href={recurso.url} target="_blank" rel="noreferrer" className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-abla-green-soft text-abla-green" aria-label={`Ver ${recurso.nombre}`}><ExternalLink className="h-4 w-4" /></a></article>)}</div></section>
+        </main>
+        <BottomNav />
       </div>
-
-      <BottomNav />
-    </div>
     </PageTransition>
   )
 }

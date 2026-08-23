@@ -1,282 +1,83 @@
-import { AnimatePresence, motion } from 'framer-motion'
-import { AlertCircle, AlertTriangle, Bell, BookOpen, Calendar, ClipboardList, MessageCircle } from 'lucide-react'
-import { useMemo } from 'react'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { AlertCircle, Bell, MessageCircle, Phone } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import AblaCharacter from '../components/AblaCharacter.jsx'
 import BottomNav from '../components/BottomNav.jsx'
+import IllustratedActionCard from '../components/IllustratedActionCard.jsx'
 import PageTransition from '../components/PageTransition.jsx'
 import SvgImage from '../components/SvgImage.jsx'
 import { useAppContext } from '../context/AppContext.jsx'
+import { ablaMotion, motionIfAllowed } from '../design/motion.js'
 
 const moodConfig = {
-  BIEN: { color: '#56A087', message: '¡Qué bueno saberlo! 🌟' },
-  'MAS O MENOS': { color: '#F59E0B', message: 'Estamos aquí si necesitas 💛' },
-  MAL: { color: '#EF4444', message: '¿Quieres hablar con alguien? 💙' },
+  BIEN: { label: 'Bien', emotion: 'happy', shape: 'circle', tint: 'bg-[#E4F3ED]', message: '¡Qué bueno saberlo! Guarda un poquito de esa energía para hoy.' },
+  'MAS O MENOS': { label: 'Más o menos', emotion: 'neutral', shape: 'wave', tint: 'bg-[#EEF1F6]', message: 'Está bien sentirse así. Estamos aquí si necesitas ordenar lo que pasa.' },
+  MAL: { label: 'Mal', emotion: 'sad', shape: 'stack', tint: 'bg-[#FDEDEC]', message: 'Gracias por contarlo. No tienes que atravesar esto a solas.' },
 }
 
-function RippleCircles({ color }) {
+const quickActions = [
+  { title: 'Chat anónimo', description: 'Habla sin dar tu nombre', to: '/chat/anonimo', emotion: 'chat', shape: 'pill' },
+  { title: 'Pedir una cita', description: 'Encuentra apoyo profesional', to: '/ayuda/cita', emotion: 'calm', shape: 'circle' },
+  { title: 'Consejos', description: 'Ideas para sentirte acompañado/a', to: '/ayuda/consejos', emotion: 'help', shape: 'blob' },
+  { title: 'Reportar', description: 'Cuenta una situación de forma segura', to: '/reportar', emotion: 'report', shape: 'soft-star' },
+  { title: 'Encuesta', description: 'Comparte cómo fue tu experiencia', to: '/encuesta', emotion: 'happy', shape: 'stack' },
+]
+
+function EmotionOption({ value, selected, onSelect }) {
+  const reducedMotion = useReducedMotion()
+  const config = moodConfig[value]
   return (
-    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-      {[0, 1, 2].map((i) => (
-        <motion.div
-          key={i}
-          initial={{ scale: 1, opacity: 0.4 }}
-          animate={{ scale: 2.5, opacity: 0 }}
-          transition={{
-            duration: 0.8,
-            delay: i * 0.15,
-            ease: 'easeOut',
-          }}
-          className="absolute w-20 h-20 rounded-full"
-          style={{ backgroundColor: color }}
-        />
-      ))}
-    </div>
-  )
-}
-
-function MoodButton({ imageSrc, label, active, onClick, mood }) {
-  const config = moodConfig[mood]
-
-  return (
-    <motion.button
-      type="button"
-      onClick={onClick}
-      className={`relative flex h-[84px] w-full flex-col items-center justify-center gap-1 rounded-2xl border bg-white text-slate-800 transition-shadow ${
-        active ? 'border-abla-green shadow-sm' : 'border-[#E6E6E6]'
-      }`}
-      aria-label={label}
-      style={{ willChange: 'transform' }}
-    >
-      <AnimatePresence>
-        {active && <RippleCircles color={config.color} />}
-      </AnimatePresence>
-      <motion.div
-        animate={active ? {
-          scale: [1, 1.3, 0.9, 1.1, 1],
-        } : { scale: 1 }}
-        transition={{
-          type: 'spring',
-          stiffness: 300,
-          damping: 15,
-        }}
-        className="relative z-10"
-      >
-        <SvgImage src={imageSrc} alt={label} className="h-9 w-9 object-contain" eager />
-      </motion.div>
-      <div className="text-[11px] font-bold text-abla-blue relative z-10">{label}</div>
-    </motion.button>
-  )
-}
-
-function NavTile({ label, imageSrc, to }) {
-  const navigate = useNavigate()
-
-  return (
-    <motion.button
-      type="button"
-      onClick={() => navigate(to)}
-      whileHover={{ scale: 1.02, boxShadow: '0 4px 16px rgba(63,85,119,0.15)' }}
-      whileTap={{ scale: 0.97 }}
-      transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-      className="flex w-full flex-col items-center justify-start rounded-2xl p-2"
-      aria-label={label}
-    >
-      <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-2 border-abla-green bg-white">
-        <img src={imageSrc} alt="" className="h-full w-full object-cover" draggable="false" />
-      </div>
-      <div className="mt-2 text-[11px] font-bold tracking-wide text-abla-blue">{label}</div>
+    <motion.button type="button" onClick={() => onSelect(value)} whileTap={motionIfAllowed(reducedMotion, ablaMotion.press)} animate={selected && !reducedMotion ? { y: [0, -3, 0] } : {}} className={`group relative min-h-36 overflow-hidden rounded-abla-card border-2 p-3 text-center transition-all focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-abla-green/30 md:min-h-44 md:p-5 ${selected ? `${config.tint} border-abla-green shadow-abla-float` : 'border-transparent bg-white shadow-abla-card hover:border-abla-green/25'}`} aria-pressed={selected} aria-label={`Me siento ${config.label}`}>
+      {selected && <div className="pointer-events-none absolute inset-0" aria-hidden="true"><motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute right-3 top-4 h-2.5 w-2.5 rounded-full bg-abla-green/30" /><motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: .08 }} className="absolute bottom-8 left-4 h-3 w-3 rotate-45 rounded-sm bg-abla-blue/15" /></div>}
+      <div className="relative mx-auto grid h-24 place-items-center md:h-28"><AblaCharacter emotion={config.emotion} shape={config.shape} size="md" animate={selected ? 'wiggle' : 'none'} /></div>
+      <span className="relative text-xs font-extrabold uppercase tracking-[.08em] text-abla-blue md:text-sm">{config.label}</span>
     </motion.button>
   )
 }
 
 export default function Home() {
   const navigate = useNavigate()
+  const reducedMotion = useReducedMotion()
   const { user, moodHoy, setMood } = useAppContext()
-  const moodDotColor = moodHoy === 'BIEN' ? '#22c55e' : moodHoy === 'MAL' ? '#ef4444' : '#f59e0b'
-
-  const quickActions = [
-    { label: 'Chat anónimo', to: '/chat/anonimo', Icon: MessageCircle },
-    { label: 'Pedir cita', to: '/ayuda/cita', Icon: Calendar },
-    { label: 'Consejos', to: '/ayuda/consejos', Icon: BookOpen },
-    { label: 'Reportar', to: '/reportar', Icon: AlertTriangle },
-    { label: 'Encuesta', to: '/encuesta', Icon: ClipboardList },
-  ]
-
-  const navTiles = useMemo(
-    () => [
-      { label: 'CONSEJOS', imageSrc: '/Illustrations/home-consejos.svg', to: '/ayuda/consejos' },
-      { label: 'SOBRE TÍ', imageSrc: '/Illustrations/home-sobrti.svg', to: '/sobreti' },
-      { label: 'ENCUESTAS', imageSrc: '/Illustrations/home-encuestas.svg', to: '/encuesta' },
-    ],
-    [],
-  )
+  const activeMood = moodConfig[moodHoy]
 
   return (
     <PageTransition>
-    <div className="min-h-screen bg-abla-bg pb-24 text-slate-800">
-      <header className="bg-abla-green text-white">
-        <div className="flex h-14 items-center justify-between px-4">
-          <button
-            type="button"
-            onClick={() => navigate('/perfil')}
-            className="flex items-center gap-2"
-            aria-label="Ir a perfil"
-          >
-            <div className="h-8 w-8 overflow-hidden rounded-full border-2 border-white/60 bg-white/10" style={{ willChange: 'transform' }}>
-              <SvgImage src={user.avatar} alt="" className="h-full w-full object-cover" eager />
+      <div className="min-h-dvh bg-abla-bg pb-28 text-slate-800 md:pb-12">
+        <header className="relative overflow-hidden bg-abla-green text-white">
+          <div className="absolute -right-12 -top-20 h-44 w-44 rounded-full bg-white/10" aria-hidden="true" />
+          <div className="relative mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 md:h-20 md:px-6 lg:px-8">
+            <button type="button" onClick={() => navigate('/perfil')} className="flex items-center gap-3 rounded-full pr-3 focus-visible:ring-white/50" aria-label="Ir a perfil"><div className="h-10 w-10 overflow-hidden rounded-full border-2 border-white/70 bg-white/15"><SvgImage src={user.avatar} alt="" className="h-full w-full object-cover" eager /></div><div className="text-left leading-tight"><div className="text-xs text-white/75">Hola,</div><div className="font-bold">{user.name}</div></div></button>
+            <img src="/Logo/abla-logo.svg" alt="ABLA" className="h-8 w-auto brightness-0 invert" draggable="false" />
+            <div className="flex items-center gap-2"><button type="button" onClick={() => navigate('/chat/anonimo')} className="grid h-10 min-w-10 place-items-center rounded-full bg-red-500 px-2 text-[10px] font-black shadow-lg" aria-label="Ayuda SOS">SOS</button><button type="button" className="grid h-10 w-10 place-items-center rounded-full bg-white/12 hover:bg-white/20" aria-label="Notificaciones"><Bell className="h-5 w-5" /></button></div>
+          </div>
+        </header>
+
+        <main className="mx-auto w-full max-w-7xl px-4 py-6 md:px-6 md:py-10 lg:px-8">
+          <section className="grid items-center gap-6 lg:grid-cols-[1.2fr_.8fr] lg:gap-10">
+            <div className="rounded-abla-panel bg-white p-5 shadow-abla-card md:p-8 lg:p-10">
+              <p className="text-sm font-bold uppercase tracking-[.16em] text-abla-green">Tu check-in de hoy</p>
+              <h1 className="mt-2 text-[clamp(2rem,4vw,3rem)] font-black leading-[1.05] tracking-tight text-abla-blue">¿Cómo te sientes?</h1>
+              <p className="mt-3 max-w-xl text-sm leading-6 text-slate-500 md:text-base">No hay respuestas correctas. Elegir cómo estás nos ayuda a acompañarte mejor.</p>
+              <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-4 md:mt-8">{Object.keys(moodConfig).map((mood) => <EmotionOption key={mood} value={mood} selected={moodHoy === mood} onSelect={setMood} />)}</div>
+              <AnimatePresence mode="wait">{activeMood && <motion.div key={moodHoy} variants={ablaMotion.pop} initial="hidden" animate="visible" exit="hidden" className={`mt-5 rounded-abla-control px-4 py-3 text-sm font-semibold text-abla-blue ${activeMood.tint}`}>{activeMood.message}</motion.div>}</AnimatePresence>
             </div>
-            <div className="text-left text-[12px] leading-tight">
-              <div className="text-white/80">Hola,</div>
-              <div className="flex items-center gap-1.5 font-semibold text-white">
-                {user.name}
-                {moodHoy ? <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: moodDotColor }} /> : null}
-              </div>
+
+            <div className="relative hidden min-h-[470px] overflow-hidden rounded-abla-panel bg-abla-blue-soft p-8 lg:grid lg:place-items-center">
+              <div className="absolute left-8 top-8 h-12 w-24 rounded-full bg-white/70" /><div className="absolute bottom-10 right-8 h-20 w-20 rounded-abla-blob bg-abla-green/15" />
+              <motion.div animate={motionIfAllowed(reducedMotion, ablaMotion.float)}><AblaCharacter emotion={activeMood?.emotion || 'safe'} shape={activeMood?.shape || 'blob'} size="xl" decoration label="Personaje emocional ABLA" /></motion.div>
+              <div className="absolute bottom-9 left-9 right-9 text-center"><p className="text-lg font-extrabold text-abla-blue">Tu espacio también puede empezar con una emoción.</p></div>
             </div>
-          </button>
+          </section>
 
-          <img
-            src="/Logo/abla-logo.svg"
-            alt="ABLA"
-            className="h-7 w-auto brightness-0 invert"
-            draggable="false"
-          />
+          <AnimatePresence>{moodHoy === 'MAL' && <motion.section variants={ablaMotion.pop} initial="hidden" animate="visible" exit="hidden" className="mt-6 rounded-abla-card border-2 border-red-200 bg-red-50 p-5 md:flex md:items-center md:justify-between md:gap-6 md:p-6" aria-live="polite"><div className="flex items-start gap-3"><AlertCircle className="mt-0.5 h-6 w-6 shrink-0 text-red-600" /><div><h2 className="text-lg font-black text-red-900">¿Necesitas ayuda ahora?</h2><p className="mt-1 text-sm leading-6 text-red-800">Si estás en peligro o necesitas contención, contacta a alguien inmediatamente.</p></div></div><div className="mt-4 grid grid-cols-2 gap-3 md:mt-0 md:min-w-72"><a href="tel:147" className="flex min-h-12 items-center justify-center gap-2 rounded-abla-control bg-red-600 px-4 text-sm font-bold text-white"><Phone className="h-4 w-4" />147</a><button type="button" onClick={() => navigate('/chat/anonimo')} className="min-h-12 rounded-abla-control border border-red-300 bg-white px-4 text-sm font-bold text-red-700">Hablar aquí</button></div></motion.section>}</AnimatePresence>
 
-          <div className="flex items-center gap-2">
-            <motion.button
-              type="button"
-              onClick={() => navigate('/chat/anonimo')}
-              animate={{ scale: [1, 1.08, 1] }}
-              transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-red-500 text-[9px] font-black text-white"
-              aria-label="SOS"
-            >
-              SOS
-            </motion.button>
-            <button
-              type="button"
-              onClick={() => {}}
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10"
-              aria-label="Notificaciones"
-            >
-              <Bell className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
+          <section className="mt-10 md:mt-14"><div><p className="text-sm font-bold uppercase tracking-[.15em] text-abla-green">Estamos contigo</p><h2 className="abla-section-title mt-1">¿Qué necesitas ahora?</h2></div><div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">{quickActions.map((action) => <IllustratedActionCard key={action.to} {...action} />)}</div></section>
+        </main>
 
-        <div className="h-12 border-t border-white/10 bg-abla-green/90">
-          <div className="flex h-full snap-x gap-2 overflow-x-auto px-4 py-1">
-            {quickActions.map((qa) => (
-              <button
-                key={qa.label}
-                type="button"
-                onClick={() => navigate(qa.to)}
-                className="flex flex-shrink-0 snap-start flex-col items-center gap-1 rounded-xl bg-white/10 px-3 py-1 transition-colors hover:bg-white/20"
-                aria-label={qa.label}
-              >
-                <qa.Icon className="h-4 w-4" />
-                <span className="text-[10px] font-medium leading-none">{qa.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </header>
-
-      <div className="mx-auto w-full max-w-[390px] md:max-w-3xl lg:max-w-6xl px-4">
-        <section className="mt-5 text-center">
-          <div className="mx-auto flex h-[90px] w-[90px] items-center justify-center overflow-hidden rounded-full border-[3px] border-abla-green bg-white" style={{ willChange: 'transform' }}>
-            <SvgImage src={user.avatar} alt="" className="h-full w-full object-cover" eager />
-          </div>
-          <div className="mt-4 text-[20px] font-bold text-abla-blue">¡Hola {user.name}!</div>
-          <div className="mt-1 text-[14px] text-[#64748B]">¿Cómo te sientes?</div>
-        </section>
-
-        <section className="mx-auto mt-5 max-w-3xl">
-          <div className="grid grid-cols-3 gap-3">
-            <MoodButton imageSrc="/Emogis/Bien.svg" label="BIEN" mood="BIEN" active={moodHoy === 'BIEN'} onClick={() => setMood('BIEN')} />
-            <MoodButton
-              imageSrc="/Emogis/mas o menos.svg"
-              label="MAS O MENOS"
-              mood="MAS O MENOS"
-              active={moodHoy === 'MAS O MENOS'}
-              onClick={() => setMood('MAS O MENOS')}
-            />
-            <MoodButton imageSrc="/Emogis/mal.svg" label="MAL" mood="MAL" active={moodHoy === 'MAL'} onClick={() => setMood('MAL')} />
-          </div>
-          <AnimatePresence mode="wait">
-            {moodHoy && (
-              <motion.div
-                key={moodHoy}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3, ease: 'easeOut' }}
-                className="mt-4 text-center"
-              >
-                <p className="text-[14px] font-medium text-abla-blue">
-                  {moodConfig[moodHoy].message}
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </section>
-
-        <AnimatePresence>
-          {moodHoy === 'MAL' && (
-            <motion.div
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              className="mt-5 rounded-2xl border border-red-200 bg-red-50 p-4"
-            >
-              <div className="flex items-start gap-3">
-                <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-500" aria-hidden="true" />
-                <div className="min-w-0 flex-1">
-                  <div className="text-[15px] font-bold text-abla-blue">¿Necesitas ayuda ahora?</div>
-                  <div className="mt-3 grid grid-cols-2 gap-2">
-                    <a
-                      href="tel:147"
-                      className="flex h-10 items-center justify-center rounded-xl bg-red-500 text-[12px] font-bold text-white"
-                    >
-                      Llamar al 147
-                    </a>
-                    <button
-                      type="button"
-                      onClick={() => navigate('/chat/anonimo')}
-                      className="h-10 rounded-xl border border-red-300 bg-white text-[12px] font-bold text-red-600"
-                    >
-                      Hablar aquí
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <section className="mt-6">
-          <div className="grid grid-cols-3 gap-4 md:gap-6">
-            {navTiles.map((t) => (
-              <NavTile key={t.label} label={t.label} imageSrc={t.imageSrc} to={t.to} />
-            ))}
-          </div>
-        </section>
+        <motion.button type="button" onClick={() => navigate('/chat')} whileTap={motionIfAllowed(reducedMotion, ablaMotion.press)} className="fixed bottom-20 left-1/2 z-30 flex min-h-12 -translate-x-1/2 items-center gap-2 rounded-full bg-abla-blue px-6 text-sm font-bold text-white shadow-abla-blue md:hidden" aria-label="Abrir opciones de chat"><MessageCircle className="h-5 w-5" />Chatear</motion.button>
+        <BottomNav />
       </div>
-
-      <motion.button
-        type="button"
-        onClick={() => navigate('/chat')}
-        animate={{ scale: [1, 1.03, 1] }}
-        transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-        className="fixed bottom-20 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full bg-abla-green px-8 py-3 font-semibold text-white shadow-xl md:bottom-6 md:left-[calc(50%+7rem)] lg:left-[calc(50%+8rem)]"
-        aria-label="Chatear"
-        style={{ willChange: 'transform' }}
-      >
-        <MessageCircle className="h-5 w-5" />
-        + CHATEAR
-      </motion.button>
-
-      <BottomNav />
-    </div>
     </PageTransition>
   )
 }
