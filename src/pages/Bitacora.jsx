@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { AlertCircle, ChevronDown, Download, FileText } from 'lucide-react'
+import { AlertCircle, ChevronDown, Download } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header.jsx'
 import BottomNav from '../components/BottomNav.jsx'
 import PageTransition from '../components/PageTransition.jsx'
+import AblaEmptyState from '../components/AblaEmptyState.jsx'
+import AblaButton from '../components/AblaButton.jsx'
 import { useAppContext } from '../context/AppContext.jsx'
 
 const ESTADO_CONFIG = {
@@ -163,14 +165,19 @@ export default function Bitacora() {
     <div className="min-h-screen bg-abla-bg pb-24">
       <Header title="Bitácora" showBack showIcons={false} />
 
-      <div className="mx-auto w-full max-w-[390px] md:max-w-3xl lg:max-w-6xl px-4">
-        <div className="mt-4 grid grid-cols-3 gap-2">
+      <div className="mx-auto w-full max-w-[390px] px-4 md:max-w-3xl lg:max-w-6xl">
+        <section className="mt-5 rounded-abla-panel bg-abla-blue-soft p-5 md:p-7">
+          <p className="text-xs font-extrabold uppercase tracking-[.16em] text-abla-green">Seguimiento protegido</p>
+          <h1 className="abla-page-title mt-2">Tu bitácora</h1>
+          <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">Un registro ordenado y privado para acompañar cada situación.</p>
+        </section>
+        <div className="mt-4 grid grid-cols-3 gap-2 md:gap-4">
           {[
             { label: 'Total', value: reportes.length, color: 'text-abla-blue' },
             { label: 'Activos', value: reportes.filter(r => r.estadoProtocolo !== 'cerrado').length, color: 'text-yellow-600' },
             { label: 'Graves', value: reportes.filter(r => r.severidad === 'grave' || r.severidad === 'urgente').length, color: 'text-red-500' },
           ].map(({ label, value, color }) => (
-            <div key={label} className="rounded-2xl bg-white p-3 text-center shadow-sm">
+            <div key={label} className="abla-surface p-3 text-center md:p-5">
               <div className={`text-[22px] font-bold ${color}`}>{value}</div>
               <div className="text-[11px] font-semibold text-slate-400 mt-0.5">{label}</div>
             </div>
@@ -197,17 +204,13 @@ export default function Bitacora() {
 
         <div className="mt-4 flex flex-col gap-3">
           {reportes.length === 0 ? (
-            <div className="flex flex-col items-center justify-center rounded-2xl bg-white py-12 shadow-sm">
-              <FileText className="h-10 w-10 text-slate-200" />
-              <div className="mt-3 text-[14px] font-semibold text-slate-400">Sin registros aún</div>
-              <div className="mt-1 text-[12px] text-slate-400 text-center px-6">Los reportes que envíes aparecerán aquí como entradas de la bitácora</div>
-              <button
-                type="button"
-                onClick={() => navigate('/reportar')}
-                className="mt-4 rounded-full bg-abla-green px-5 py-2 text-[12px] font-bold text-white"
-              >
-                Crear primer registro
-              </button>
+            <div className="abla-surface">
+              <AblaEmptyState
+                kind="cases"
+                title="Aún no hay registros"
+                description="Cuando envíes un reporte aparecerá aquí con su fecha, estado y seguimiento."
+                action={<AblaButton onClick={() => navigate('/reportar')}>Crear primer registro</AblaButton>}
+              />
             </div>
           ) : (
             reportes.map((entrada, i) => (

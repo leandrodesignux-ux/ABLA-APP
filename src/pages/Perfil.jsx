@@ -4,13 +4,15 @@ import { useNavigate } from 'react-router-dom'
 import BottomNav from '../components/BottomNav.jsx'
 import Header from '../components/Header.jsx'
 import PageTransition from '../components/PageTransition.jsx'
+import AblaCharacter from '../components/AblaCharacter.jsx'
+import AblaEmptyState from '../components/AblaEmptyState.jsx'
 import { useAppContext } from '../context/AppContext.jsx'
 
 function InfoCard({ icon, title, lines, actionLabel, actionColorClass, onAction }) {
   return (
-    <div className="rounded-2xl bg-white p-4 shadow-sm">
+    <div className="abla-surface p-5">
       <div className="flex items-start gap-3">
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-abla-bg">{icon}</div>
+        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-abla-card bg-abla-blue-soft">{icon}</div>
         <div className="min-w-0 flex-1">
           <div className="text-[14px] font-bold text-abla-blue">{title}</div>
           <div className="mt-2 flex flex-col gap-1">
@@ -40,7 +42,7 @@ function InfoCard({ icon, title, lines, actionLabel, actionColorClass, onAction 
 
 function ReportItem({ title, statusLabel }) {
   return (
-    <div className="flex items-center justify-between rounded-xl border border-[#E6E6E6] bg-white px-4 py-3">
+    <div className="flex items-center justify-between rounded-abla-card border border-slate-100 bg-white px-4 py-3">
       <div className="text-[13px] font-semibold text-slate-700">{title}</div>
       <div className="rounded-full bg-[#FEF3C7] px-3 py-1 text-[12px] font-bold text-[#B45309]">{statusLabel}</div>
     </div>
@@ -49,7 +51,7 @@ function ReportItem({ title, statusLabel }) {
 
 function StatCard({ label, value }) {
   return (
-    <div className="rounded-2xl bg-white p-4 text-center shadow-sm">
+    <div className="abla-surface p-5 text-center">
       <div className="text-[22px] font-bold text-abla-blue">{value}</div>
       <div className="mt-1 text-[12px] font-semibold text-slate-500">{label}</div>
     </div>
@@ -74,8 +76,9 @@ export default function Perfil() {
       <Header title="Perfil" showBack={false} showIcons={false} />
 
       <div className="mx-auto w-full max-w-[390px] md:max-w-3xl lg:max-w-6xl">
-        <div className="relative">
-          <div className="h-[160px] w-full bg-abla-green" />
+        <div className="relative md:mx-4 md:mt-5">
+          <div className="h-[160px] w-full bg-abla-green md:h-[190px] md:rounded-abla-panel" />
+          <div className="absolute right-8 top-5 hidden opacity-25 md:block"><AblaCharacter emotion="calm" shape="blob" size="xl" decoration /></div>
 
           <div className="absolute left-1/2 top-[160px] -translate-x-1/2 -translate-y-1/2">
             <div className="h-20 w-20 overflow-hidden rounded-full border-[4px] border-white bg-white shadow-md">
@@ -84,7 +87,7 @@ export default function Perfil() {
           </div>
         </div>
 
-        <div className="px-4">
+        <div className="px-4 md:px-6 lg:px-8">
           <div className="mt-12 text-center">
             <div className="text-[20px] font-bold text-abla-blue">{user.name}</div>
             <div className="mt-2 inline-flex rounded-full bg-white px-3 py-1 text-[12px] font-bold text-abla-blue shadow-sm">
@@ -106,7 +109,7 @@ export default function Perfil() {
             </div>
           )}
 
-          <div className="mt-6 flex flex-col gap-3">
+          <div className="mt-6 grid gap-3 md:grid-cols-2">
             <InfoCard
               icon={<Building2 className="h-6 w-6 text-abla-green" aria-hidden="true" />}
               title="Mi Instituto"
@@ -126,7 +129,7 @@ export default function Perfil() {
             />
           </div>
 
-          <div className="mt-6 rounded-2xl bg-white p-4 shadow-sm">
+          <div className="abla-surface mt-6 p-5">
             <div className="flex items-center justify-between">
               <div className="text-[14px] font-bold text-abla-blue">Mis Reportes</div>
               <div className="text-[13px] font-semibold text-slate-600">{reportesEnviados.length} reportes enviados</div>
@@ -134,7 +137,11 @@ export default function Perfil() {
 
             <div className="mt-4 flex flex-col gap-2">
               {reportesEnviados.length === 0 ? (
-                <div className="text-[13px] text-slate-500">No has enviado reportes aún</div>
+                <AblaEmptyState
+                  kind="cases"
+                  title="Tu espacio está tranquilo"
+                  description="Cuando envíes un reporte podrás revisar aquí su avance y estado."
+                />
               ) : (
                 reportesEnviados.map((reporte, index) => (
                   <ReportItem key={index} title={reporte.titulo || reporte.tipo || 'Reporte'} statusLabel={reporte.estado || 'En revisión'} />
@@ -143,6 +150,7 @@ export default function Perfil() {
             </div>
           </div>
 
+          <div className="mt-8 grid gap-3 md:grid-cols-2">
           <motion.button
             type="button"
             whileTap={{ scale: 0.98 }}
@@ -151,7 +159,7 @@ export default function Perfil() {
               sessionStorage.removeItem('abla_perfil')
               navigate('/sobreti')
             }}
-            className="mt-8 h-12 w-full rounded-xl border border-abla-blue text-[13px] font-semibold text-abla-blue"
+            className="h-12 w-full rounded-full border border-abla-blue text-[13px] font-semibold text-abla-blue"
             aria-label="Cambiar perfil"
           >
             Cambiar perfil
@@ -164,14 +172,15 @@ export default function Perfil() {
               clearSession()
               navigate('/login')
             }}
-            className="mt-3 h-12 w-full rounded-xl border border-[#EF4444] bg-white font-bold text-[#EF4444]"
+            className="h-12 w-full rounded-full border border-[#EF4444] bg-white font-bold text-[#EF4444]"
             aria-label="Cerrar sesión"
           >
             Cerrar Sesión
           </motion.button>
+          </div>
 
           {/* Acerca de */}
-          <div className="mt-6 rounded-2xl bg-white p-4 text-center shadow-sm">
+          <div className="abla-surface mt-6 p-5 text-center">
             <div className="text-[18px] font-bold text-abla-blue">ABLA</div>
             <div className="mt-1 text-[13px] text-slate-500">App anti-bullying escolar</div>
 

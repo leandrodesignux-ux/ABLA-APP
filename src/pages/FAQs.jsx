@@ -3,6 +3,8 @@ import { ArrowLeft, BookOpen, ChevronDown } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import PageTransition from '../components/PageTransition.jsx'
+import AblaCharacter from '../components/AblaCharacter.jsx'
+import AblaEmptyState from '../components/AblaEmptyState.jsx'
 import { useAppContext } from '../context/AppContext.jsx'
 import { FAQS } from '../data/faqs.js'
 
@@ -47,6 +49,14 @@ export default function FAQs() {
         </div>
 
         <div className="mx-auto w-full max-w-[390px] md:max-w-3xl lg:max-w-6xl px-4 pb-10">
+          <section className="mt-5 grid items-center gap-4 rounded-abla-panel bg-abla-blue-soft p-5 md:grid-cols-[1fr_150px] md:p-7">
+            <div>
+              <p className="text-xs font-extrabold uppercase tracking-[.16em] text-abla-green">Respuestas claras</p>
+              <h1 className="abla-page-title mt-2">Lo que necesitas saber</h1>
+              <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">Explora dudas frecuentes según tu perfil y encuentra orientación confiable.</p>
+            </div>
+            <div className="hidden place-items-center md:grid"><AblaCharacter emotion="help" shape="pill" size="lg" decoration /></div>
+          </section>
           <div className="mt-4 flex gap-2 overflow-x-auto pb-1">
             <button
               type="button"
@@ -81,7 +91,7 @@ export default function FAQs() {
               const isOpen = openId === faq.id
               const catCfg = CATEGORIAS[faq.categoria]
               return (
-                <div key={faq.id} className="overflow-hidden rounded-2xl bg-white shadow-sm">
+                <div key={faq.id} className="abla-surface overflow-hidden">
                   <button
                     type="button"
                     onClick={() => setOpenId(isOpen ? null : faq.id)}
@@ -132,8 +142,8 @@ export default function FAQs() {
               )
             })}
             {faqsFiltradas.length === 0 && (
-              <div className="rounded-2xl bg-white p-4 text-[13px] text-slate-500">
-                No hay preguntas disponibles para este filtro
+              <div className="abla-surface">
+                <AblaEmptyState kind="search" title="No encontramos preguntas" description="Prueba con otra categoría para seguir explorando." />
               </div>
             )}
           </div>
