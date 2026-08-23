@@ -10,17 +10,17 @@ import { useAppContext } from '../context/AppContext.jsx'
 import { ablaMotion, motionIfAllowed } from '../design/motion.js'
 
 const moodConfig = {
-  BIEN: { label: 'Bien', emotion: 'happy', shape: 'circle', tint: 'bg-[#E4F3ED]', message: '¡Qué bueno saberlo! Guarda un poquito de esa energía para hoy.' },
-  'MAS O MENOS': { label: 'Más o menos', emotion: 'neutral', shape: 'wave', tint: 'bg-[#EEF1F6]', message: 'Está bien sentirse así. Estamos aquí si necesitas ordenar lo que pasa.' },
-  MAL: { label: 'Mal', emotion: 'sad', shape: 'stack', tint: 'bg-[#FDEDEC]', message: 'Gracias por contarlo. No tienes que atravesar esto a solas.' },
+  BIEN: { label: 'Bien', emotion: 'happy', shape: 'circle', pose: 'open', interaction: 'celebrate', tint: 'bg-[#E4F3ED]', message: '¡Qué bueno saberlo! Guarda un poquito de esa energía para hoy.' },
+  'MAS O MENOS': { label: 'Más o menos', emotion: 'neutral', shape: 'wave', pose: 'rest', gaze: 'left', interaction: 'curious', tint: 'bg-[#EEF1F6]', message: 'Está bien sentirse así. Estamos aquí si necesitas ordenar lo que pasa.' },
+  MAL: { label: 'Mal', emotion: 'sad', shape: 'stack', pose: 'rest', interaction: 'listening', tint: 'bg-[#FDEDEC]', message: 'Gracias por contarlo. No tienes que atravesar esto a solas.' },
 }
 
 const quickActions = [
-  { title: 'Chat anónimo', description: 'Habla sin dar tu nombre', to: '/chat/anonimo', emotion: 'chat', shape: 'pill' },
-  { title: 'Pedir una cita', description: 'Encuentra apoyo profesional', to: '/ayuda/cita', emotion: 'calm', shape: 'circle' },
-  { title: 'Consejos', description: 'Ideas para sentirte acompañado/a', to: '/ayuda/consejos', emotion: 'help', shape: 'blob' },
-  { title: 'Reportar', description: 'Cuenta una situación de forma segura', to: '/reportar', emotion: 'report', shape: 'soft-star' },
-  { title: 'Encuesta', description: 'Comparte cómo fue tu experiencia', to: '/encuesta', emotion: 'happy', shape: 'stack' },
+  { title: 'Chat anónimo', description: 'Habla sin dar tu nombre', to: '/chat/anonimo', sceneType: 'chat' },
+  { title: 'Pedir una cita', description: 'Encuentra apoyo profesional', to: '/ayuda/cita', sceneType: 'appointment' },
+  { title: 'Consejos', description: 'Ideas para sentirte acompañado/a', to: '/ayuda/consejos', sceneType: 'advice' },
+  { title: 'Reportar', description: 'Cuenta una situación de forma segura', to: '/reportar', sceneType: 'report' },
+  { title: 'Encuesta', description: 'Comparte cómo fue tu experiencia', to: '/encuesta', sceneType: 'survey' },
 ]
 
 function EmotionOption({ value, selected, onSelect }) {
@@ -29,7 +29,7 @@ function EmotionOption({ value, selected, onSelect }) {
   return (
     <motion.button type="button" onClick={() => onSelect(value)} whileTap={motionIfAllowed(reducedMotion, ablaMotion.press)} animate={selected && !reducedMotion ? { y: [0, -3, 0] } : {}} className={`group relative min-h-36 overflow-hidden rounded-abla-card border-2 p-3 text-center transition-all focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-abla-green/30 md:min-h-44 md:p-5 ${selected ? `${config.tint} border-abla-green shadow-abla-float` : 'border-transparent bg-white shadow-abla-card hover:border-abla-green/25'}`} aria-pressed={selected} aria-label={`Me siento ${config.label}`}>
       {selected && <div className="pointer-events-none absolute inset-0" aria-hidden="true"><motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute right-3 top-4 h-2.5 w-2.5 rounded-full bg-abla-green/30" /><motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: .08 }} className="absolute bottom-8 left-4 h-3 w-3 rotate-45 rounded-sm bg-abla-blue/15" /></div>}
-      <div className="relative mx-auto grid h-24 place-items-center md:h-28"><AblaCharacter emotion={config.emotion} shape={config.shape} size="md" animate={selected ? 'wiggle' : 'none'} /></div>
+      <div className="relative mx-auto grid h-24 place-items-center md:h-28"><AblaCharacter emotion={config.emotion} shape={config.shape} pose={config.pose} gaze={config.gaze} interaction={config.interaction} interactive selected={selected} size="md" animate={selected && value !== 'MAL' ? 'wiggle' : selected ? 'breathe' : 'none'} decoration={value === 'BIEN'} /></div>
       <span className="relative text-xs font-extrabold uppercase tracking-[.08em] text-abla-blue md:text-sm">{config.label}</span>
     </motion.button>
   )
@@ -65,7 +65,7 @@ export default function Home() {
 
             <div className="relative hidden min-h-[470px] overflow-hidden rounded-abla-panel bg-abla-blue-soft p-8 lg:grid lg:place-items-center">
               <div className="absolute left-8 top-8 h-12 w-24 rounded-full bg-white/70" /><div className="absolute bottom-10 right-8 h-20 w-20 rounded-abla-blob bg-abla-green/15" />
-              <motion.div animate={motionIfAllowed(reducedMotion, ablaMotion.float)}><AblaCharacter emotion={activeMood?.emotion || 'safe'} shape={activeMood?.shape || 'blob'} size="xl" decoration label="Personaje emocional ABLA" /></motion.div>
+              <motion.div animate={motionIfAllowed(reducedMotion, ablaMotion.float)}><AblaCharacter emotion={activeMood?.emotion || 'safe'} shape={activeMood?.shape || 'blob'} pose={activeMood?.pose || 'open'} gaze={activeMood?.gaze} interaction={activeMood?.interaction || 'supportive'} size="xl" decoration blink label="Personaje emocional ABLA" /></motion.div>
               <div className="absolute bottom-9 left-9 right-9 text-center"><p className="text-lg font-extrabold text-abla-blue">Tu espacio también puede empezar con una emoción.</p></div>
             </div>
           </section>
