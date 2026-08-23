@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { AlertTriangle, Bell, ChevronRight, Star } from 'lucide-react'
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -10,6 +10,7 @@ import { NEE_TYPES } from '../data/neeTypes.js'
 import { PROFESORES, CATEGORIAS_SITUACION } from '../data/profesoresData.js'
 import { LINEAS_EMERGENCIA } from '../data/recursosAyuda.js'
 import AblaCharacter from '../components/AblaCharacter.jsx'
+import { motionIfAllowed } from '../design/motion.js'
 
 const alertSigns = [
   'Cambios repentinos de humor o comportamiento',
@@ -20,6 +21,7 @@ const alertSigns = [
 
 export default function HomeApoderado() {
   const navigate = useNavigate()
+  const reducedMotion = useReducedMotion()
   const { user, certificadosNEE, reglamentoLeido, ratingsEncuesta } = useAppContext()
   const lineasUrgentes = LINEAS_EMERGENCIA.filter((linea) => linea.urgente)
 
@@ -99,7 +101,7 @@ export default function HomeApoderado() {
               <motion.button
                 type="button"
                 onClick={() => navigate('/chat/anonimo')}
-                animate={{ scale: [1, 1.08, 1] }}
+                animate={motionIfAllowed(reducedMotion, { scale: [1, 1.08, 1] })}
                 transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
                 className="flex h-8 w-8 items-center justify-center rounded-full bg-red-500 text-[9px] font-black text-white"
                 aria-label="SOS"
@@ -155,7 +157,7 @@ export default function HomeApoderado() {
 
           <section className="mt-6 grid items-center gap-5 overflow-hidden rounded-abla-panel bg-abla-blue-soft p-5 md:grid-cols-[1fr_180px] md:p-8">
             <div><p className="text-xs font-extrabold uppercase tracking-[.16em] text-abla-green">Acompañar también es cuidar</p><h1 className="abla-page-title mt-2">Bienvenido/a</h1><p className="mt-2 text-sm leading-6 text-slate-500 md:text-base">Aquí encontrarás orientación clara para apoyar a tu hijo/a con calma y confianza.</p></div>
-            <div className="hidden md:grid md:place-items-center"><AblaCharacter emotion="safe" shape="pill" size="lg" animate="breathe" /></div>
+            <div className="hidden md:grid md:place-items-center"><AblaCharacter emotion="safe" shape="arch" pose="open" interaction="supportive" size="lg" animate="breathe" decoration blink /></div>
           </section>
 
           <section className="mt-5 rounded-abla-card border-2 border-amber-200 bg-amber-50 p-5 md:p-6">
@@ -187,13 +189,13 @@ export default function HomeApoderado() {
                 <motion.button
                   key={action.label}
                   type="button"
-                  whileHover={{ scale: 1.02 }}
+                  whileHover={motionIfAllowed(reducedMotion, { scale: 1.02 })}
                   whileTap={{ scale: 0.97 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                   onClick={() => navigate(action.to)}
                   className={`flex min-h-40 flex-col items-center justify-center gap-3 rounded-abla-card border-2 bg-white p-4 shadow-abla-card transition-shadow hover:shadow-abla-float ${action.urgent ? 'border-red-100' : 'border-transparent'}`}
                 >
-                  <div className={`grid h-20 w-full place-items-center rounded-abla-blob ${action.urgent ? 'bg-red-50' : 'bg-abla-green-soft'}`}><AblaCharacter emotion={action.emotion} shape={action.shape} size="sm" /></div>
+                  <div className={`grid h-20 w-full place-items-center rounded-[44%_56%_46%_54%/56%_44%_56%_44%] ${action.urgent ? 'bg-red-50' : 'bg-abla-green-soft'}`}><AblaCharacter emotion={action.emotion} shape={action.shape} pose={action.urgent ? 'tense' : 'point'} gaze="right" interaction={action.urgent ? 'alert' : 'supportive'} interactive size="sm" /></div>
                   <span className="text-[13px] font-extrabold text-abla-blue">{action.label}</span>
                 </motion.button>
               ))}

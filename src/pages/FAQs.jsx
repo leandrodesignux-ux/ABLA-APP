@@ -55,7 +55,7 @@ export default function FAQs() {
               <h1 className="abla-page-title mt-2">Lo que necesitas saber</h1>
               <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">Explora dudas frecuentes según tu perfil y encuentra orientación confiable.</p>
             </div>
-            <div className="hidden place-items-center md:grid"><AblaCharacter emotion="help" shape="pill" size="lg" decoration /></div>
+            <div className="relative hidden h-28 place-items-center md:grid"><span className="absolute right-0 top-0 h-20 w-16 rotate-3 rounded-abla-card bg-white/70" /><AblaCharacter emotion="help" shape="pebble" pose="point" gaze="right" interaction="curious" size="lg" decoration blink /></div>
           </section>
           <div className="mt-4 flex gap-2 overflow-x-auto pb-1">
             <button

@@ -107,7 +107,7 @@ export default function Encuesta() {
             <motion.div key="inicio" {...stepMotion} className="min-h-[calc(100vh-96px)]">
               <Header title="Encuesta" showBack showIcons={false} />
               <div className="mx-auto flex w-full max-w-2xl flex-col items-center px-4 pt-8 text-center">
-                <div className="grid h-52 w-52 place-items-center rounded-abla-blob bg-abla-green-soft"><AblaCharacter emotion="happy" shape="stack" size="xl" animate="float" decoration /></div>
+                <div className="relative grid h-52 w-52 place-items-center overflow-hidden rounded-[46%_54%_42%_58%/58%_44%_56%_42%] bg-abla-green-soft"><span className="absolute right-5 top-7 h-12 w-16 rounded-abla-card bg-white/55" /><AblaCharacter emotion="happy" shape="arch" pose="wave" gaze="right" interaction="celebrate" size="xl" animate="float" decoration blink /></div>
                 <h1 className="mt-8 text-center text-3xl font-black text-abla-blue md:text-4xl">¿Alguien te ayudó?</h1>
                 <p className="mt-3 px-6 text-center text-[14px] text-slate-500">
                   Cuéntanos quién te acompañó y ayuda a otros a encontrar el apoyo que necesitan.
@@ -162,7 +162,7 @@ export default function Encuesta() {
                           : 'border-transparent bg-white shadow-abla-card'
                       }`}
                     >
-                      <div className={`grid h-24 w-full place-items-center rounded-abla-blob ${visual.tone}`}><AblaCharacter emotion={visual.emotion} shape={visual.shape} size="sm" /></div>
+                      <div className={`grid h-24 w-full place-items-center rounded-[44%_56%_48%_52%/58%_44%_56%_42%] ${visual.tone}`}><AblaCharacter emotion={visual.emotion} shape={visual.shape} pose={index % 3 === 0 ? 'hide' : index % 3 === 1 ? 'point' : 'rest'} gaze={index % 2 ? 'right' : 'left'} interaction={visual.emotion === 'report' ? 'alert' : 'curious'} interactive selected={categoriaSeleccionada?.id === categoria.id} size="sm" /></div>
                       <div className="mt-3 text-[13px] font-extrabold text-abla-blue">{categoria.label}</div>
                     </motion.button>
                   )})}
@@ -347,7 +347,7 @@ export default function Encuesta() {
                   transition={{ type: 'spring', stiffness: 260, damping: 18 }}
                   className="flex h-40 w-40 items-center justify-center rounded-abla-blob bg-abla-green-soft"
                 >
-                  <AblaCharacter emotion="success" shape="soft-star" size="xl" decoration />
+                  <AblaCharacter emotion="success" shape="soft-star" pose="open" interaction="celebrate" size="xl" decoration blink />
                 </motion.div>
                 <h1 className="mt-5 text-3xl font-black text-abla-blue">¡Gracias!</h1>
                 <p className="mt-2 px-8 text-center text-[14px] text-slate-500">

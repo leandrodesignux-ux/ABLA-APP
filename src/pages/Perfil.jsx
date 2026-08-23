@@ -78,7 +78,7 @@ export default function Perfil() {
       <div className="mx-auto w-full max-w-[390px] md:max-w-3xl lg:max-w-6xl">
         <div className="relative md:mx-4 md:mt-5">
           <div className="h-[160px] w-full bg-abla-green md:h-[190px] md:rounded-abla-panel" />
-          <div className="absolute right-8 top-5 hidden opacity-25 md:block"><AblaCharacter emotion="calm" shape="blob" size="xl" decoration /></div>
+          <div className="absolute right-8 top-5 hidden opacity-25 md:block"><AblaCharacter emotion="calm" shape="pebble" pose="rest" interaction="calm" size="xl" animate="breathe" decoration /></div>
 
           <div className="absolute left-1/2 top-[160px] -translate-x-1/2 -translate-y-1/2">
             <div className="h-20 w-20 overflow-hidden rounded-full border-[4px] border-white bg-white shadow-md">

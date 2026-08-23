@@ -99,7 +99,7 @@ export default function ReporteForm() {
       <Header title={title} showBack showIcons={false} />
 
       <div className="mx-auto w-full max-w-3xl px-4 pb-10 md:px-6">
-        <div className="mt-6 rounded-abla-card bg-abla-blue-soft p-5 md:flex md:items-center md:gap-5"><AblaCharacter emotion="safe" shape="pill" size="sm" /><div><p className="text-xs font-extrabold uppercase tracking-[.14em] text-abla-green">Paso a paso</p><h1 className="mt-1 text-xl font-black text-abla-blue md:text-2xl">Cuéntanos lo que ocurrió</h1><p className="mt-1 text-sm leading-5 text-slate-500">Completa solo lo que recuerdes. Puedes mantener tu identidad anónima.</p></div><div className="ml-auto mt-4 flex items-center gap-2 md:mt-0" aria-label="Progreso del reporte"><span className="h-3 w-8 rounded-full bg-abla-green" /><span className="h-3 w-3 rounded-abla-blob bg-abla-green/40" /><span className="h-3 w-3 rounded-full bg-abla-blue/15" /></div></div>
+        <div className="mt-6 rounded-abla-card bg-abla-blue-soft p-5 md:flex md:items-center md:gap-5"><AblaCharacter emotion="safe" shape="arch" pose="open" interaction="supportive" size="sm" /><div><p className="text-xs font-extrabold uppercase tracking-[.14em] text-abla-green">Paso a paso</p><h1 className="mt-1 text-xl font-black text-abla-blue md:text-2xl">Cuéntanos lo que ocurrió</h1><p className="mt-1 text-sm leading-5 text-slate-500">Completa solo lo que recuerdes. Puedes mantener tu identidad anónima.</p></div><div className="ml-auto mt-4 flex items-center gap-2 md:mt-0" aria-label="Progreso del reporte"><span className="h-3 w-8 rounded-full bg-abla-green" /><span className="h-3 w-3 rounded-abla-blob bg-abla-green/40" /><span className="h-3 w-3 rounded-full bg-abla-blue/15" /></div></div>
 
         <div className="mt-5 rounded-abla-card bg-white p-5 shadow-abla-card md:p-6">
           <FieldLabel>Describe lo que ocurrió</FieldLabel>
@@ -207,7 +207,7 @@ export default function ReporteForm() {
             className="mt-2 flex w-full items-center justify-center gap-4 rounded-abla-card border-2 border-dashed border-abla-green/35 bg-abla-green-soft px-5 py-6 text-left transition-colors hover:bg-abla-green-mist"
             aria-label="Adjuntar evidencia"
           >
-            <div className="relative"><AblaCharacter emotion="help" shape="stack" size="sm" /><FileImage className="absolute -right-2 -top-1 h-7 w-7 rounded-md bg-white p-1 text-abla-blue shadow-abla-card" /></div>
+            <div className="relative"><AblaCharacter emotion="help" shape="pebble" pose="point" gaze="right" interaction="curious" interactive size="sm" /><FileImage className="absolute -right-2 -top-1 h-7 w-7 rounded-md bg-white p-1 text-abla-blue shadow-abla-card" /></div>
             <div><div className="text-[13px] font-bold text-abla-blue">Adjunta una foto, captura o video</div><div className="mt-1 text-[12px] text-slate-500">La evidencia puede ayudar a comprender lo ocurrido · Demostración</div></div><Upload className="ml-auto h-5 w-5 shrink-0 text-abla-green" />
           </motion.button>
         </div>
@@ -269,7 +269,7 @@ export default function ReporteForm() {
                 className="mx-auto flex h-32 w-32 items-center justify-center rounded-abla-blob bg-abla-green-soft"
                 aria-hidden="true"
               >
-                <AblaCharacter emotion="success" shape="blob" size="lg" decoration />
+                <AblaCharacter emotion="success" shape="soft-star" pose="open" interaction="celebrate" size="lg" decoration blink />
               </motion.div>
               <div className="mt-4 text-xl font-black text-abla-blue">Reporte enviado</div>
               <div className="mt-1 text-[13px] text-slate-600">Gracias por contarlo.</div>
