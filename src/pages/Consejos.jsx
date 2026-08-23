@@ -42,7 +42,7 @@ export default function Consejos() {
         <Header title="Consejos" showBack showIcons={false} />
 
         <main className="mx-auto w-full max-w-6xl px-4 py-6 md:px-6 md:py-10 lg:px-8">
-          <section className="grid items-center gap-5 rounded-abla-panel bg-abla-blue-soft p-5 md:grid-cols-[1fr_180px] md:p-8"><div><p className="text-xs font-extrabold uppercase tracking-[.16em] text-abla-green">Herramientas para acompañarte</p><h1 className="abla-page-title mt-2">Consejos que sí ayudan</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">Señales, palabras y acciones concretas para comprender mejor una situación difícil.</p></div><div className="hidden md:grid md:place-items-center"><AblaCharacter emotion="help" shape="blob" size="lg" animate="breathe" decoration /></div></section>
+          <section className="grid items-center gap-5 overflow-hidden rounded-abla-panel bg-abla-blue-soft p-5 md:grid-cols-[1fr_200px] md:p-8"><div><p className="text-xs font-extrabold uppercase tracking-[.16em] text-abla-green">Herramientas para acompañarte</p><h1 className="abla-page-title mt-2">Consejos que sí ayudan</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">Señales, palabras y acciones concretas para comprender mejor una situación difícil.</p></div><div className="relative hidden h-36 md:block"><motion.div initial="idle" animate="idle" whileHover="hover" className="absolute inset-0"><motion.div variants={{ idle: { rotate: -3 }, hover: { rotate: 3, y: -2 } }} className="absolute right-0 top-2 h-24 w-20 rounded-abla-card bg-white p-3 shadow-abla-card"><span className="block h-2 w-10 rounded-full bg-abla-green/45" /><span className="mt-3 block h-2 w-12 rounded-full bg-abla-blue/15" /><span className="mt-2 block h-2 w-9 rounded-full bg-abla-blue/15" /></motion.div><div className="absolute bottom-[-12px] left-0"><AblaCharacter emotion="help" shape="pebble" pose="point" gaze="right" interaction="curious" size="lg" decoration blink /></div></motion.div></div></section>
           <div className="scrollbar-hide mt-6 flex gap-2 overflow-x-auto rounded-full bg-white p-1.5 shadow-abla-card md:w-fit">
             {tabs.map((tab) => (
               <button
@@ -103,7 +103,7 @@ export default function Consejos() {
                 {microcapsulas.map((capsula, index) => (
                   <div key={capsula.id} className="rounded-abla-card bg-white p-5 shadow-abla-card">
                     <div className="flex items-start gap-3">
-                      <div className="grid h-20 w-20 shrink-0 place-items-center rounded-abla-blob bg-abla-blue-soft"><AblaCharacter emotion={index % 2 ? 'calm' : 'help'} shape={index % 2 ? 'pill' : 'wave'} size="sm" /></div>
+                      <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-[46%_54%_42%_58%/58%_45%_55%_42%] bg-abla-blue-soft"><div className="absolute -bottom-2 left-1/2 -translate-x-1/2"><AblaCharacter emotion={index % 2 ? 'calm' : 'help'} shape={index % 2 ? 'pebble' : 'wave'} pose={index % 2 ? 'rest' : 'point'} gaze={index % 2 ? 'center' : 'right'} interaction={index % 2 ? 'calm' : 'curious'} size="sm" /></div></div>
                       <div className="min-w-0 flex-1">
                         <div className="text-[15px] font-bold text-abla-blue">{capsula.titulo}</div>
                         <div className="mt-2 text-[13px] font-bold leading-5 text-slate-700">{capsula.dato}</div>
@@ -125,7 +125,7 @@ export default function Consejos() {
             {activeTab === 'Qué Decir' && (
               <motion.div key="decir" variants={ablaMotion.pop} initial="hidden" animate="visible" exit="hidden" className="grid gap-6 lg:grid-cols-2">
                 <section>
-                  <div className="mb-3 flex items-center gap-3"><AblaCharacter emotion="happy" shape="pill" size="xs" /><div className="text-[16px] font-bold text-abla-blue">Frases que sí ayudan</div></div>
+                  <div className="mb-3 flex items-center gap-3"><AblaCharacter emotion="happy" shape="pill" pose="open" interaction="supportive" size="xs" /><div className="text-[16px] font-bold text-abla-blue">Frases que sí ayudan</div></div>
                   <div className="flex flex-col gap-3">
                     {FRASES_APOYO.map((item) => (
                       <div key={item.fase} className="rounded-abla-card border border-green-100 bg-green-50 p-5 shadow-abla-card">
@@ -138,7 +138,7 @@ export default function Consejos() {
                 </section>
 
                 <section>
-                  <div className="mb-3 flex items-center gap-3"><AblaCharacter emotion="sad" shape="stack" size="xs" /><div className="text-[16px] font-bold text-abla-blue">Frases que dañan</div></div>
+                  <div className="mb-3 flex items-center gap-3"><AblaCharacter emotion="sad" shape="stack" pose="rest" interaction="listening" size="xs" /><div className="text-[16px] font-bold text-abla-blue">Frases que dañan</div></div>
                   <div className="rounded-abla-card bg-white p-5 shadow-abla-card">
                     <div className="flex flex-col gap-3">
                       {FRASES_EVITAR.map((frase) => (
