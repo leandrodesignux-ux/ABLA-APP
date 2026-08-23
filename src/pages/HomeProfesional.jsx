@@ -8,6 +8,7 @@ import SvgImage from '../components/SvgImage.jsx'
 import { Toast } from '../components/Toast.jsx'
 import { useAppContext } from '../context/AppContext.jsx'
 import { NEE_TYPES } from '../data/neeTypes.js'
+import StatusBlob from '../components/StatusBlob.jsx'
 
 const PROFESIONALES_DERIVACION = [
   {
@@ -123,15 +124,12 @@ function CasoCard({ caso, onOpen }) {
       exit={{ opacity: 0, y: -8 }}
       whileTap={{ scale: 0.98 }}
       onClick={() => onOpen(caso)}
-      className="w-full rounded-2xl bg-white p-4 text-left shadow-sm"
+      className={`w-full rounded-abla-card border-l-4 bg-white p-5 text-left shadow-abla-card transition-shadow hover:shadow-abla-float ${caso.nivel === 'critico' ? 'border-l-red-500' : caso.nivel === 'moderado' ? 'border-l-amber-400' : 'border-l-abla-green'}`}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <span className={`h-2 w-2 rounded-full ${config.dot}`} />
-            <span className={`rounded-full px-2 py-1 text-[10px] font-bold ${config.badgeClass}`}>
-              {config.badge}
-            </span>
+            <StatusBlob status={caso.nivel === 'critico' ? 'urgente' : caso.derivado ? 'derivado' : 'seguimiento'} label={config.badge} />
           </div>
           <div className="mt-2 text-[15px] font-bold text-slate-800">{caso.nombre}</div>
           {caso.nee && (() => {
@@ -154,9 +152,9 @@ function CasoCard({ caso, onOpen }) {
 
       <div className="mt-4 flex justify-end">
         {caso.derivado ? (
-          <span className="rounded-full bg-green-50 px-3 py-1.5 text-[12px] font-bold text-green-700">Derivado ✓</span>
+          <StatusBlob status="derivado" label="Derivado" className="text-[11px]" />
         ) : (
-          <span className="rounded-xl bg-abla-blue px-4 py-2 text-[12px] font-bold text-white">VER CASO</span>
+          <span className="rounded-abla-control bg-abla-blue px-4 py-2 text-[12px] font-bold text-white">Ver caso</span>
         )}
       </div>
     </motion.button>
@@ -317,9 +315,9 @@ export default function HomeProfesional() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-abla-bg pb-24 text-slate-800">
+      <div className="min-h-dvh bg-abla-bg pb-24 text-slate-800 md:pb-12">
         <header className="bg-abla-green text-white">
-          <div className="flex h-14 items-center justify-between px-4">
+          <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 md:h-20 md:px-6 lg:px-8">
             <button
               type="button"
               onClick={() => navigate('/perfil')}
@@ -364,7 +362,7 @@ export default function HomeProfesional() {
             </div>
           </div>
 
-          <div className="flex h-12 items-center justify-between border-t border-white/10 bg-abla-green/90 px-4">
+          <div className="mx-auto flex h-12 w-full max-w-7xl items-center justify-between border-t border-white/10 bg-abla-green/90 px-4 md:px-6 lg:px-8">
             <div className="text-[14px] font-semibold">Panel Profesional</div>
             {casosUrgentes > 0 && (
               <div className="flex items-center gap-1 rounded-full bg-red-500 px-2 py-1 text-[11px] font-bold text-white">
@@ -375,11 +373,14 @@ export default function HomeProfesional() {
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-[390px] md:max-w-3xl lg:max-w-6xl px-4">
+        <main className="mx-auto w-full max-w-6xl px-4 md:px-6 lg:px-8">
+          <section className="mt-6 grid gap-4 md:grid-cols-3">
+            {[{ label: 'Casos activos', value: casos.filter((c) => !c.derivado).length, status: 'nuevo' }, { label: 'Requieren prioridad', value: casosUrgentes, status: 'urgente' }, { label: 'Derivados', value: casos.filter((c) => c.derivado).length, status: 'derivado' }].map((metric) => <div key={metric.label} className="rounded-abla-card bg-white p-5 shadow-abla-card"><div className="flex items-center justify-between"><StatusBlob status={metric.status} label={metric.label} /><span className="text-3xl font-black text-abla-blue">{metric.value}</span></div></div>)}
+          </section>
           <button
             type="button"
             onClick={() => navigate('/reglamento')}
-            className="mt-5 flex w-full items-center justify-between rounded-2xl bg-white px-4 py-3 text-left shadow-sm"
+            className="mt-5 flex w-full items-center justify-between rounded-abla-control bg-white px-4 py-3 text-left shadow-abla-card"
           >
             <div className="text-[13px] font-semibold text-abla-blue">
               Reglamento interno
@@ -394,7 +395,7 @@ export default function HomeProfesional() {
           <button
             type="button"
             onClick={() => navigate('/faqs')}
-            className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white px-4 py-3 text-left shadow-sm"
+            className="mt-3 flex w-full items-center justify-between rounded-abla-control bg-white px-4 py-3 text-left shadow-abla-card"
           >
             <div className="text-[13px] font-semibold text-abla-blue">Preguntas frecuentes</div>
             <span className="text-slate-400">→</span>
@@ -410,8 +411,8 @@ export default function HomeProfesional() {
                 key={tab.id}
                 type="button"
                 onClick={() => setFiltro(tab.id)}
-                className={`rounded-full px-4 py-2 text-[13px] font-bold ${
-                  filtro === tab.id ? 'bg-abla-green text-white' : 'bg-white text-slate-500'
+                className={`rounded-full px-4 py-2.5 text-[13px] font-bold transition-colors ${
+                  filtro === tab.id ? 'bg-abla-green-soft text-abla-blue shadow-abla-card' : 'bg-white text-slate-500'
                 }`}
               >
                 {tab.label}
@@ -425,7 +426,7 @@ export default function HomeProfesional() {
                 key={h.label}
                 type="button"
                 onClick={() => navigate(h.to)}
-                className="flex flex-1 flex-col items-center gap-1 rounded-2xl bg-white py-3 shadow-sm"
+                className="flex flex-1 flex-col items-center gap-1 rounded-abla-control bg-white py-3 shadow-abla-card transition-colors hover:bg-abla-blue-soft"
               >
                 <span className="text-base">{h.icon}</span>
                 <span className="text-[12px] font-semibold text-abla-blue">{h.label}</span>

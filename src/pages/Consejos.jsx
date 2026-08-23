@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BottomNav from '../components/BottomNav.jsx'
@@ -6,6 +6,8 @@ import Header from '../components/Header.jsx'
 import PageTransition from '../components/PageTransition.jsx'
 import { useAppContext } from '../context/AppContext.jsx'
 import { FRASES_APOYO, FRASES_EVITAR, MICROCAPSULAS, RED_FLAGS_DATA } from '../data/consejosData.js'
+import AblaCharacter from '../components/AblaCharacter.jsx'
+import { ablaMotion } from '../design/motion.js'
 
 const tabs = ['Señales', 'Actualidad', 'Qué Decir']
 const categorias = ['Físico', 'Material', 'Conductual', 'Emocional', 'Digital', 'Social', 'Grave']
@@ -36,39 +38,42 @@ export default function Consejos() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-abla-bg pb-24">
+      <div className="min-h-dvh bg-abla-bg pb-24 md:pb-12">
         <Header title="Consejos" showBack showIcons={false} />
 
-        <div className="mx-auto w-full max-w-[390px] md:max-w-3xl lg:max-w-6xl px-4">
-          <div className="mt-5 flex gap-2 overflow-x-auto pb-1">
+        <main className="mx-auto w-full max-w-6xl px-4 py-6 md:px-6 md:py-10 lg:px-8">
+          <section className="grid items-center gap-5 rounded-abla-panel bg-abla-blue-soft p-5 md:grid-cols-[1fr_180px] md:p-8"><div><p className="text-xs font-extrabold uppercase tracking-[.16em] text-abla-green">Herramientas para acompañarte</p><h1 className="abla-page-title mt-2">Consejos que sí ayudan</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">Señales, palabras y acciones concretas para comprender mejor una situación difícil.</p></div><div className="hidden md:grid md:place-items-center"><AblaCharacter emotion="help" shape="blob" size="lg" animate="breathe" decoration /></div></section>
+          <div className="scrollbar-hide mt-6 flex gap-2 overflow-x-auto rounded-full bg-white p-1.5 shadow-abla-card md:w-fit">
             {tabs.map((tab) => (
               <button
                 key={tab}
                 type="button"
                 onClick={() => setActiveTab(tab)}
-                className={`shrink-0 rounded-full px-4 py-2 text-[13px] font-bold transition-colors ${
+                className={`relative shrink-0 rounded-full px-5 py-2.5 text-[13px] font-bold transition-colors ${
                   activeTab === tab
-                    ? 'bg-abla-green text-white'
-                    : 'bg-white text-abla-blue shadow-sm'
+                    ? 'text-abla-blue'
+                    : 'text-slate-500 hover:text-abla-blue'
                 }`}
               >
+                {activeTab === tab && <motion.span layoutId="consejos-tab" className="absolute inset-0 -z-10 rounded-full bg-abla-green-soft" />}
                 {tab}
               </button>
             ))}
           </div>
 
-          <div className="mt-5">
+          <div className="mt-6">
+            <AnimatePresence mode="wait">
             {activeTab === 'Señales' && (
-              <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-5">
+              <motion.div key="senales" variants={ablaMotion.pop} initial="hidden" animate="visible" exit="hidden" className="grid gap-5 lg:grid-cols-2">
                 {redFlagsPorCategoria.map((grupo) => (
                   <section key={grupo.categoria}>
                     <div className="mb-2 text-[16px] font-bold text-abla-blue">{grupo.categoria}</div>
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-3">
                       {grupo.items.map((item) => (
                         <div
                           key={item.indicador}
-                          className={`rounded-2xl p-3 shadow-sm ${
-                            item.urgente ? 'border border-red-200 bg-red-50' : 'bg-white'
+                          className={`rounded-abla-card p-4 shadow-abla-card ${
+                            item.urgente ? 'border-2 border-red-200 bg-red-50' : 'border border-white bg-white'
                           }`}
                         >
                           <div className="flex items-start gap-3">
@@ -94,16 +99,11 @@ export default function Consejos() {
             )}
 
             {activeTab === 'Actualidad' && (
-              <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-3">
-                {microcapsulas.map((capsula) => (
-                  <div key={capsula.id} className="rounded-2xl bg-white p-4 shadow-sm">
+              <motion.div key="actualidad" variants={ablaMotion.pop} initial="hidden" animate="visible" exit="hidden" className="grid gap-4 md:grid-cols-2">
+                {microcapsulas.map((capsula, index) => (
+                  <div key={capsula.id} className="rounded-abla-card bg-white p-5 shadow-abla-card">
                     <div className="flex items-start gap-3">
-                      <div
-                        className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-3xl text-white"
-                        style={{ backgroundColor: capsula.color }}
-                      >
-                        {capsula.icono}
-                      </div>
+                      <div className="grid h-20 w-20 shrink-0 place-items-center rounded-abla-blob bg-abla-blue-soft"><AblaCharacter emotion={index % 2 ? 'calm' : 'help'} shape={index % 2 ? 'pill' : 'wave'} size="sm" /></div>
                       <div className="min-w-0 flex-1">
                         <div className="text-[15px] font-bold text-abla-blue">{capsula.titulo}</div>
                         <div className="mt-2 text-[13px] font-bold leading-5 text-slate-700">{capsula.dato}</div>
@@ -113,7 +113,7 @@ export default function Consejos() {
                     <button
                       type="button"
                       onClick={() => navigate(getActionRoute(capsula.accion))}
-                      className="mt-4 h-10 w-full rounded-xl bg-abla-green text-[12px] font-bold text-white"
+                      className="mt-4 min-h-11 w-full rounded-abla-control bg-abla-green text-[12px] font-bold text-white shadow-abla-green"
                     >
                       {capsula.accion}
                     </button>
@@ -123,12 +123,12 @@ export default function Consejos() {
             )}
 
             {activeTab === 'Qué Decir' && (
-              <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-6">
+              <motion.div key="decir" variants={ablaMotion.pop} initial="hidden" animate="visible" exit="hidden" className="grid gap-6 lg:grid-cols-2">
                 <section>
-                  <div className="mb-3 text-[16px] font-bold text-abla-blue">Frases que sí ayudan</div>
+                  <div className="mb-3 flex items-center gap-3"><AblaCharacter emotion="happy" shape="pill" size="xs" /><div className="text-[16px] font-bold text-abla-blue">Frases que sí ayudan</div></div>
                   <div className="flex flex-col gap-3">
                     {FRASES_APOYO.map((item) => (
-                      <div key={item.fase} className="rounded-2xl border border-green-100 bg-green-50 p-4 shadow-sm">
+                      <div key={item.fase} className="rounded-abla-card border border-green-100 bg-green-50 p-5 shadow-abla-card">
                         <div className="text-[11px] font-black uppercase tracking-[0.16em] text-abla-green">{item.fase}</div>
                         <div className="mt-2 text-[14px] font-bold leading-5 text-abla-blue">“{item.frase}”</div>
                         <div className="mt-2 text-[12px] leading-5 text-slate-500">{item.proposito}</div>
@@ -138,8 +138,8 @@ export default function Consejos() {
                 </section>
 
                 <section>
-                  <div className="mb-3 text-[16px] font-bold text-abla-blue">Frases que dañan</div>
-                  <div className="rounded-2xl bg-white p-4 shadow-sm">
+                  <div className="mb-3 flex items-center gap-3"><AblaCharacter emotion="sad" shape="stack" size="xs" /><div className="text-[16px] font-bold text-abla-blue">Frases que dañan</div></div>
+                  <div className="rounded-abla-card bg-white p-5 shadow-abla-card">
                     <div className="flex flex-col gap-3">
                       {FRASES_EVITAR.map((frase) => (
                         <div key={frase} className="flex items-start gap-2 text-[13px] font-semibold text-slate-600">
@@ -152,8 +152,9 @@ export default function Consejos() {
                 </section>
               </motion.div>
             )}
+            </AnimatePresence>
           </div>
-        </div>
+        </main>
 
         <BottomNav />
       </div>

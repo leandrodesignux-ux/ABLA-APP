@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { AlertTriangle, Bell, BookOpen, Calendar, ChevronRight, MessageCircle, Star } from 'lucide-react'
+import { AlertTriangle, Bell, ChevronRight, Star } from 'lucide-react'
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BottomNav from '../components/BottomNav.jsx'
@@ -9,6 +9,7 @@ import { useAppContext } from '../context/AppContext.jsx'
 import { NEE_TYPES } from '../data/neeTypes.js'
 import { PROFESORES, CATEGORIAS_SITUACION } from '../data/profesoresData.js'
 import { LINEAS_EMERGENCIA } from '../data/recursosAyuda.js'
+import AblaCharacter from '../components/AblaCharacter.jsx'
 
 const alertSigns = [
   'Cambios repentinos de humor o comportamiento',
@@ -28,10 +29,10 @@ export default function HomeApoderado() {
   })
 
   const directActions = [
-    { label: 'Pedir cita', to: '/ayuda/cita', Icon: Calendar, color: 'text-abla-green' },
-    { label: 'Hablar con tutor', to: '/chat/tutor', Icon: MessageCircle, color: 'text-abla-blue' },
-    { label: 'Guías para padres', to: '/ayuda/consejos', Icon: BookOpen, color: 'text-abla-green' },
-    { label: 'Hacer reporte', to: '/reportar', Icon: AlertTriangle, color: 'text-red-500' },
+    { label: 'Pedir cita', to: '/ayuda/cita', emotion: 'calm', shape: 'circle' },
+    { label: 'Hablar con tutor', to: '/chat/tutor', emotion: 'chat', shape: 'pill' },
+    { label: 'Guías para padres', to: '/ayuda/consejos', emotion: 'help', shape: 'blob' },
+    { label: 'Hacer reporte', to: '/reportar', emotion: 'report', shape: 'soft-star', urgent: true },
   ]
 
   const rankingProfesores = useMemo(() => {
@@ -69,9 +70,9 @@ export default function HomeApoderado() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-abla-bg pb-24 text-slate-800">
+      <div className="min-h-dvh bg-abla-bg pb-24 text-slate-800 md:pb-12">
         <header className="bg-abla-green text-white">
-          <div className="flex h-14 items-center justify-between px-4">
+          <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 md:h-20 md:px-6 lg:px-8">
             <button
               type="button"
               onClick={() => navigate('/perfil')}
@@ -116,12 +117,11 @@ export default function HomeApoderado() {
             </div>
           </div>
 
-          <div className="flex h-12 items-center border-t border-white/10 bg-abla-green/90 px-4">
-            <div className="text-[14px] font-semibold">Apoderado</div>
+          <div className="border-t border-white/10 bg-abla-green/90"><div className="mx-auto flex h-12 w-full max-w-7xl items-center px-4 md:px-6 lg:px-8"><div className="text-[14px] font-semibold">Espacio para apoderados</div></div>
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-[390px] md:max-w-3xl lg:max-w-6xl px-4">
+        <main className="mx-auto w-full max-w-6xl px-4 md:px-6 lg:px-8">
           <AnimatePresence>
             {tieneNEEUrgente && (
               <motion.section
@@ -153,12 +153,12 @@ export default function HomeApoderado() {
             )}
           </AnimatePresence>
 
-          <section className="mt-5 rounded-2xl bg-white p-4 shadow-sm">
-            <div className="text-[18px] font-bold text-abla-blue">Bienvenido/a</div>
-            <div className="mt-1 text-[14px] text-slate-500">Aquí puedes apoyar a tu hijo/a</div>
+          <section className="mt-6 grid items-center gap-5 overflow-hidden rounded-abla-panel bg-abla-blue-soft p-5 md:grid-cols-[1fr_180px] md:p-8">
+            <div><p className="text-xs font-extrabold uppercase tracking-[.16em] text-abla-green">Acompañar también es cuidar</p><h1 className="abla-page-title mt-2">Bienvenido/a</h1><p className="mt-2 text-sm leading-6 text-slate-500 md:text-base">Aquí encontrarás orientación clara para apoyar a tu hijo/a con calma y confianza.</p></div>
+            <div className="hidden md:grid md:place-items-center"><AblaCharacter emotion="safe" shape="pill" size="lg" animate="breathe" /></div>
           </section>
 
-          <section className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4">
+          <section className="mt-5 rounded-abla-card border-2 border-amber-200 bg-amber-50 p-5 md:p-6">
             <div className="text-[16px] font-bold text-amber-700">Señales de alerta</div>
 
             <div className="mt-3 flex flex-col gap-3">
@@ -181,7 +181,7 @@ export default function HomeApoderado() {
           </section>
 
           <section className="mt-5">
-            <div className="text-[16px] font-bold text-abla-blue">Acciones directas</div>
+            <div className="abla-section-title">Acciones directas</div>
             <div className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
               {directActions.map((action) => (
                 <motion.button
@@ -191,10 +191,10 @@ export default function HomeApoderado() {
                   whileTap={{ scale: 0.97 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                   onClick={() => navigate(action.to)}
-                  className="flex flex-col items-center gap-2 rounded-2xl bg-white p-4 shadow-sm"
+                  className={`flex min-h-40 flex-col items-center justify-center gap-3 rounded-abla-card border-2 bg-white p-4 shadow-abla-card transition-shadow hover:shadow-abla-float ${action.urgent ? 'border-red-100' : 'border-transparent'}`}
                 >
-                  <action.Icon className={`h-6 w-6 ${action.color}`} />
-                  <span className="text-[13px] font-semibold text-abla-blue">{action.label}</span>
+                  <div className={`grid h-20 w-full place-items-center rounded-abla-blob ${action.urgent ? 'bg-red-50' : 'bg-abla-green-soft'}`}><AblaCharacter emotion={action.emotion} shape={action.shape} size="sm" /></div>
+                  <span className="text-[13px] font-extrabold text-abla-blue">{action.label}</span>
                 </motion.button>
               ))}
             </div>
@@ -216,7 +216,7 @@ export default function HomeApoderado() {
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.08 }}
-                    className="rounded-2xl bg-white p-4 shadow-sm"
+                    className="rounded-abla-card bg-white p-5 shadow-abla-card"
                   >
                     <div className="flex items-start gap-3">
                       <div className="relative flex-shrink-0">
