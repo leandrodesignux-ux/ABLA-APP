@@ -7,6 +7,7 @@ import PageTransition from '../components/PageTransition.jsx'
 import SvgImage from '../components/SvgImage.jsx'
 import AblaCompanion from '../components/companion/AblaCompanion.jsx'
 import MoodShape from '../components/mood/MoodShape.jsx'
+import MoodTrackerCard from '../components/mood/MoodTrackerCard.jsx'
 import ActionIllustration from '../components/actions/ActionIllustration.jsx'
 import { useAppContext } from '../context/AppContext.jsx'
 import { ablaMotion, motionIfAllowed } from '../design/motion.js'
@@ -40,7 +41,7 @@ function EmotionOption({ value, selected, onSelect }) {
 export default function Home() {
   const navigate = useNavigate()
   const reducedMotion = useReducedMotion()
-  const { user, moodHoy, setMood } = useAppContext()
+  const { user, moodHoy, moodEntries, setMood } = useAppContext()
   const activeMood = moodConfig[moodHoy]
 
   return (
@@ -75,6 +76,8 @@ export default function Home() {
           <AnimatePresence>{moodHoy === 'MAL' && <motion.section variants={ablaMotion.pop} initial="hidden" animate="visible" exit="hidden" className="mt-6 rounded-abla-card border-2 border-red-200 bg-red-50 p-5 md:flex md:items-center md:justify-between md:gap-6 md:p-6" aria-live="polite"><div className="flex items-start gap-3"><AlertCircle className="mt-0.5 h-6 w-6 shrink-0 text-red-600" /><div><h2 className="text-lg font-black text-red-900">¿Necesitas ayuda ahora?</h2><p className="mt-1 text-sm leading-6 text-red-800">Si estás en peligro o necesitas contención, contacta a alguien inmediatamente.</p></div></div><div className="mt-4 grid grid-cols-2 gap-3 md:mt-0 md:min-w-72"><a href="tel:147" className="flex min-h-12 items-center justify-center gap-2 rounded-abla-control bg-red-600 px-4 text-sm font-bold text-white"><Phone className="h-4 w-4" />147</a><button type="button" onClick={() => navigate('/chat/anonimo')} className="min-h-12 rounded-abla-control border border-red-300 bg-white px-4 text-sm font-bold text-red-700">Hablar aquí</button></div></motion.section>}</AnimatePresence>
 
           <section className="mt-10 md:mt-14"><div><p className="text-sm font-bold uppercase tracking-[.15em] text-abla-green">Estamos contigo</p><h2 className="abla-section-title mt-1">¿Qué necesitas ahora?</h2></div><div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">{quickActions.map(({ illustration, ...action }) => <IllustratedActionCard key={action.to} {...action} scene={<ActionIllustration type={illustration} className="h-full w-full" />} />)}</div></section>
+
+          <div className="mt-10 md:mt-14"><MoodTrackerCard entries={moodEntries} /></div>
         </main>
 
         <motion.button type="button" onClick={() => navigate('/chat')} whileTap={motionIfAllowed(reducedMotion, ablaMotion.press)} className="fixed bottom-20 left-1/2 z-30 flex min-h-12 -translate-x-1/2 items-center gap-2 rounded-full bg-abla-blue px-6 text-sm font-bold text-white shadow-abla-blue md:hidden" aria-label="Abrir opciones de chat"><MessageCircle className="h-5 w-5" />Chatear</motion.button>
