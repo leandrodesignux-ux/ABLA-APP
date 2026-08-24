@@ -43,8 +43,8 @@ export function sanitizeMoodEntries(value) {
 export function createDemoMoodEntries(referenceDate = new Date()) {
   const pattern = ['bien', 'mas_o_menos', 'bien', 'mal', 'mas_o_menos', 'bien', 'bien']
   const entries = []
-  for (let offset = 27; offset >= 1; offset -= 1) {
-    if (offset % 6 === 0) continue
+  for (let offset = 27; offset >= 0; offset -= 1) {
+    if (offset !== 0 && offset % 6 === 0) continue
     const date = new Date(referenceDate)
     date.setHours(12, 0, 0, 0)
     date.setDate(date.getDate() - offset)
