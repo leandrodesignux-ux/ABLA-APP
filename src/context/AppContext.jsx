@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react'
 import { RATINGS_INICIALES } from '../data/profesoresData.js'
+import { loadMoodEntries, normalizeMoodValue, persistMoodEntries, upsertMoodEntry } from '../data/moodHistory.js'
 
 const AppContext = createContext(null)
 
@@ -9,6 +10,7 @@ const initialState = {
   user: { name: 'Matías', avatar: '/Avatars/avatar-matias.svg' },
   perfil: SS.getItem('abla_perfil') || null,
   moodHoy: SS.getItem('abla_mood') || null,
+  moodEntries: loadMoodEntries(),
   reportesEnviados: JSON.parse(SS.getItem('abla_reportes') || '[]'),
   citasAgendadas: JSON.parse(SS.getItem('abla_citas') || '[]'),
   // Perfil del hijo (para apoderado)
@@ -27,7 +29,11 @@ export function AppProvider({ children }) {
   const [state, setState] = useState(initialState)
 
   const setMood = useCallback((mood) => {
-    setState((p) => ({ ...p, moodHoy: mood }))
+    setState((p) => {
+      const moodEntries = upsertMoodEntry(p.moodEntries, normalizeMoodValue(mood))
+      persistMoodEntries(moodEntries)
+      return { ...p, moodHoy: mood, moodEntries }
+    })
     SS.setItem('abla_mood', mood)
   }, [])
 
