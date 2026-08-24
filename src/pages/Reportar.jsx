@@ -18,7 +18,7 @@ function ReportScene({ type }) {
     : type === 'digital'
       ? { mood: 'focused', pose: 'listening', gaze: 'right', accessory: 'speech' }
       : { mood: 'worried', pose: 'listening', gaze: 'center', accessory: 'none' }
-  return <div className="relative grid h-36 w-full place-items-end pb-1"><motion.div variants={{ idle: { y: 2 }, hover: { y: -1 }, tap: { y: 1 } }}><AblaCompanion {...config} decorations="none" size="lg" label="ABLA te acompaña de forma segura" /></motion.div></div>
+  return <div className="relative grid h-36 w-full place-items-end pb-1"><motion.div variants={{ idle: { y: 2 }, hover: { y: -1 }, tap: { y: 1 } }}><AblaCompanion {...config} decorations="none" size="lg" /></motion.div></div>
 }
 
 function ReportCard({ title, description, to, type, tone, label, urgent }) {

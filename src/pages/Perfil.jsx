@@ -89,7 +89,7 @@ export default function Perfil() {
 
         <div className="px-4 md:px-6 lg:px-8">
           <div className="mt-12 text-center">
-            <div className="text-[20px] font-bold text-abla-blue">{user.name}</div>
+            <h1 className="text-[20px] font-bold text-abla-blue">{user.name}</h1>
             <div className="mt-2 inline-flex rounded-full bg-white px-3 py-1 text-[12px] font-bold text-abla-blue shadow-sm">
               {perfilLabel}
             </div>

@@ -195,7 +195,7 @@ export default function HomeApoderado() {
                   onClick={() => navigate(action.to)}
                   className={`flex min-h-40 flex-col items-center justify-center gap-3 rounded-abla-card border-2 bg-white p-4 shadow-abla-card transition-shadow hover:shadow-abla-float ${action.urgent ? 'border-red-100' : 'border-transparent'}`}
                 >
-                  <div className={`grid h-24 w-full place-items-center rounded-[44%_56%_46%_54%/56%_44%_56%_44%] ${action.urgent ? 'bg-red-50' : 'bg-abla-green-soft'}`}><AblaCompanion mood={action.mood} pose={action.pose} gaze="right" accessory={action.accessory} decorations="none" interactive size="md" label={`ABLA acompaña la acción ${action.label}`} /></div>
+                  <div className={`grid h-24 w-full place-items-center rounded-[44%_56%_46%_54%/56%_44%_56%_44%] ${action.urgent ? 'bg-red-50' : 'bg-abla-green-soft'}`}><AblaCompanion mood={action.mood} pose={action.pose} gaze="right" accessory={action.accessory} decorations="none" interactive size="md" /></div>
                   <span className="text-[13px] font-extrabold text-abla-blue">{action.label}</span>
                 </motion.button>
               ))}

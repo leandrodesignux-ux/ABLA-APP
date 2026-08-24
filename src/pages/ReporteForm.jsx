@@ -207,7 +207,7 @@ export default function ReporteForm() {
             className="mt-2 flex w-full items-center justify-center gap-4 rounded-abla-card border-2 border-dashed border-abla-green/35 bg-abla-green-soft px-5 py-6 text-left transition-colors hover:bg-abla-green-mist"
             aria-label="Adjuntar evidencia"
           >
-            <div className="relative"><AblaCompanion mood="focused" pose="pointing" gaze="right" decorations="none" interactive size="sm" label="ABLA señala la evidencia" /><FileImage className="absolute -right-2 -top-1 h-7 w-7 rounded-md bg-white p-1 text-abla-blue shadow-abla-card" /></div>
+            <div className="relative"><AblaCompanion mood="focused" pose="pointing" gaze="right" decorations="none" interactive size="sm" /><FileImage className="absolute -right-2 -top-1 h-7 w-7 rounded-md bg-white p-1 text-abla-blue shadow-abla-card" /></div>
             <div><div className="text-[13px] font-bold text-abla-blue">Adjunta una foto, captura o video</div><div className="mt-1 text-[12px] text-slate-500">La evidencia puede ayudar a comprender lo ocurrido · Demostración</div></div><Upload className="ml-auto h-5 w-5 shrink-0 text-abla-green" />
           </motion.button>
         </div>

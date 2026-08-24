@@ -16,7 +16,7 @@ function ChatScene({ kind, avatarSrc }) {
       : kind === 'teacher'
         ? { mood: 'happy', pose: 'waving', gaze: 'right', accessory: 'speech' }
         : { mood: 'focused', pose: 'supporting', gaze: 'right', accessory: 'card' }
-  return <div className="relative grid h-28 w-full place-items-center md:h-40"><motion.div variants={{ idle: { y: 2 }, hover: { y: -2 }, tap: { y: 1 } }}><AblaCompanion {...config} size="lg" label="Compañero ABLA para esta conversación" /></motion.div>{avatarSrc && <motion.img variants={{ idle: { y: 0, boxShadow: '0 0 0 4px #fff' }, hover: { y: -2, boxShadow: '0 0 0 5px #DCECE7' } }} src={avatarSrc} alt="" className="absolute bottom-3 right-[14%] h-14 w-14 rounded-full object-cover md:h-16 md:w-16" />}</div>
+  return <div className="relative grid h-28 w-full place-items-center md:h-40"><motion.div variants={{ idle: { y: 2 }, hover: { y: -2 }, tap: { y: 1 } }}><AblaCompanion {...config} size="lg" /></motion.div>{avatarSrc && <motion.img variants={{ idle: { y: 0, boxShadow: '0 0 0 4px #fff' }, hover: { y: -2, boxShadow: '0 0 0 5px #DCECE7' } }} src={avatarSrc} alt="" className="absolute bottom-3 right-[14%] h-14 w-14 rounded-full object-cover md:h-16 md:w-16" />}</div>
 }
 
 function OptionCard({ title, description, to, kind, avatarSrc, subdued = false }) {

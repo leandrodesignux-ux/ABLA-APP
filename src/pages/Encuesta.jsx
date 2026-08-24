@@ -162,7 +162,7 @@ export default function Encuesta() {
                           : 'border-transparent bg-white shadow-abla-card'
                       }`}
                     >
-                      <div className={`grid h-24 w-full place-items-center rounded-[44%_56%_48%_52%/58%_44%_56%_42%] ${visual.tone}`}><AblaCompanion mood={visual.mood} pose={visual.pose} gaze={visual.gaze} decorations="none" interactive size="sm" label={`ABLA representa ${categoria.label}`} /></div>
+                      <div className={`grid h-24 w-full place-items-center rounded-[44%_56%_48%_52%/58%_44%_56%_42%] ${visual.tone}`}><AblaCompanion mood={visual.mood} pose={visual.pose} gaze={visual.gaze} decorations="none" interactive size="sm" /></div>
                       <div className="mt-3 text-[13px] font-extrabold text-abla-blue">{categoria.label}</div>
                     </motion.button>
                   )})}
