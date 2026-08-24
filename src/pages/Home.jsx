@@ -1,26 +1,26 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { AlertCircle, Bell, MessageCircle, Phone } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import AblaCharacter from '../components/AblaCharacter.jsx'
 import BottomNav from '../components/BottomNav.jsx'
 import IllustratedActionCard from '../components/IllustratedActionCard.jsx'
 import PageTransition from '../components/PageTransition.jsx'
 import SvgImage from '../components/SvgImage.jsx'
+import AblaCompanion from '../components/companion/AblaCompanion.jsx'
 import { useAppContext } from '../context/AppContext.jsx'
 import { ablaMotion, motionIfAllowed } from '../design/motion.js'
 
 const moodConfig = {
-  BIEN: { label: 'Bien', emotion: 'happy', shape: 'circle', pose: 'open', interaction: 'celebrate', tint: 'bg-[#E4F3ED]', message: '¡Qué bueno saberlo! Guarda un poquito de esa energía para hoy.' },
-  'MAS O MENOS': { label: 'Más o menos', emotion: 'neutral', shape: 'wave', pose: 'rest', gaze: 'left', interaction: 'curious', tint: 'bg-[#EEF1F6]', message: 'Está bien sentirse así. Estamos aquí si necesitas ordenar lo que pasa.' },
-  MAL: { label: 'Mal', emotion: 'sad', shape: 'stack', pose: 'rest', interaction: 'listening', tint: 'bg-[#FDEDEC]', message: 'Gracias por contarlo. No tienes que atravesar esto a solas.' },
+  BIEN: { label: 'Bien', mood: 'happy', personality: 'motivating', pose: 'celebrating', gaze: 'up', decorations: 'energy', reaction: 'celebrate', tint: 'bg-[#E4F3ED]', message: '¡Qué bueno saberlo! Guarda un poquito de esa energía para hoy.' },
+  'MAS O MENOS': { label: 'Más o menos', mood: 'neutral', personality: 'curious', pose: 'thinking', gaze: 'left', decorations: 'question', reaction: 'think', tint: 'bg-[#EEF1F6]', message: 'Está bien sentirse así. Estamos aquí si necesitas ordenar lo que pasa.' },
+  MAL: { label: 'Mal', mood: 'worried', personality: 'empathetic', pose: 'listening', gaze: 'center', decorations: 'none', reaction: 'concern', tint: 'bg-[#FDEDEC]', message: 'Gracias por contarlo. No tienes que atravesar esto a solas.' },
 }
 
 const quickActions = [
-  { title: 'Chat anónimo', description: 'Habla sin dar tu nombre', to: '/chat/anonimo', sceneType: 'chat' },
-  { title: 'Pedir una cita', description: 'Encuentra apoyo profesional', to: '/ayuda/cita', sceneType: 'appointment' },
-  { title: 'Consejos', description: 'Ideas para sentirte acompañado/a', to: '/ayuda/consejos', sceneType: 'advice' },
-  { title: 'Reportar', description: 'Cuenta una situación de forma segura', to: '/reportar', sceneType: 'report' },
-  { title: 'Encuesta', description: 'Comparte cómo fue tu experiencia', to: '/encuesta', sceneType: 'survey' },
+  { title: 'Chat anónimo', description: 'Habla sin dar tu nombre', to: '/chat/anonimo', pose: 'listening', gaze: 'left', accessory: 'speech' },
+  { title: 'Pedir una cita', description: 'Encuentra apoyo profesional', to: '/ayuda/cita', pose: 'pointing', gaze: 'right', accessory: 'calendar' },
+  { title: 'Consejos', description: 'Ideas para sentirte acompañado/a', to: '/ayuda/consejos', pose: 'supporting', gaze: 'right', accessory: 'card' },
+  { title: 'Reportar', description: 'Cuenta una situación de forma segura', to: '/reportar', mood: 'focused', pose: 'protecting', gaze: 'center', accessory: 'shield', decorations: 'none' },
+  { title: 'Encuesta', description: 'Comparte cómo fue tu experiencia', to: '/encuesta', pose: 'pointing', gaze: 'right', accessory: 'check' },
 ]
 
 function EmotionOption({ value, selected, onSelect }) {
@@ -29,7 +29,7 @@ function EmotionOption({ value, selected, onSelect }) {
   return (
     <motion.button type="button" onClick={() => onSelect(value)} whileTap={motionIfAllowed(reducedMotion, ablaMotion.press)} animate={selected && !reducedMotion ? { y: [0, -3, 0] } : {}} className={`group relative min-h-36 overflow-hidden rounded-abla-card border-2 p-3 text-center transition-all focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-abla-green/30 md:min-h-44 md:p-5 ${selected ? `${config.tint} border-abla-green shadow-abla-float` : 'border-transparent bg-white shadow-abla-card hover:border-abla-green/25'}`} aria-pressed={selected} aria-label={`Me siento ${config.label}`}>
       {selected && <div className="pointer-events-none absolute inset-0" aria-hidden="true"><motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute right-3 top-4 h-2.5 w-2.5 rounded-full bg-abla-green/30" /><motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: .08 }} className="absolute bottom-8 left-4 h-3 w-3 rotate-45 rounded-sm bg-abla-blue/15" /></div>}
-      <div className="relative mx-auto grid h-24 place-items-center md:h-28"><AblaCharacter emotion={config.emotion} shape={config.shape} pose={config.pose} gaze={config.gaze} interaction={config.interaction} interactive selected={selected} size="md" animate={selected && value !== 'MAL' ? 'wiggle' : selected ? 'breathe' : 'none'} decoration={value === 'BIEN'} /></div>
+      <div className="relative mx-auto grid h-24 place-items-center md:h-28"><AblaCompanion personality={config.personality} mood={config.mood} pose={config.pose} gaze={config.gaze} decorations={config.decorations} interactive size="md" animate={selected} label={`ABLA se siente ${config.label}`} /></div>
       <span className="relative text-xs font-extrabold uppercase tracking-[.08em] text-abla-blue md:text-sm">{config.label}</span>
     </motion.button>
   )
@@ -65,14 +65,14 @@ export default function Home() {
 
             <div className="relative hidden min-h-[470px] overflow-hidden rounded-abla-panel bg-abla-blue-soft p-8 lg:grid lg:place-items-center">
               <div className="absolute left-8 top-8 h-12 w-24 rounded-full bg-white/70" /><div className="absolute bottom-10 right-8 h-20 w-20 rounded-abla-blob bg-abla-green/15" />
-              <motion.div animate={motionIfAllowed(reducedMotion, ablaMotion.float)}><AblaCharacter emotion={activeMood?.emotion || 'safe'} shape={activeMood?.shape || 'blob'} pose={activeMood?.pose || 'open'} gaze={activeMood?.gaze} interaction={activeMood?.interaction || 'supportive'} size="xl" decoration blink label="Personaje emocional ABLA" /></motion.div>
+              <motion.div animate={motionIfAllowed(reducedMotion, ablaMotion.float)}><AblaCompanion personality={activeMood?.personality || 'friendly'} reaction={activeMood?.reaction} size="hero" label="Compañero emocional ABLA" /></motion.div>
               <div className="absolute bottom-9 left-9 right-9 text-center"><p className="text-lg font-extrabold text-abla-blue">Tu espacio también puede empezar con una emoción.</p></div>
             </div>
           </section>
 
           <AnimatePresence>{moodHoy === 'MAL' && <motion.section variants={ablaMotion.pop} initial="hidden" animate="visible" exit="hidden" className="mt-6 rounded-abla-card border-2 border-red-200 bg-red-50 p-5 md:flex md:items-center md:justify-between md:gap-6 md:p-6" aria-live="polite"><div className="flex items-start gap-3"><AlertCircle className="mt-0.5 h-6 w-6 shrink-0 text-red-600" /><div><h2 className="text-lg font-black text-red-900">¿Necesitas ayuda ahora?</h2><p className="mt-1 text-sm leading-6 text-red-800">Si estás en peligro o necesitas contención, contacta a alguien inmediatamente.</p></div></div><div className="mt-4 grid grid-cols-2 gap-3 md:mt-0 md:min-w-72"><a href="tel:147" className="flex min-h-12 items-center justify-center gap-2 rounded-abla-control bg-red-600 px-4 text-sm font-bold text-white"><Phone className="h-4 w-4" />147</a><button type="button" onClick={() => navigate('/chat/anonimo')} className="min-h-12 rounded-abla-control border border-red-300 bg-white px-4 text-sm font-bold text-red-700">Hablar aquí</button></div></motion.section>}</AnimatePresence>
 
-          <section className="mt-10 md:mt-14"><div><p className="text-sm font-bold uppercase tracking-[.15em] text-abla-green">Estamos contigo</p><h2 className="abla-section-title mt-1">¿Qué necesitas ahora?</h2></div><div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">{quickActions.map((action) => <IllustratedActionCard key={action.to} {...action} />)}</div></section>
+          <section className="mt-10 md:mt-14"><div><p className="text-sm font-bold uppercase tracking-[.15em] text-abla-green">Estamos contigo</p><h2 className="abla-section-title mt-1">¿Qué necesitas ahora?</h2></div><div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">{quickActions.map(({ pose, gaze, accessory, mood, decorations, ...action }) => <IllustratedActionCard key={action.to} {...action} scene={<AblaCompanion mood={mood} pose={pose} gaze={gaze} accessory={accessory} decorations={decorations} size="md" label={`ABLA acompaña la acción ${action.title}`} />} />)}</div></section>
         </main>
 
         <motion.button type="button" onClick={() => navigate('/chat')} whileTap={motionIfAllowed(reducedMotion, ablaMotion.press)} className="fixed bottom-20 left-1/2 z-30 flex min-h-12 -translate-x-1/2 items-center gap-2 rounded-full bg-abla-blue px-6 text-sm font-bold text-white shadow-abla-blue md:hidden" aria-label="Abrir opciones de chat"><MessageCircle className="h-5 w-5" />Chatear</motion.button>
