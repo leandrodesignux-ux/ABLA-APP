@@ -31,6 +31,7 @@ const Bitacora = lazy(() => import('./pages/Bitacora.jsx'))
 const Encuesta = lazy(() => import('./pages/Encuesta.jsx'))
 const Perfil = lazy(() => import('./pages/Perfil.jsx'))
 const SobreTi = lazy(() => import('./pages/SobreTi.jsx'))
+const CompanionShowcase = import.meta.env.DEV ? lazy(() => import('./pages/CompanionShowcase.jsx')) : null
 
 // Minimal fallback for Suspense
 function PageLoader() {
@@ -162,6 +163,7 @@ function AnimatedRoutes() {
         <Route path="/faqs" element={<FAQs />} />
         <Route path="/protocolos" element={<Protocolos />} />
         <Route path="/protocolos/:id" element={<ProtocoloDetalle />} />
+        {CompanionShowcase && <Route path="/__companion" element={<CompanionShowcase />} />}
       </Routes>
     </AnimatePresence>
   )
