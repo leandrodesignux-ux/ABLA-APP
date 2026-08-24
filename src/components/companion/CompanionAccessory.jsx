@@ -6,7 +6,9 @@ export default function CompanionAccessory({ type = 'none' }) {
   if (type === 'calendar') return <g transform="translate(78 68)"><rect width="38" height="39" rx="8" fill="white" stroke={companionTokens.color.blueSoft} strokeWidth="2" /><path d="M0 13h38M10 0v8M28 0v8" stroke="#75A9E6" strokeWidth="3" /><circle cx="11" cy="23" r="2.5" fill={companionTokens.color.bodySoft} /><circle cx="22" cy="23" r="2.5" fill={companionTokens.color.bodySoft} /></g>
   if (type === 'card') return <g transform="translate(80 66) rotate(5)"><rect width="34" height="43" rx="7" fill="white" stroke={companionTokens.color.blueSoft} strokeWidth="2" /><path d="M8 14h18M8 22h14" stroke={companionTokens.color.body} strokeWidth="3" strokeLinecap="round" /></g>
   if (type === 'options') return <g transform="translate(86 66)" fill="white"><rect width="27" height="8" rx="4" /><rect y="12" width="34" height="8" rx="4" /><rect y="24" width="22" height="8" rx="4" /></g>
+  if (type === 'check') return <g transform="translate(85 72)"><rect width="30" height="30" rx="9" fill="white" /><path d="m8 15 6 6 10-12" fill="none" stroke={companionTokens.color.body} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" /></g>
+  if (type === 'heart') return <path d="M96 77C89 67 75 74 79 85C82 94 96 102 96 102C96 102 110 94 113 85C117 74 103 67 96 77Z" fill="#EE8DB8" />
+  if (type === 'spark') return <g fill="#F6B91A"><path d="M99 69l3 7 7 3-7 3-3 7-3-7-7-3 7-3Z" /><circle cx="113" cy="67" r="3" /></g>
   if (type === 'question') return <text x="101" y="31" fill="#9FC8F5" fontSize="30" fontWeight="800">?</text>
   return null
 }
-
