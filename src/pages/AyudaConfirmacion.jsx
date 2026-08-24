@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion'
-import { CheckCircle } from 'lucide-react'
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header.jsx'
 import PageTransition from '../components/PageTransition.jsx'
+import AblaCompanion from '../components/companion/AblaCompanion.jsx'
 
 function getQueryParam(search, key) {
   try {
@@ -44,7 +44,7 @@ export default function AyudaConfirmacion() {
           className="flex h-24 w-24 items-center justify-center"
           aria-hidden="true"
         >
-          <CheckCircle className="h-20 w-20 text-abla-green" />
+          <AblaCompanion reaction="success" size="lg" label="ABLA confirma tu cita" />
         </motion.div>
 
         <motion.div

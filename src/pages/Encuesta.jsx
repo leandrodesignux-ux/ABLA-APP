@@ -7,17 +7,17 @@ import Header from '../components/Header.jsx'
 import PageTransition from '../components/PageTransition.jsx'
 import { useAppContext } from '../context/AppContext.jsx'
 import { PROFESORES, CATEGORIAS_SITUACION } from '../data/profesoresData.js'
-import AblaCharacter from '../components/AblaCharacter.jsx'
+import AblaCompanion from '../components/companion/AblaCompanion.jsx'
 import AblaButton from '../components/AblaButton.jsx'
 import { ablaMotion, motionIfAllowed } from '../design/motion.js'
 
 const categoryVisuals = [
-  { emotion: 'worried', shape: 'blob', tone: 'bg-abla-blue-soft' },
-  { emotion: 'anxious', shape: 'wave', tone: 'bg-abla-green-soft' },
-  { emotion: 'sad', shape: 'stack', tone: 'bg-[#F1EDF6]' },
-  { emotion: 'neutral', shape: 'pill', tone: 'bg-[#EEF1F6]' },
-  { emotion: 'report', shape: 'soft-star', tone: 'bg-[#FDEDEC]' },
-  { emotion: 'help', shape: 'circle', tone: 'bg-[#E9F3F5]' },
+  { mood: 'worried', pose: 'listening', gaze: 'left', tone: 'bg-abla-blue-soft' },
+  { mood: 'focused', pose: 'thinking', gaze: 'right', tone: 'bg-abla-green-soft' },
+  { mood: 'sad', pose: 'resting', gaze: 'left', tone: 'bg-[#F1EDF6]' },
+  { mood: 'neutral', pose: 'idle', gaze: 'right', tone: 'bg-[#EEF1F6]' },
+  { mood: 'worried', pose: 'protecting', gaze: 'center', tone: 'bg-[#FDEDEC]' },
+  { mood: 'focused', pose: 'supporting', gaze: 'right', tone: 'bg-[#E9F3F5]' },
 ]
 
 function StarRating({ value, onChange = () => {}, size = 'lg', readOnly = false }) {
@@ -107,7 +107,7 @@ export default function Encuesta() {
             <motion.div key="inicio" {...stepMotion} className="min-h-[calc(100vh-96px)]">
               <Header title="Encuesta" showBack showIcons={false} />
               <div className="mx-auto flex w-full max-w-2xl flex-col items-center px-4 pt-8 text-center">
-                <div className="relative grid h-52 w-52 place-items-center overflow-hidden rounded-[46%_54%_42%_58%/58%_44%_56%_42%] bg-abla-green-soft"><span className="absolute right-5 top-7 h-12 w-16 rounded-abla-card bg-white/55" /><AblaCharacter emotion="happy" shape="arch" pose="wave" gaze="right" interaction="celebrate" size="xl" animate="float" decoration blink /></div>
+                <div className="relative grid h-52 w-52 place-items-center overflow-hidden rounded-[46%_54%_42%_58%/58%_44%_56%_42%] bg-abla-green-soft"><span className="absolute right-5 top-7 h-12 w-16 rounded-abla-card bg-white/55" /><AblaCompanion personality="friendly" pose="waving" gaze="right" decorations="subtle" size="xl" label="ABLA te invita a valorar el apoyo" /></div>
                 <h1 className="mt-8 text-center text-3xl font-black text-abla-blue md:text-4xl">¿Alguien te ayudó?</h1>
                 <p className="mt-3 px-6 text-center text-[14px] text-slate-500">
                   Cuéntanos quién te acompañó y ayuda a otros a encontrar el apoyo que necesitan.
@@ -162,7 +162,7 @@ export default function Encuesta() {
                           : 'border-transparent bg-white shadow-abla-card'
                       }`}
                     >
-                      <div className={`grid h-24 w-full place-items-center rounded-[44%_56%_48%_52%/58%_44%_56%_42%] ${visual.tone}`}><AblaCharacter emotion={visual.emotion} shape={visual.shape} pose={index % 3 === 0 ? 'hide' : index % 3 === 1 ? 'point' : 'rest'} gaze={index % 2 ? 'right' : 'left'} interaction={visual.emotion === 'report' ? 'alert' : 'curious'} interactive selected={categoriaSeleccionada?.id === categoria.id} size="sm" /></div>
+                      <div className={`grid h-24 w-full place-items-center rounded-[44%_56%_48%_52%/58%_44%_56%_42%] ${visual.tone}`}><AblaCompanion mood={visual.mood} pose={visual.pose} gaze={visual.gaze} decorations="none" interactive size="sm" label={`ABLA representa ${categoria.label}`} /></div>
                       <div className="mt-3 text-[13px] font-extrabold text-abla-blue">{categoria.label}</div>
                     </motion.button>
                   )})}
@@ -347,7 +347,7 @@ export default function Encuesta() {
                   transition={{ type: 'spring', stiffness: 260, damping: 18 }}
                   className="flex h-40 w-40 items-center justify-center rounded-abla-blob bg-abla-green-soft"
                 >
-                  <AblaCharacter emotion="success" shape="soft-star" pose="open" interaction="celebrate" size="xl" decoration blink />
+                  <AblaCompanion reaction="success" size="xl" label="ABLA agradece tu valoración" />
                 </motion.div>
                 <h1 className="mt-5 text-3xl font-black text-abla-blue">¡Gracias!</h1>
                 <p className="mt-2 px-8 text-center text-[14px] text-slate-500">
