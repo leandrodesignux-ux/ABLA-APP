@@ -2,7 +2,7 @@ import { motion, useReducedMotion } from 'framer-motion'
 import { Link, useLocation } from 'react-router-dom'
 import { useAppContext } from '../context/AppContext.jsx'
 import { getNavigation } from './navigation.js'
-import AblaCharacter from './AblaCharacter.jsx'
+import AblaCompanion from './companion/AblaCompanion.jsx'
 
 export default function DesktopSidebar() {
   const { pathname } = useLocation()
@@ -40,7 +40,7 @@ export default function DesktopSidebar() {
         </nav>
 
         <motion.div initial="idle" animate="idle" whileHover="hover" whileTap="tap" className="relative mt-auto overflow-hidden rounded-abla-card bg-abla-blue-soft p-4 pt-16 text-xs leading-5 text-slate-500">
-          <motion.div variants={{ idle: { y: 2 }, hover: { y: reducedMotion ? 2 : -1 }, tap: { y: 2 } }} className="absolute -top-1 left-1/2 -translate-x-1/2"><AblaCharacter emotion="help" shape="pebble" pose="rest" gaze="left" interaction="listening" size="sm" blink /></motion.div>
+          <motion.div variants={{ idle: { y: 2 }, hover: { y: reducedMotion ? 2 : -1 }, tap: { y: 2 } }} className="absolute -top-1 left-1/2 -translate-x-1/2"><AblaCompanion personality="empathetic" pose="listening" gaze="left" decorations="none" size="sm" label="ABLA está disponible" /></motion.div>
           <motion.span variants={{ idle: { opacity: .2 }, hover: { opacity: 1 } }} className="absolute right-5 top-5 h-2.5 w-2.5 rotate-45 rounded-sm bg-abla-green/35" />
           <span className="font-bold text-abla-blue">Tu espacio seguro</span><br />
           Habla cuando lo necesites. Estamos contigo.

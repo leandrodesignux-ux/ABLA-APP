@@ -3,7 +3,7 @@ import { ArrowLeft, BookOpen, ChevronDown } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import PageTransition from '../components/PageTransition.jsx'
-import AblaCharacter from '../components/AblaCharacter.jsx'
+import AblaCompanion from '../components/companion/AblaCompanion.jsx'
 import AblaEmptyState from '../components/AblaEmptyState.jsx'
 import { useAppContext } from '../context/AppContext.jsx'
 import { FAQS } from '../data/faqs.js'
@@ -55,7 +55,7 @@ export default function FAQs() {
               <h1 className="abla-page-title mt-2">Lo que necesitas saber</h1>
               <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">Explora dudas frecuentes según tu perfil y encuentra orientación confiable.</p>
             </div>
-            <div className="relative hidden h-28 place-items-center md:grid"><span className="absolute right-0 top-0 h-20 w-16 rotate-3 rounded-abla-card bg-white/70" /><AblaCharacter emotion="help" shape="pebble" pose="point" gaze="right" interaction="curious" size="lg" decoration blink /></div>
+            <div className="relative hidden h-28 place-items-center md:grid"><span className="absolute right-0 top-0 h-20 w-16 rotate-3 rounded-abla-card bg-white/70" /><AblaCompanion personality="curious" pose="pointing" gaze="right" accessory="question" size="lg" label="ABLA responde preguntas frecuentes" /></div>
           </section>
           <div className="mt-4 flex gap-2 overflow-x-auto pb-1">
             <button

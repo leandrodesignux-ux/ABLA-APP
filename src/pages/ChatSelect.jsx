@@ -1,29 +1,22 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import { ChevronRight } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import AblaCharacter from '../components/AblaCharacter.jsx'
+import AblaCompanion from '../components/companion/AblaCompanion.jsx'
 import BottomNav from '../components/BottomNav.jsx'
 import Header from '../components/Header.jsx'
 import PageTransition from '../components/PageTransition.jsx'
 import { useAppContext } from '../context/AppContext.jsx'
 import { ablaMotion, motionIfAllowed } from '../design/motion.js'
 
-const bubbleVariants = {
-  idle: { y: 2, scale: .92, opacity: .7 },
-  hover: { y: -2, scale: 1, opacity: 1 },
-  tap: { y: 1, scale: .95, opacity: 1 },
-}
-
-function MiniBubble({ className = '' }) {
-  return <motion.div variants={bubbleVariants} className={`absolute rounded-[18px_18px_18px_6px] bg-white px-3 py-1.5 shadow-abla-card ${className}`}><motion.span variants={{ idle: { opacity: .35 }, hover: { opacity: 1 } }} className="font-black tracking-[.2em] text-abla-green">···</motion.span></motion.div>
-}
-
 function ChatScene({ kind, avatarSrc }) {
-  if (avatarSrc) return <div className="relative h-28 w-full md:h-40"><motion.div variants={{ idle: { x: 0 }, hover: { x: 4 }, tap: { x: 1 } }} className="absolute bottom-1 left-[22%]"><AblaCharacter emotion="chat" shape="arch" pose="point" gaze="right" interaction="supportive" size="md" /></motion.div><motion.img variants={{ idle: { y: 0, boxShadow: '0 0 0 4px #fff' }, hover: { y: -2, boxShadow: '0 0 0 5px #DCECE7' } }} src={avatarSrc} alt="" className="absolute bottom-3 right-[20%] h-16 w-16 rounded-full object-cover md:h-20 md:w-20" /><MiniBubble className="left-1/2 top-2 -translate-x-1/2" /></div>
-  if (kind === 'group') return <div className="relative h-28 w-full md:h-40"><motion.div variants={{ idle: { x: 0, y: 0 }, hover: { x: 5, y: -1 } }} className="absolute bottom-0 left-[12%]"><AblaCharacter emotion="happy" shape="pebble" pose="wave" gaze="right" interaction="friendly" size="sm" /></motion.div><motion.div variants={{ idle: { y: 0 }, hover: { y: -3 } }} className="absolute bottom-5 left-[37%]"><AblaCharacter emotion="chat" shape="blob" pose="open" gaze="left" interaction="supportive" size="md" /></motion.div><motion.div variants={{ idle: { x: 0 }, hover: { x: -4, y: -1 } }} className="absolute bottom-0 right-[11%]"><AblaCharacter emotion="neutral" shape="pill" pose="rest" gaze="left" interaction="curious" size="sm" /></motion.div><MiniBubble className="right-[14%] top-1" /></div>
-  if (kind === 'teacher') return <div className="relative h-28 w-full md:h-40"><motion.div variants={{ idle: { x: 0 }, hover: { x: 4 } }} className="absolute bottom-2 left-[19%]"><AblaCharacter emotion="neutral" shape="pebble" pose="rest" gaze="right" interaction="curious" size="sm" /></motion.div><motion.div variants={{ idle: { x: 0 }, hover: { x: -4 } }} className="absolute bottom-1 right-[18%]"><AblaCharacter emotion="chat" shape="arch" pose="wave" gaze="left" interaction="supportive" size="md" /></motion.div><MiniBubble className="left-1/2 top-2 -translate-x-1/2" /></div>
-  if (kind === 'anonymous') return <div className="relative h-28 w-full md:h-40"><motion.div variants={{ idle: { y: 13 }, hover: { y: 2 }, tap: { y: 8 } }} className="absolute -bottom-4 left-[22%]"><AblaCharacter emotion="chat" shape="arch" pose="hide" gaze="right" interaction="shy" size="lg" /></motion.div><motion.div variants={bubbleVariants} className="absolute right-[12%] top-3 h-16 w-28 rounded-[24px_24px_24px_7px] bg-white shadow-abla-card"><div className="flex h-full items-center justify-center gap-2">{[0, 1, 2].map((dot) => <motion.span key={dot} variants={{ idle: { opacity: .25, y: 2 }, hover: { opacity: 1, y: 0 }, tap: { y: 1 } }} transition={{ delay: dot * .06 }} className="h-2.5 w-2.5 rounded-full bg-abla-green" />)}</div></motion.div></div>
-  return <div className="relative h-28 w-full md:h-40"><div className="absolute bottom-0 left-1/2 -translate-x-1/2"><AblaCharacter emotion="help" shape="soft-star" pose="open" gaze="right" interaction="supportive" size="lg" decoration /></div><MiniBubble className="right-[14%] top-2" /></div>
+  const config = kind === 'anonymous'
+    ? { mood: 'calm', pose: 'listening', gaze: 'right', accessory: 'speech' }
+    : kind === 'group'
+      ? { mood: 'happy', pose: 'open', gaze: 'right', accessory: 'options' }
+      : kind === 'teacher'
+        ? { mood: 'happy', pose: 'waving', gaze: 'right', accessory: 'speech' }
+        : { mood: 'focused', pose: 'supporting', gaze: 'right', accessory: 'card' }
+  return <div className="relative grid h-28 w-full place-items-center md:h-40"><motion.div variants={{ idle: { y: 2 }, hover: { y: -2 }, tap: { y: 1 } }}><AblaCompanion {...config} size="lg" label="Compañero ABLA para esta conversación" /></motion.div>{avatarSrc && <motion.img variants={{ idle: { y: 0, boxShadow: '0 0 0 4px #fff' }, hover: { y: -2, boxShadow: '0 0 0 5px #DCECE7' } }} src={avatarSrc} alt="" className="absolute bottom-3 right-[14%] h-14 w-14 rounded-full object-cover md:h-16 md:w-16" />}</div>
 }
 
 function OptionCard({ title, description, to, kind, avatarSrc, subdued = false }) {

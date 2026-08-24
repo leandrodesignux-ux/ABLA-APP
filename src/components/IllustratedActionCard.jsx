@@ -1,10 +1,9 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ablaMotion, motionIfAllowed } from '../design/motion.js'
-import AblaCharacter from './AblaCharacter.jsx'
-import AblaScene from './AblaScene.jsx'
+import AblaCompanion from './companion/AblaCompanion.jsx'
 
-export default function IllustratedActionCard({ to, title, description, emotion = 'happy', shape = 'blob', scene, sceneType, className = '' }) {
+export default function IllustratedActionCard({ to, title, description, scene, className = '' }) {
   const reducedMotion = useReducedMotion()
   return (
     <motion.div initial="idle" animate="idle" whileHover="hover" whileTap="tap" variants={{ idle: {}, hover: motionIfAllowed(reducedMotion, { y: -3 }), tap: {} }} className={className}>
@@ -13,7 +12,7 @@ export default function IllustratedActionCard({ to, title, description, emotion 
         className="group flex h-full min-h-40 items-center gap-4 overflow-hidden rounded-abla-card border border-white/70 bg-white p-5 shadow-abla-card transition-shadow hover:shadow-abla-float focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-abla-green/30 md:flex-col md:items-start"
       >
         <motion.div variants={{ idle: { scale: 1 }, hover: { scale: reducedMotion ? 1 : 1.015 }, tap: motionIfAllowed(reducedMotion, ablaMotion.press) }} className="relative grid h-24 w-24 shrink-0 place-items-center overflow-hidden rounded-abla-blob bg-abla-green-soft md:h-32 md:w-full">
-          {scene || (sceneType ? <AblaScene type={sceneType} /> : <AblaCharacter emotion={emotion} shape={shape} size="md" interaction="friendly" />)}
+          {scene || <AblaCompanion mood="happy" pose="supporting" size="md" label={`ABLA acompaña la acción ${title}`} />}
         </motion.div>
         <div>
           <h3 className="text-base font-extrabold text-abla-blue md:text-lg">{title}</h3>

@@ -9,7 +9,7 @@ import { useAppContext } from '../context/AppContext.jsx'
 import { NEE_TYPES } from '../data/neeTypes.js'
 import { PROFESORES, CATEGORIAS_SITUACION } from '../data/profesoresData.js'
 import { LINEAS_EMERGENCIA } from '../data/recursosAyuda.js'
-import AblaCharacter from '../components/AblaCharacter.jsx'
+import AblaCompanion from '../components/companion/AblaCompanion.jsx'
 import { motionIfAllowed } from '../design/motion.js'
 
 const alertSigns = [
@@ -31,10 +31,10 @@ export default function HomeApoderado() {
   })
 
   const directActions = [
-    { label: 'Pedir cita', to: '/ayuda/cita', emotion: 'calm', shape: 'circle' },
-    { label: 'Hablar con tutor', to: '/chat/tutor', emotion: 'chat', shape: 'pill' },
-    { label: 'Guías para padres', to: '/ayuda/consejos', emotion: 'help', shape: 'blob' },
-    { label: 'Hacer reporte', to: '/reportar', emotion: 'report', shape: 'soft-star', urgent: true },
+    { label: 'Pedir cita', to: '/ayuda/cita', mood: 'calm', pose: 'pointing', accessory: 'calendar' },
+    { label: 'Hablar con tutor', to: '/chat/tutor', mood: 'happy', pose: 'listening', accessory: 'speech' },
+    { label: 'Guías para padres', to: '/ayuda/consejos', mood: 'focused', pose: 'supporting', accessory: 'card' },
+    { label: 'Hacer reporte', to: '/reportar', mood: 'worried', pose: 'protecting', accessory: 'shield', urgent: true },
   ]
 
   const rankingProfesores = useMemo(() => {
@@ -157,7 +157,7 @@ export default function HomeApoderado() {
 
           <section className="mt-6 grid items-center gap-5 overflow-hidden rounded-abla-panel bg-abla-blue-soft p-5 md:grid-cols-[1fr_180px] md:p-8">
             <div><p className="text-xs font-extrabold uppercase tracking-[.16em] text-abla-green">Acompañar también es cuidar</p><h1 className="abla-page-title mt-2">Bienvenido/a</h1><p className="mt-2 text-sm leading-6 text-slate-500 md:text-base">Aquí encontrarás orientación clara para apoyar a tu hijo/a con calma y confianza.</p></div>
-            <div className="hidden md:grid md:place-items-center"><AblaCharacter emotion="safe" shape="arch" pose="open" interaction="supportive" size="lg" animate="breathe" decoration blink /></div>
+            <div className="hidden md:grid md:place-items-center"><AblaCompanion personality="protective" pose="supporting" decorations="subtle" size="lg" label="ABLA acompaña a las familias" /></div>
           </section>
 
           <section className="mt-5 rounded-abla-card border-2 border-amber-200 bg-amber-50 p-5 md:p-6">
@@ -195,7 +195,7 @@ export default function HomeApoderado() {
                   onClick={() => navigate(action.to)}
                   className={`flex min-h-40 flex-col items-center justify-center gap-3 rounded-abla-card border-2 bg-white p-4 shadow-abla-card transition-shadow hover:shadow-abla-float ${action.urgent ? 'border-red-100' : 'border-transparent'}`}
                 >
-                  <div className={`grid h-20 w-full place-items-center rounded-[44%_56%_46%_54%/56%_44%_56%_44%] ${action.urgent ? 'bg-red-50' : 'bg-abla-green-soft'}`}><AblaCharacter emotion={action.emotion} shape={action.shape} pose={action.urgent ? 'tense' : 'point'} gaze="right" interaction={action.urgent ? 'alert' : 'supportive'} interactive size="sm" /></div>
+                  <div className={`grid h-24 w-full place-items-center rounded-[44%_56%_46%_54%/56%_44%_56%_44%] ${action.urgent ? 'bg-red-50' : 'bg-abla-green-soft'}`}><AblaCompanion mood={action.mood} pose={action.pose} gaze="right" accessory={action.accessory} decorations="none" interactive size="md" label={`ABLA acompaña la acción ${action.label}`} /></div>
                   <span className="text-[13px] font-extrabold text-abla-blue">{action.label}</span>
                 </motion.button>
               ))}
