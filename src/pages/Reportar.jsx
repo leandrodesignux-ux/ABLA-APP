@@ -1,7 +1,7 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import { ChevronRight, ShieldCheck } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import AblaCharacter from '../components/AblaCharacter.jsx'
+import AblaCompanion from '../components/companion/AblaCompanion.jsx'
 import Header from '../components/Header.jsx'
 import PageTransition from '../components/PageTransition.jsx'
 import { ablaMotion, motionIfAllowed } from '../design/motion.js'
@@ -13,9 +13,12 @@ const situations = [
 ]
 
 function ReportScene({ type }) {
-  if (type === 'protection') return <div className="relative h-36 w-full"><motion.div variants={{ idle: { scale: 1 }, hover: { scale: 1.06 } }} className="absolute bottom-1 left-1/2 h-28 w-36 -translate-x-1/2 rounded-t-[70px] rounded-b-[32px] border-[10px] border-white/65" /><motion.div variants={{ idle: { y: 8 }, hover: { y: 3 } }} className="absolute bottom-0 left-1/2 -translate-x-1/2"><AblaCharacter emotion="worried" shape="drop" pose="hide" gaze="up" interaction="listening" size="md" /></motion.div></div>
-  if (type === 'digital') return <div className="relative h-36 w-full"><motion.div variants={{ idle: { x: 0 }, hover: { x: -2 } }} className="absolute bottom-0 left-[18%]"><AblaCharacter emotion="anxious" shape="wave" pose="tense" gaze="right" interaction="alert" size="lg" /></motion.div><motion.div variants={{ idle: { x: 4, opacity: .75 }, hover: { x: 0, opacity: 1 }, tap: { x: 2 } }} className="absolute right-[14%] top-7 rounded-[22px_22px_6px_22px] bg-white px-4 py-3 shadow-abla-card"><div className="flex gap-1.5"><span className="h-2 w-2 rounded-sm bg-abla-blue/35" /><span className="h-2 w-4 rounded-sm bg-abla-green/60" /></div><div className="mt-2 h-2 w-12 rounded-full bg-abla-blue/20" /></motion.div><motion.span variants={{ idle: { opacity: .25 }, hover: { opacity: 1, rotate: 8 } }} className="absolute right-7 top-3 h-3 w-3 rotate-45 bg-abla-blue/25" /></div>
-  return <div className="relative h-36 w-full"><motion.div variants={{ idle: { y: 0 }, hover: { y: -1 }, tap: { y: 1 } }} className="absolute bottom-0 left-1/2 -translate-x-1/2"><AblaCharacter emotion="report" shape="soft-star" pose="tense" gaze="up" interaction="alert" size="lg" /></motion.div><motion.div variants={{ idle: { opacity: .55, scale: .9 }, hover: { opacity: 1, scale: 1 } }} className="absolute right-[18%] top-5"><span className="block h-1 w-7 rotate-[-35deg] rounded-full bg-red-300" /><span className="mt-3 block h-1 w-5 rotate-[-12deg] rounded-full bg-red-300" /></motion.div></div>
+  const config = type === 'protection'
+    ? { mood: 'worried', pose: 'protecting', gaze: 'center', accessory: 'shield' }
+    : type === 'digital'
+      ? { mood: 'focused', pose: 'listening', gaze: 'right', accessory: 'speech' }
+      : { mood: 'worried', pose: 'listening', gaze: 'center', accessory: 'none' }
+  return <div className="relative grid h-36 w-full place-items-end pb-1"><motion.div variants={{ idle: { y: 2 }, hover: { y: -1 }, tap: { y: 1 } }}><AblaCompanion {...config} decorations="none" size="lg" label="ABLA te acompaña de forma segura" /></motion.div></div>
 }
 
 function ReportCard({ title, description, to, type, tone, label, urgent }) {

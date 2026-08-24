@@ -8,7 +8,7 @@ import PageTransition from '../components/PageTransition.jsx'
 import { useAppContext } from '../context/AppContext.jsx'
 import { anonimoBotFlows, tutorBotFlows, apoderadoBotFlows, profesionalBotFlows, CHAT_END_ACTIONS } from '../data/chatFlows.js'
 import { MENSAJES_RAPIDOS_APODERADO } from '../data/recursosAyuda.js'
-import AblaCharacter from '../components/AblaCharacter.jsx'
+import AblaCompanion from '../components/companion/AblaCompanion.jsx'
 import { ablaMotion, motionIfAllowed } from '../design/motion.js'
 
 function formatTime(date) {
@@ -50,7 +50,8 @@ function TypingIndicator() {
   return (
     <div className="flex w-full justify-start">
       <div className="max-w-[75%]">
-        <div className="rounded-[20px_20px_20px_6px] border border-abla-border bg-white px-4 py-3 shadow-abla-card">
+        <div className="flex items-center gap-2 rounded-[20px_20px_20px_6px] border border-abla-border bg-white py-2 pl-2 pr-4 shadow-abla-card">
+          <AblaCompanion reaction="wait" size="xs" animate label="ABLA está preparando una respuesta" />
           <div className="flex h-5 items-end gap-1.5" aria-label="Escribiendo">
             {[0, 1, 2].map((i) => (
               <motion.div
@@ -286,7 +287,7 @@ export default function ChatView() {
 
       <div className="mx-auto flex min-h-[calc(100dvh-56px-96px)] w-full max-w-[390px] flex-col md:min-h-[calc(100dvh-56px)] md:max-w-3xl lg:max-w-4xl">
         <div className="mx-4 mt-4 flex items-center gap-3 rounded-full border border-white bg-abla-green-soft px-4 py-2.5 text-xs font-semibold text-abla-blue shadow-abla-card">
-          <AblaCharacter emotion="safe" shape="pill" size="xs" />
+          <AblaCompanion reaction={isTyping ? 'wait' : 'listen'} size="xs" animate label={isTyping ? 'ABLA está pensando' : 'ABLA está escuchando'} />
           <div><span className="font-extrabold">En línea</span><span className="text-slate-500"> · Estamos aquí para escucharte</span></div>
         </div>
         <div ref={listRef} className="flex-1 overflow-y-auto px-4 py-5">
