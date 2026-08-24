@@ -6,13 +6,14 @@ import IllustratedActionCard from '../components/IllustratedActionCard.jsx'
 import PageTransition from '../components/PageTransition.jsx'
 import SvgImage from '../components/SvgImage.jsx'
 import AblaCompanion from '../components/companion/AblaCompanion.jsx'
+import MoodShape from '../components/mood/MoodShape.jsx'
 import { useAppContext } from '../context/AppContext.jsx'
 import { ablaMotion, motionIfAllowed } from '../design/motion.js'
 
 const moodConfig = {
-  BIEN: { label: 'Bien', mood: 'happy', personality: 'motivating', pose: 'celebrating', gaze: 'up', decorations: 'energy', reaction: 'celebrate', tint: 'bg-[#E4F3ED]', message: '¡Qué bueno saberlo! Guarda un poquito de esa energía para hoy.' },
-  'MAS O MENOS': { label: 'Más o menos', mood: 'neutral', personality: 'curious', pose: 'thinking', gaze: 'left', decorations: 'question', reaction: 'think', tint: 'bg-[#EEF1F6]', message: 'Está bien sentirse así. Estamos aquí si necesitas ordenar lo que pasa.' },
-  MAL: { label: 'Mal', mood: 'worried', personality: 'empathetic', pose: 'listening', gaze: 'center', decorations: 'none', reaction: 'concern', tint: 'bg-[#FDEDEC]', message: 'Gracias por contarlo. No tienes que atravesar esto a solas.' },
+  BIEN: { label: 'Bien', moodKey: 'bien', personality: 'motivating', reaction: 'celebrate', tint: 'bg-[#E4F3ED]', message: '¡Qué bueno saberlo! Guarda un poquito de esa energía para hoy.', heroCopy: 'Me alegra acompañarte en este buen momento.' },
+  'MAS O MENOS': { label: 'Más o menos', moodKey: 'mas_o_menos', personality: 'curious', reaction: 'think', tint: 'bg-[#EEF1F6]', message: 'Está bien sentirse así. Estamos aquí si necesitas ordenar lo que pasa.', heroCopy: 'Podemos mirar juntos lo que necesitas ahora.' },
+  MAL: { label: 'Mal', moodKey: 'mal', personality: 'empathetic', reaction: 'concern', tint: 'bg-[#FDEDEC]', message: 'Gracias por contarlo. No tienes que atravesar esto a solas.', heroCopy: 'Estoy aquí para escucharte, sin apuro y sin juzgar.' },
 }
 
 const quickActions = [
@@ -27,9 +28,9 @@ function EmotionOption({ value, selected, onSelect }) {
   const reducedMotion = useReducedMotion()
   const config = moodConfig[value]
   return (
-    <motion.button type="button" onClick={() => onSelect(value)} whileTap={motionIfAllowed(reducedMotion, ablaMotion.press)} animate={selected && !reducedMotion ? { y: [0, -3, 0] } : {}} className={`group relative min-h-36 overflow-hidden rounded-abla-card border-2 p-3 text-center transition-all focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-abla-green/30 md:min-h-44 md:p-5 ${selected ? `${config.tint} border-abla-green shadow-abla-float` : 'border-transparent bg-white shadow-abla-card hover:border-abla-green/25'}`} aria-pressed={selected} aria-label={`Me siento ${config.label}`}>
+    <motion.button type="button" onClick={() => onSelect(value)} whileTap={motionIfAllowed(reducedMotion, ablaMotion.press)} className={`group relative min-h-36 overflow-hidden rounded-abla-card border-2 p-3 text-center transition-all focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-abla-green/30 md:min-h-44 md:p-5 ${selected ? `${config.tint} border-abla-green shadow-abla-float` : 'border-transparent bg-white shadow-abla-card hover:border-abla-green/25'}`} aria-pressed={selected} aria-label={`Me siento ${config.label}`}>
       {selected && <div className="pointer-events-none absolute inset-0" aria-hidden="true"><motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute right-3 top-4 h-2.5 w-2.5 rounded-full bg-abla-green/30" /><motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: .08 }} className="absolute bottom-8 left-4 h-3 w-3 rotate-45 rounded-sm bg-abla-blue/15" /></div>}
-      <div className="relative mx-auto grid h-24 place-items-center md:h-28"><AblaCompanion personality={config.personality} mood={config.mood} pose={config.pose} gaze={config.gaze} decorations={config.decorations} interactive size="md" animate={selected} label={`ABLA se siente ${config.label}`} /></div>
+      <div className="relative mx-auto grid h-24 place-items-center md:h-28"><MoodShape mood={config.moodKey} interactive selected={selected} size="md" /></div>
       <span className="relative text-xs font-extrabold uppercase tracking-[.08em] text-abla-blue md:text-sm">{config.label}</span>
     </motion.button>
   )
@@ -65,8 +66,8 @@ export default function Home() {
 
             <div className="relative hidden min-h-[470px] overflow-hidden rounded-abla-panel bg-abla-blue-soft p-8 lg:grid lg:place-items-center">
               <div className="absolute left-8 top-8 h-12 w-24 rounded-full bg-white/70" /><div className="absolute bottom-10 right-8 h-20 w-20 rounded-abla-blob bg-abla-green/15" />
-              <motion.div animate={motionIfAllowed(reducedMotion, ablaMotion.float)}><AblaCompanion personality={activeMood?.personality || 'friendly'} reaction={activeMood?.reaction} size="hero" label="Compañero emocional ABLA" /></motion.div>
-              <div className="absolute bottom-9 left-9 right-9 text-center"><p className="text-lg font-extrabold text-abla-blue">Tu espacio también puede empezar con una emoción.</p></div>
+              <motion.div key={moodHoy || 'idle'} animate={motionIfAllowed(reducedMotion, ablaMotion.float)}><AblaCompanion personality={activeMood?.personality || 'friendly'} reaction={activeMood?.reaction} size="hero" label="Compañero emocional ABLA" /></motion.div>
+              <div className="absolute bottom-9 left-9 right-9 text-center"><p className="text-lg font-extrabold text-abla-blue">{activeMood?.heroCopy || 'Tu espacio también puede empezar con una emoción.'}</p></div>
             </div>
           </section>
 

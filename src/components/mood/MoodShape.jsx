@@ -26,7 +26,11 @@ export default function MoodShape({ mood = 'mas_o_menos', size = 'md', selected 
     idle: { y: 0, x: 0, rotate: 0, scale: 1 },
     hover: reducedMotion ? {} : key === 'bien' ? { y: -4, scale: 1.035 } : key === 'mal' ? { scaleY: .985, y: 1 } : { x: 3, rotate: 1.5 },
     tap: reducedMotion ? {} : { scale: .97 },
-    selected: reducedMotion ? {} : { scale: 1.035 },
+    selected: reducedMotion ? {} : key === 'bien'
+      ? { y: [0, -5, 0], scale: [1, 1.055, 1.035], transition: { duration: .72 } }
+      : key === 'mal'
+        ? { scaleX: [1, 1.012, 1], scaleY: [1, .985, 1], y: [0, 2, 0], transition: { duration: 2.4, repeat: Infinity } }
+        : { x: [0, 4, -2, 0], rotate: [0, 1.5, -1, 0], transition: { duration: .9 } },
   }
 
   return <motion.svg viewBox="0 0 120 120" width={dimension} height={dimension} className={className} role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : true} {...states}>
