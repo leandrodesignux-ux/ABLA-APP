@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion'
+import { BookOpen } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAppContext } from '../context/AppContext.jsx'
 import { getNavigation } from './navigation.js'
@@ -38,6 +39,11 @@ export default function DesktopSidebar() {
             )
           })}
         </nav>
+
+        <div className="mt-7 border-t border-slate-100 pt-5">
+          <p className="px-4 text-[10px] font-black uppercase tracking-[.16em] text-slate-400">Proyecto</p>
+          <Link to="/como-lo-construi" className={`relative mt-2 flex min-h-12 items-center gap-3 rounded-full px-4 text-sm font-bold transition-colors ${pathname.startsWith('/como-lo-construi') ? 'bg-abla-green-soft text-abla-blue' : 'text-slate-500 hover:bg-abla-blue-soft/60 hover:text-abla-blue'}`}><BookOpen className="h-5 w-5" /><span>Cómo lo construí</span>{pathname.startsWith('/como-lo-construi') && <span className="absolute right-3 h-2.5 w-2.5 rounded-abla-blob bg-abla-green" aria-hidden="true" />}</Link>
+        </div>
 
         <motion.div initial="idle" animate="idle" whileHover="hover" whileTap="tap" className="relative mt-auto overflow-hidden rounded-abla-card bg-abla-blue-soft p-4 pt-16 text-xs leading-5 text-slate-500">
           <motion.div variants={{ idle: { y: 2 }, hover: { y: reducedMotion ? 2 : -1 }, tap: { y: 2 } }} className="absolute -top-1 left-1/2 -translate-x-1/2"><AblaCompanion personality="empathetic" pose="listening" gaze="left" decorations="none" size="sm" label="ABLA está disponible" /></motion.div>

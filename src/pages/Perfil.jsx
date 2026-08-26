@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Building2, User } from 'lucide-react'
+import { BookOpen, Building2, User } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import BottomNav from '../components/BottomNav.jsx'
 import Header from '../components/Header.jsx'
@@ -193,6 +193,7 @@ export default function Perfil() {
             </div>
 
             <div className="mt-3 text-[11px] font-medium text-slate-400">v2.0 · Mayo 2026</div>
+            <button type="button" onClick={() => navigate('/como-lo-construi')} className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-full bg-abla-blue px-5 text-sm font-bold text-white"><BookOpen className="h-4 w-4" />Cómo lo construí</button>
           </div>
         </div>
       </div>

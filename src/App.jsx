@@ -31,6 +31,7 @@ const Bitacora = lazy(() => import('./pages/Bitacora.jsx'))
 const Encuesta = lazy(() => import('./pages/Encuesta.jsx'))
 const Perfil = lazy(() => import('./pages/Perfil.jsx'))
 const MoodTracker = lazy(() => import('./pages/MoodTracker.jsx'))
+const ComoLoConstrui = lazy(() => import('./pages/ComoLoConstrui.jsx'))
 const SobreTi = lazy(() => import('./pages/SobreTi.jsx'))
 const CompanionShowcase = import.meta.env.DEV ? lazy(() => import('./pages/CompanionShowcase.jsx')) : null
 
@@ -154,6 +155,7 @@ function AnimatedRoutes() {
         <Route path="/bitacora" element={<Bitacora />} />
         <Route path="/perfil" element={<Perfil />} />
         <Route path="/mood-tracker" element={<MoodTracker />} />
+        <Route path="/como-lo-construi" element={<ComoLoConstrui />} />
         <Route path="/encuesta" element={<Encuesta />} />
         <Route path="/sobreti" element={<SobreTi />} />
         <Route path="/home" element={<Home />} />
